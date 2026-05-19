@@ -1,0 +1,58 @@
+### register
+POST http://localhost:6666/user-api/register
+Content-Type: application/json
+
+{
+  "firstname":"sanjay",
+  "lastname":"ponaganti",
+  "email":"sanju@mail.com",
+  "password":"Sanju@1214",
+  "role":"STUDENT",
+  "profileImageUrl":"",
+  "isUserActive":true
+}
+
+### login
+POST http://localhost:666/user-api/login
+Content-Type: application/json
+
+{
+  "email":"sanju@mail.com",
+  "password":"Sanju@1214"
+}
+
+
+
+### student-> add academic-details
+POST http://localhost:6666/student-api/academicDetails
+Content-Type: application/json
+
+{
+  "rollNumber":"24eg105m58",
+  "branch":"cse",
+  "cgpa":8.2,
+  "graduationYear":2028,
+  "noBacklogs":true,
+  "resume":"resume.jpg",
+  "linkedIn":"linkedin.com",
+  "github":"github.com"
+}
+
+
+
+###cpost company details
+POST http://localhost:6666/company-api/company-details
+Content-Type: application/json
+
+{
+  "companyName": "Google",
+  "companyEmail": "hr@google.com",
+  "companyWebsite": "https://www.google.com",
+  "companyLocation": "Hyderabad, India",
+  "companyType": "Product Based",
+  "companyDescription": "Google is a multinational technology company specializing in internet-related services, cloud computing, AI, and digital products.",
+  "hrName": "Sundar Recruiter",
+  "hrPhone": "9876543210",
+  "hrLinkedIn": "https://linkedin.com/in/googlehr",
+  "companyLogo": "google-logo.png"
+}
