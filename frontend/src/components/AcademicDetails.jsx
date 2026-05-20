@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import toast from "react-hot-toast";
+import { Navigate, useNavigate } from "react-router";
 
 const AcademicDetails = () => {
   const [formData, setFormData] = useState({
@@ -24,6 +25,8 @@ const AcademicDetails = () => {
     }));
   };
 
+  const navigate = useNavigate();
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -31,8 +34,8 @@ const AcademicDetails = () => {
       console.log(formData);
 
       toast.success("Academic Details Submitted");
-
       // API CALL HERE
+      navigate("/student/student-dashboard");
     } catch (error) {
       console.log(error);
 

@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { NavLink } from "react-router";
+import { NavLink, useNavigate } from "react-router";
+import { Navigate } from "react-router";
 const Login = () => {
   const [formData, setFormData] = useState({ email: "", password: "" });
 
@@ -7,10 +8,11 @@ const Login = () => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
-
+  const navigate = useNavigate();
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log("Submitted Data:", formData);
+    navigate("/student/student-dashboard");
   };
 
   return (
