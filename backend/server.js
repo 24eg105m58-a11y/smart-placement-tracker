@@ -4,10 +4,16 @@ import mongoose from 'mongoose';
 import { userApp } from './APIs/user-api.js';
 import { studentApp } from './APIs/student-api.js';
 import { companyApp } from './APIs/company-api.js';
+import cookieParser from "cookie-parser";
+
 
 config()
 const app = exp();
 app.use(exp.json())
+
+//
+app.use(cookieParser());
+
 //route mounting
 app.use("/user-api", userApp)
 app.use("/student-api", studentApp)

@@ -13,7 +13,7 @@ Content-Type: application/json
 }
 
 ### login
-POST http://localhost:666/user-api/login
+POST http://localhost:6666/user-api/login
 Content-Type: application/json
 
 {
@@ -24,7 +24,7 @@ Content-Type: application/json
 
 
 ### student-> add academic-details
-POST http://localhost:6666/student-api/academicDetails
+POST http://localhost:6666/student-api/add-academicDetails
 Content-Type: application/json
 
 {
@@ -38,10 +38,35 @@ Content-Type: application/json
   "github":"github.com"
 }
 
+###get academic details
+GET http://localhost:6666/student-api/get-academicDetails
 
 
-###cpost company details
-POST http://localhost:6666/company-api/company-details
+###register-company
+POST http://localhost:6666/user-api/register
+Content-Type: application/json
+
+{
+  "firstname":"sundar",
+  "lastname":"pichai",
+  "email":"sundar@mail.com",
+  "password":"Sanju@1214",
+  "role":"RECRUITER",
+  "profileImageUrl":"",
+  "isUserActive":true
+}
+
+### login-company
+POST http://localhost:6666/user-api/login
+Content-Type: application/json
+
+{
+  "email":"sundar@mail.com",
+  "password":"Sanju@1214"
+}
+
+###post company details
+POST http://localhost:6666/company-api/companyDetails
 Content-Type: application/json
 
 {
@@ -56,3 +81,10 @@ Content-Type: application/json
   "hrLinkedIn": "https://linkedin.com/in/googlehr",
   "companyLogo": "google-logo.png"
 }
+
+###get company details
+GET http://localhost:6666/company-api/get-companyDetails
+
+
+### logout
+GET http://localhost:6666/user-api/logout

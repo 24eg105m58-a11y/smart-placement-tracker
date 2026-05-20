@@ -2,154 +2,250 @@ import React from "react";
 import { NavLink } from "react-router";
 
 const StudentDashboard = () => {
-  return (
-    <div className="flex w-full min-h-screen bg-gray-50">
-      {/* Sidebar Navigation */}
-      <div className="w-64 flex-shrink-0 p-6 h-screen sticky top-0 overflow-y-auto">
-        <ul className="space-y-4">
-          <NavLink
-            to="/"
-            className="block px-4 py-2.5 mx-2 rounded-xl text-black font-medium tracking-wide transition-all duration-200 hover:bg-white/10 hover:text-blue-200 active:scale-98"
-          >
-            <li>Home</li>
-          </NavLink>
-          <NavLink
-            to="/student/student-dashboard"
-            className="block px-4 py-2.5 mx-2 rounded-xl text-black font-medium tracking-wide transition-all duration-200 hover:bg-white/10 hover:text-blue-200 active:scale-98"
-          >
-            <li>Dashboard</li>
-          </NavLink>
-          <NavLink
-            to="/academic-details"
-            className="block px-4 py-2.5 mx-2 rounded-xl text-black font-medium tracking-wide transition-all duration-200 hover:bg-white/10 hover:text-blue-200 active:scale-98"
-          >
-            <li>Academic Details</li>
-          </NavLink>
-          <NavLink
-            to="/resume"
-            className="block px-4 py-2.5 mx-2 rounded-xl text-black font-medium tracking-wide transition-all duration-200 hover:bg-white/10 hover:text-blue-200 active:scale-98"
-          >
-            <li>resume</li>
-          </NavLink>
-          <NavLink
-            to="/skills-certificates"
-            className="block px-4 py-2.5 mx-2 rounded-xl text-black font-medium tracking-wide transition-all duration-200 hover:bg-white/10 hover:text-blue-200 active:scale-98"
-          >
-            <li>Skills/Certifiactes</li>
-          </NavLink>
-          <NavLink
-            to="/coding-profiles"
-            className="block px-4 py-2.5 mx-2 rounded-xl text-black font-medium tracking-wide transition-all duration-200 hover:bg-white/10 hover:text-blue-200 active:scale-98"
-          >
-            <li>Coding Profiles</li>
-          </NavLink>
-          <NavLink
-            to="/upcomming-drives"
-            className="block px-4 py-2.5 mx-2 rounded-xl text-black font-medium tracking-wide transition-all duration-200 hover:bg-white/10 hover:text-blue-200 active:scale-98"
-          >
-            <li>Upcomming Drives</li>
-          </NavLink>
-          <NavLink
-            to="/applications"
-            className="block px-4 py-2.5 mx-2 rounded-xl text-black font-medium tracking-wide transition-all duration-200 hover:bg-white/10 hover:text-blue-200 active:scale-98"
-          >
-            <li>Applications</li>
-          </NavLink>
-          <NavLink
-            to="/interviews"
-            className="block px-4 py-2.5 mx-2 rounded-xl text-black font-medium tracking-wide transition-all duration-200 hover:bg-white/10 hover:text-blue-200 active:scale-98"
-          >
-            <li>Interviews</li>
-          </NavLink>
-          <NavLink
-            to="/eligibility-tracker"
-            className="block px-4 py-2.5 mx-2 rounded-xl text-black font-medium tracking-wide transition-all duration-200 hover:bg-white/10 hover:text-blue-200 active:scale-98"
-          >
-            <li>Eligibilty Tracker</li>
-          </NavLink>
-          <NavLink
-            to="/resume-analyser"
-            className="block px-4 py-2.5 mx-2 rounded-xl text-black font-medium tracking-wide transition-all duration-200 hover:bg-white/10 hover:text-blue-200 active:scale-98"
-          >
-            <li>AI Resume Analyser</li>
-          </NavLink>
-          <NavLink
-            to="/notifications"
-            className="block px-4 py-2.5 mx-2 rounded-xl text-black font-medium tracking-wide transition-all duration-200 hover:bg-white/10 hover:text-blue-200 active:scale-98"
-          >
-            <li>Notifications</li>
-          </NavLink>
-          <NavLink
-            to="/settings"
-            className="block px-4 py-2.5 mx-2 rounded-xl text-black font-medium tracking-wide transition-all duration-200 hover:bg-white/10 hover:text-blue-200 active:scale-98"
-          >
-            <li>settings</li>
-          </NavLink>
-          <NavLink
-            to="/logout"
-            className="block px-4 py-2.5 mx-2 rounded-xl text-red-600 font-medium tracking-wide transition-all duration-200 hover:bg-white/10 hover:text-blue-200 active:scale-98"
-          >
-            <li>logout</li>
-          </NavLink>
-        </ul>
-      </div>
+  const navClass = ({ isActive }) =>
+    `block px-4 py-2 rounded-xl font-medium text-sm transition-all duration-200 ${
+      isActive
+        ? "bg-blue-600 text-white shadow-md"
+        : "text-gray-700 hover:bg-blue-50 hover:text-blue-600"
+    }`;
 
-      {/* Main Content Area */}
-      <div className="flex-1 p-6 space-y-6 overflow-x-hidden">
-        {/* FIRST LINE: Welcome Banner & Profile Completion */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Welcome Banner takes up 2/3 of space on desktop */}
-          <div className="lg:col-span-2 p-6 bg-gray-700 text-white rounded-2xl flex flex-col justify-center">
-            <h1 className="text-2xl font-bold">Hello, user-firstname</h1>
-            <p className="mt-2 text-sm text-gray-200">
-              Welcome back ! Track your placement journey and acheive you dream
+  return (
+    <div className="flex gap-6">
+      {/* SIDEBAR */}
+      <aside className="w-64 shrink-0 sticky top-6 self-start bg-white border border-gray-200 rounded-3xl p-4 shadow-md">
+        {/* Logo */}
+        <div className="mb-6">
+          <h1 className="text-2xl font-bold text-blue-600">Smart Placement</h1>
+          <p className="text-sm text-gray-500">Student Portal</p>
+        </div>
+
+        {/* Navigation */}
+        <ul className="space-y-2">
+          <li>
+            <NavLink to="/" className={navClass}>
+              Home
+            </NavLink>
+          </li>
+
+          <li>
+            <NavLink to="/student/student-dashboard" className={navClass}>
+              Dashboard
+            </NavLink>
+          </li>
+
+          <li>
+            <NavLink to="/academic-details" className={navClass}>
+              Academic Details
+            </NavLink>
+          </li>
+
+          <li>
+            <NavLink to="/resume" className={navClass}>
+              Resume
+            </NavLink>
+          </li>
+
+          <li>
+            <NavLink to="/skills-certificates" className={navClass}>
+              Skills / Certificates
+            </NavLink>
+          </li>
+
+          <li>
+            <NavLink to="/coding-profiles" className={navClass}>
+              Coding Profiles
+            </NavLink>
+          </li>
+
+          <li>
+            <NavLink to="/upcoming-drives" className={navClass}>
+              Upcoming Drives
+            </NavLink>
+          </li>
+
+          <li>
+            <NavLink to="/applications" className={navClass}>
+              Applications
+            </NavLink>
+          </li>
+
+          <li>
+            <NavLink to="/interviews" className={navClass}>
+              Interviews
+            </NavLink>
+          </li>
+
+          <li>
+            <NavLink to="/eligibility-tracker" className={navClass}>
+              Eligibility Tracker
+            </NavLink>
+          </li>
+
+          <li>
+            <NavLink to="/resume-analyser" className={navClass}>
+              AI Resume Analyser
+            </NavLink>
+          </li>
+
+          <li>
+            <NavLink to="/notifications" className={navClass}>
+              Notifications
+            </NavLink>
+          </li>
+
+          <li>
+            <NavLink to="/settings" className={navClass}>
+              Settings
+            </NavLink>
+          </li>
+
+          {/* Logout */}
+          <li className="pt-4">
+            <NavLink
+              to="/logout"
+              className={({ isActive }) =>
+                `block px-4 py-2 rounded-xl font-medium text-sm transition-all duration-200 ${
+                  isActive
+                    ? "bg-red-600 text-white"
+                    : "text-red-600 hover:bg-red-50"
+                }`
+              }
+            >
+              Logout
+            </NavLink>
+          </li>
+        </ul>
+      </aside>
+
+      {/* MAIN CONTENT */}
+      <main className="flex-1 space-y-6">
+        {/* TOP SECTION */}
+        <section className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Welcome Banner */}
+          <div className="lg:col-span-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-3xl p-8 shadow-lg">
+            <h1 className="text-3xl font-bold">Hello, User 👋</h1>
+
+            <p className="mt-3 text-blue-100 max-w-xl">
+              Welcome back! Track your placement journey, monitor interviews,
+              and achieve your dream job.
             </p>
           </div>
 
-          {/* Profile Completion Card takes remaining 1/3 */}
-          <div className="p-6 shadow-xl bg-white border border-gray-100 rounded-2xl flex items-center justify-center text-center">
-            Profile completion
-          </div>
-        </div>
+          {/* Profile Completion */}
+          <div className="bg-white rounded-3xl shadow-lg border border-gray-100 p-6 flex flex-col justify-center items-center">
+            <h2 className="text-lg font-semibold text-gray-700">
+              Profile Completion
+            </h2>
 
-        {/* SECOND LINE: Stats row (Applied Companies to Shortlisted evenly distributed) */}
-        <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-4">
-          <div className="p-4 min-h-[90px] shadow-xl bg-white border border-gray-100 rounded-2xl text-center flex items-center justify-center text-sm font-medium">
-            Applied Companies
-          </div>
-          <div className="p-4 min-h-[90px] shadow-xl bg-white border border-gray-100 rounded-2xl text-center flex items-center justify-center text-sm font-medium">
-            Eligible Drives
-          </div>
-          <div className="p-4 min-h-[90px] shadow-xl bg-white border border-gray-100 rounded-2xl text-center flex items-center justify-center text-sm font-medium">
-            Interview Schedules
-          </div>
-          <div className="p-4 min-h-[90px] shadow-xl bg-white border border-gray-100 rounded-2xl text-center flex items-center justify-center text-sm font-medium">
-            Rounds Cleared
-          </div>
-          <div className="p-4 min-h-[90px] shadow-xl bg-white border border-gray-100 rounded-2xl text-center flex items-center justify-center text-sm font-medium">
-            Shortlisted
-          </div>
-        </div>
-
-        {/* BOTTOM SECTION */}
-        <div className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="p-8 shadow-xl bg-white border border-gray-100 rounded-2xl h-48">
-              Upcomming Drives
+            <div className="mt-4 w-24 h-24 rounded-full border-[10px] border-blue-500 flex items-center justify-center text-xl font-bold text-blue-600">
+              75%
             </div>
-            <div className="p-8 shadow-xl bg-white border border-gray-100 rounded-2xl h-48">
+
+            <p className="mt-3 text-sm text-gray-500 text-center">
+              Complete your profile to unlock more opportunities.
+            </p>
+          </div>
+        </section>
+
+        {/* STATS */}
+        <section className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-4">
+          {[
+            "Applied Companies",
+            "Eligible Drives",
+            "Interview Schedules",
+            "Rounds Cleared",
+            "Shortlisted",
+          ].map((item, index) => (
+            <div
+              key={index}
+              className="bg-white rounded-2xl shadow-md border border-gray-100 p-5 flex flex-col items-center justify-center text-center hover:shadow-xl transition-all duration-300"
+            >
+              <h3 className="text-2xl font-bold text-blue-600">12</h3>
+
+              <p className="mt-2 text-sm font-medium text-gray-600">{item}</p>
+            </div>
+          ))}
+        </section>
+
+        {/* BOTTOM CARDS */}
+        <section className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Upcoming Drives */}
+          <div className="bg-white rounded-3xl shadow-lg border border-gray-100 p-6 min-h-[280px]">
+            <h2 className="text-lg font-semibold text-gray-700 mb-4">
+              Upcoming Drives
+            </h2>
+
+            <div className="space-y-3">
+              <div className="p-3 rounded-xl bg-gray-50 border">
+                TCS Ninja Drive
+              </div>
+
+              <div className="p-3 rounded-xl bg-gray-50 border">
+                Infosys Hiring
+              </div>
+
+              <div className="p-3 rounded-xl bg-gray-50 border">
+                Wipro Recruitment
+              </div>
+            </div>
+          </div>
+
+          {/* Interview Schedule */}
+          <div className="bg-white rounded-3xl shadow-lg border border-gray-100 p-6 min-h-[280px]">
+            <h2 className="text-lg font-semibold text-gray-700 mb-4">
               Interview Schedule
-            </div>
-            <div className="p-8 shadow-xl bg-white border border-gray-100 rounded-2xl h-48">
-              Notifications
+            </h2>
+
+            <div className="space-y-3">
+              <div className="p-3 rounded-xl bg-gray-50 border">
+                Technical Round - 24 May
+              </div>
+
+              <div className="p-3 rounded-xl bg-gray-50 border">
+                HR Interview - 27 May
+              </div>
             </div>
           </div>
 
-          <div className="p-2 font-semibold text-gray-700">
-            recommended for you
+          {/* Notifications */}
+          <div className="bg-white rounded-3xl shadow-lg border border-gray-100 p-6 min-h-[280px]">
+            <h2 className="text-lg font-semibold text-gray-700 mb-4">
+              Notifications
+            </h2>
+
+            <div className="space-y-3">
+              <div className="p-3 rounded-xl bg-blue-50 text-blue-700">
+                New drive added for CSE students.
+              </div>
+
+              <div className="p-3 rounded-xl bg-green-50 text-green-700">
+                Resume shortlisted successfully.
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
+        </section>
+
+        {/* RECOMMENDED */}
+        <section className="bg-white rounded-3xl shadow-lg border border-gray-100 p-6">
+          <h2 className="text-xl font-semibold text-gray-700 mb-4">
+            Recommended For You
+          </h2>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+            <div className="p-4 rounded-2xl border bg-gray-50 hover:shadow-md transition">
+              Improve Aptitude Skills
+            </div>
+
+            <div className="p-4 rounded-2xl border bg-gray-50 hover:shadow-md transition">
+              Resume Optimization Tips
+            </div>
+
+            <div className="p-4 rounded-2xl border bg-gray-50 hover:shadow-md transition">
+              Top Companies Hiring This Week
+            </div>
+          </div>
+        </section>
+      </main>
     </div>
   );
 };

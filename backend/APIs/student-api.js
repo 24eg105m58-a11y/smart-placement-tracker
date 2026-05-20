@@ -1,11 +1,12 @@
 import exp from 'express'
 import { AcademicDetailsModel } from "../models/academicDetails-model.js"
+import { verifyToken } from '../middlewares/VerifyToken.js';
 
 export const studentApp = exp.Router();
 
 
-//
-studentApp.post("/academicDetails", async (req, res) => {
+//post academic details
+studentApp.post("/add-academicDetails", verifyToken("STUDENT"), async (req, res) => {
   const academicDetails = req.body;
   // console.log(academicDetails);
   const newAcademicsDoc = new AcademicDetailsModel(academicDetails);
@@ -13,4 +14,9 @@ studentApp.post("/academicDetails", async (req, res) => {
   res.json({ message: "Academic Details Added", payload: [academicDetails] })
 })
 
-//get 
+//get academic details
+studentApp.get("/get-academicDetails", verifyToken("STUDENT"), async (req, res) => {
+  const academicDetails = await AcademicDetailsModel.find();
+  // console.log("Academic Details:\n", academicDetails);
+  res.json({ message: "Academic-details:", payload: [academicDetails] })
+})
