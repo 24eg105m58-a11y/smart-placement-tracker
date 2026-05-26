@@ -1,5 +1,5 @@
 ### register
-POST http://localhost:6666/user-api/register
+POST http://localhost:5000/user-api/register
 Content-Type: application/json
 
 {
@@ -13,7 +13,7 @@ Content-Type: application/json
 }
 
 ### login
-POST http://localhost:6666/user-api/login
+POST http://localhost:5000/user-api/login
 Content-Type: application/json
 
 {
@@ -24,7 +24,7 @@ Content-Type: application/json
 
 
 ### student-> add academic-details
-POST http://localhost:6666/student-api/add-academicDetails
+POST http://localhost:5000/student-api/add-academicDetails
 Content-Type: application/json
 
 {
@@ -39,11 +39,34 @@ Content-Type: application/json
 }
 
 ###get academic details
-GET http://localhost:6666/student-api/get-academicDetails
+GET http://localhost:5000/student-api/get-academicDetails
 
+
+### get-jobs
+GET http://localhost:5000/student-api/get-jobs
+
+
+### apply for job
+POST http://localhost:5000/student-api/job-application
+Content-Type: application/json
+
+{
+  "studentId":"6a0c27ac325771ab6fec4170",
+  "jobId":"6a0ec152fd77a6aa7de9f18f",
+  "companyName":"Google",
+  "jobRole":"Software Engineer",
+  "CGPA":8.2,
+  "eligibleBranches":"CSE",
+  "driveDate":"2026-06-15",
+  "applicationStatus":"APPLIED",
+  "currentRound":"Application Submitted"
+}
+
+### delete/withdraw job application
+DELETE http://localhost:5000/student-api/withdraw-application/6a0ecbcf53b253c0d373abe1
 
 ###register-company
-POST http://localhost:6666/user-api/register
+POST http://localhost:5000/user-api/register
 Content-Type: application/json
 
 {
@@ -57,7 +80,7 @@ Content-Type: application/json
 }
 
 ### login-company
-POST http://localhost:6666/user-api/login
+POST http://localhost:5000/user-api/login
 Content-Type: application/json
 
 {
@@ -66,7 +89,7 @@ Content-Type: application/json
 }
 
 ###post company details
-POST http://localhost:6666/company-api/companyDetails
+POST http://localhost:5000/company-api/companyDetails
 Content-Type: application/json
 
 {
@@ -83,8 +106,33 @@ Content-Type: application/json
 }
 
 ###get company details
-GET http://localhost:6666/company-api/get-companyDetails
+GET http://localhost:5000/company-api/get-companyDetails
 
+
+### create job posting
+POST http://localhost:5000/company-api/job-postings
+Content-Type: application/json
+
+{
+  "job_id":"job_id_01",
+  "recruiterId":"6a0d8477a6ae5b01bfe43b2e",
+  "companyName":"Google",
+  "jobRole":"Software Engineer",
+  "package":"18 LPA",
+  "location":"Hyderabad",
+  "eligibleBranches":[
+    "CSE",
+    "IT",
+    "ECE"
+  ],
+  "minimumCGPA":7.5,
+  "driveDate":"2026-06-15",
+  "lastDateToApply":"2026-06-10",
+  "status":"OPEN"
+}
+
+###get-applications
+GET http://localhost:5000/company-api/get-applications
 
 ### logout
-GET http://localhost:6666/user-api/logout
+GET http://localhost:5000/user-api/logout

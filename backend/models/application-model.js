@@ -16,6 +16,7 @@ const ApplicationSchema = new Schema(
       type: Schema.Types.ObjectId,
       ref: "jobpostings",
       required: true,
+      unique: [true, "Already Applied"]
     },
 
     companyName: {
@@ -28,28 +29,17 @@ const ApplicationSchema = new Schema(
       required: true,
     },
 
-    package: {
-      type: String,
-      required: true,
-    },
-
-    location: {
-      type: String,
-      required: true,
-    },
 
     // eligibility details
-    minimumCGPA: {
+    CGPA: {
       type: Number,
       required: true,
     },
 
-    eligibleBranches: [
-      {
-        type: String,
-      },
-    ],
-
+    eligibleBranches: {
+      type: String,
+      reuired: [true, "Branch is required"]
+    },
     driveDate: {
       type: Date,
       required: true,

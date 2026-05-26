@@ -76,7 +76,7 @@ const AcademicDetails = () => {
               id="rollNumber"
               value={formData.rollNumber}
               onChange={handleChange}
-              placeholder="24EG105M58"
+              placeholder=""
               required
               className="w-full border border-gray-300 rounded-lg px-4 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-400"
             />
@@ -163,7 +163,7 @@ const AcademicDetails = () => {
               id="cgpa"
               value={formData.cgpa}
               onChange={handleChange}
-              placeholder="8.2"
+              placeholder=""
               required
               className="w-full border border-gray-300 rounded-lg px-4 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-400"
             />
@@ -184,7 +184,7 @@ const AcademicDetails = () => {
               id="graduationYear"
               value={formData.graduationYear}
               onChange={handleChange}
-              placeholder="2028"
+              placeholder=""
               required
               className="w-full border border-gray-300 rounded-lg px-4 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-400"
             />
@@ -205,7 +205,7 @@ const AcademicDetails = () => {
               id="linkedIn"
               value={formData.linkedIn}
               onChange={handleChange}
-              placeholder="https://linkedin.com/in/username"
+              placeholder=""
               className="w-full border border-gray-300 rounded-lg px-4 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-400"
             />
           </div>
@@ -225,7 +225,7 @@ const AcademicDetails = () => {
               id="github"
               value={formData.github}
               onChange={handleChange}
-              placeholder="https://github.com/username"
+              placeholder=""
               className="w-full border border-gray-300 rounded-lg px-4 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-400"
             />
           </div>

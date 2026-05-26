@@ -6,106 +6,164 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 /* Layout */
 import RootLayout from "./components/RootLayout";
 
-/* Public Pages */
+/* Public */
 import Home from "./components/Home";
 import Register from "./components/Register";
 import Login from "./components/Login";
 
 /* Student */
+import StudentLayout from "./components/Dashboards/StudentLayout";
 import StudentDashboard from "./components/Dashboards/StudentDashboard";
-
-/* Recruiter */
-import RecruiterDashboard from "./components/Dashboards/RecruiterDashboard";
-
-/* Admin / TPO */
-import AdminDashboard from "./components/Dashboards/AdminDashboard";
-
-/* Academic Details */
+import AcademicProfile from "./components/AcademicProfile";
 import AcademicDetails from "./components/AcademicDetails";
 
-// Company Details
+/* Student Pages */
+import Resume from "./components/Resume";
+import Applications from "./components/Applications";
+import Notifications from "./components/Notifications";
+import Settings from "./components/Settings";
+
+/* Recruiter */
+import DashboardLayout from "./components/Dashboards/DashboardLayout";
+import RecruiterDashboard from "./components/Dashboards/RecruiterDashboard";
 import CompanyDetails from "./components/CompanyDetails";
 
+/* Admin */
+import AdminDashboard from "./components/Dashboards/AdminDashboard";
+
+const routerObj = createBrowserRouter([
+  {
+    path: "/",
+
+    element: <RootLayout />,
+
+    children: [
+      /* ================= HOME ================= */
+
+      {
+        index: true,
+
+        element: <Home />,
+      },
+
+      {
+        path: "register",
+
+        element: <Register />,
+      },
+
+      {
+        path: "login",
+
+        element: <Login />,
+      },
+
+      /* ================= STUDENT ================= */
+
+      {
+        path: "student",
+
+        element: <StudentLayout />,
+
+        children: [
+          {
+            path: "student-dashboard",
+
+            children: [
+              {
+                index: true,
+
+                element: <StudentDashboard />,
+              },
+
+              {
+                path: "academic-profile",
+
+                element: <AcademicProfile />,
+              },
+
+              {
+                path: "academic-details",
+
+                element: <AcademicDetails />,
+              },
+
+              {
+                path: "resume",
+
+                element: <Resume />,
+              },
+
+              {
+                path: "applications",
+
+                element: <Applications />,
+              },
+
+              {
+                path: "notifications",
+
+                element: <Notifications />,
+              },
+
+              {
+                path: "settings",
+
+                element: <Settings />,
+              },
+            ],
+          },
+        ],
+      },
+
+      /* ================= RECRUITER ================= */
+
+      {
+        path: "recruiter/dashboard",
+
+        element: <DashboardLayout role="recruiter" />,
+
+        children: [
+          {
+            index: true,
+
+            element: <RecruiterDashboard />,
+          },
+
+          {
+            path: "company-details",
+
+            element: <CompanyDetails />,
+          },
+        ],
+      },
+
+      /* ================= ADMIN ================= */
+
+      {
+        path: "admin/dashboard",
+
+        element: <DashboardLayout role="admin" />,
+
+        children: [
+          {
+            index: true,
+
+            element: <AdminDashboard />,
+          },
+        ],
+      },
+    ],
+  },
+]);
+
 const App = () => {
-  const routerObj = createBrowserRouter([
-    {
-      path: "/",
-      element: <RootLayout />,
-
-      children: [
-        /* HOME */
-        {
-          path: "",
-          element: <Home />,
-        },
-
-        /* AUTH */
-        {
-          path: "register",
-          element: <Register />,
-        },
-
-        {
-          path: "login",
-          element: <Login />,
-        },
-
-        /* STUDENT ROUTES */
-        {
-          path: "student",
-
-          children: [
-            {
-              path: "student-dashboard",
-              element: <StudentDashboard />,
-            },
-
-            {
-              path: "academic-details",
-              element: <AcademicDetails />,
-            },
-          ],
-        },
-
-        /* RECRUITER ROUTES */
-        {
-          path: "recruiter",
-
-          children: [
-            {
-              path: "dashboard",
-              element: <RecruiterDashboard />,
-            },
-            {
-              path: "company-details",
-              element: <CompanyDetails />,
-            },
-          ],
-        },
-
-        /* ADMIN / TPO ROUTES */
-        {
-          path: "admin",
-
-          children: [
-            {
-              path: "dashboard",
-              element: <AdminDashboard />,
-            },
-          ],
-        },
-      ],
-    },
-  ]);
-
   return (
-    <div>
-      {/* TOAST NOTIFICATIONS */}
-      <Toaster position="top-center" reverseOrder={false} />
+    <>
+      <Toaster position="top-center" />
 
-      {/* ROUTER */}
       <RouterProvider router={routerObj} />
-    </div>
+    </>
   );
 };
 

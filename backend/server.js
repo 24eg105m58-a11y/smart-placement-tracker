@@ -1,100 +1,117 @@
 import exp from 'express'
-import { config } from 'dotenv';
-import mongoose from 'mongoose';
-import { userApp } from './APIs/user-api.js';
-import { studentApp } from './APIs/student-api.js';
-import { companyApp } from './APIs/company-api.js';
-import cookieParser from "cookie-parser";
-
+import { config } from 'dotenv'
+import mongoose from 'mongoose'
+import { userApp } from './APIs/user-api.js'
+import { studentApp } from './APIs/student-api.js'
+import { companyApp } from './APIs/company-api.js'
+import cookieParser from "cookie-parser"
+import cors from "cors"
 
 config()
-const app = exp();
+
+const app = exp()
+
 app.use(exp.json())
 
-//
-app.use(cookieParser());
+app.use(cors({
+  origin: [
+    "http://localhost:5173"
+  ],
+  credentials: true
+}))
+
+app.use(cookieParser())
 
 //route mounting
 app.use("/user-api", userApp)
 app.use("/student-api", studentApp)
 app.use("/company-api", companyApp)
 
-// console.log(process.env.PORT)
-// console.log(process.env.DB_URL)
 const connectDB = async () => {
   try {
-    await mongoose.connect(process.env.DB_URL);
+    await mongoose.connect(process.env.DB_URL)
+
     console.log("Connected to Database...")
-    app.listen(process.env.PORT, () => console.log(`server is listening on ${process.env.PORT}...`))
+
+    app.listen(
+      process.env.PORT,
+      () =>
+        console.log(
+          `server is listening on ${process.env.PORT}...`
+        )
+    )
   }
+
   catch (err) {
-    console.log("Database Connection is Falied...")
-    console.log("Error is : ", err);
+
+    console.log(
+      "Database Connection is Failed..."
+    )
+
+    console.log(
+      "Error is : ",
+      err
+    )
+
   }
 }
+
 connectDB()
 
+const errorMiddleware = (
+  err,
+  req,
+  res,
+  next
+) => {
 
-const errorMiddleware = (err, req, res, next) => {
+  if (
+    err.name ===
+    "ValidationError"
+  ) {
 
-  // ==============================
-  // VALIDATION ERROR
-  // ==============================
-  if (err.name === "ValidationError") {
+    const errors = {}
 
-    const errors = {};
+    Object.keys(
+      err.errors
+    ).forEach((key) => {
 
-    Object.keys(err.errors).forEach((key) => {
-      errors[key] = err.errors[key].message;
-    });
+      errors[key] =
+        err.errors[key].message
 
-    return res.status(400).json({
-      success: false,
-      type: "ValidationError",
-      errors,
-    });
+    })
+
+    return res
+      .status(400)
+      .json({
+        success: false,
+        errors
+      })
+
   }
 
-  // ==============================
-  // DUPLICATE KEY ERROR
-  // ==============================
-  if (err.code === 11000) {
+  if (
+    err.code === 11000
+  ) {
 
-    const errors = {};
+    return res
+      .status(409)
+      .json({
+        success: false,
+        message:
+          "Already Exists"
+      })
 
-    Object.keys(err.keyValue).forEach((key) => {
-      errors[key] = `${key} already exists`;
-    });
-
-    return res.status(409).json({
-      success: false,
-      type: "DuplicateKeyError",
-      errors,
-    });
   }
 
-  // ==============================
-  // INVALID OBJECT ID
-  // ==============================
-  if (err.name === "CastError") {
-
-    return res.status(400).json({
+  return res
+    .status(500)
+    .json({
       success: false,
-      type: "CastError",
-      errors: {
-        [err.path]: `Invalid ${err.path}`,
-      },
-    });
-  }
+      message:
+        err.message
+    })
 
-  // ==============================
-  // DEFAULT ERROR
-  // ==============================
-  return res.status(500).json({
-    success: false,
-    type: "ServerError",
-    message: err.message || "Internal Server Error",
-  });
-};
+}
 
-export default errorMiddleware;
+app.use(errorMiddleware)

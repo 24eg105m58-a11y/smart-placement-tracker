@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
-
+import axios from "axios";
 const Register = () => {
   const navigate = useNavigate();
 
@@ -26,17 +26,55 @@ const Register = () => {
     e.preventDefault();
 
     try {
-      console.log("Registration Data:", formData);
+      const userData = new FormData();
 
-      // API CALL HERE
+      userData.append("firstname", formData.firstname);
+
+      userData.append("lastname", formData.lastname);
+
+      userData.append("email", formData.email);
+
+      userData.append("password", formData.password);
+
+      userData.append("role", formData.role.toUpperCase());
+
+      if (formData.profileImage) {
+        userData.append("profileImageUrl", formData.profileImage);
+      }
+
+      userData.append("isUserActive", true);
+
+      const response = await axios.post(
+        "http://localhost:5000/user-api/register",
+
+        userData,
+
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+
+          withCredentials: true,
+        },
+      );
+
+      console.log(response.data);
+
+      alert(response.data.message);
+
+      /* REDIRECT */
 
       if (formData.role === "student") {
-        navigate("/student/academic-details");
-      } else if (formData.role === "recruiter") {
-        navigate("/recruiter/company-details");
+        navigate("/student/student-dashboard/academic-details");
+      }
+
+      if (formData.role === "recruiter") {
+        navigate("/recruiter/dashboard/company-details");
       }
     } catch (error) {
       console.log(error);
+
+      alert(error?.response?.data?.message || "Registration failed");
     }
   };
 

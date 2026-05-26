@@ -2,67 +2,70 @@ import { Schema, model } from "mongoose";
 
 const JobPostingSchema = new Schema(
   {
+    job_id: {
+      type: String,
+      required: true,
+      unique: true,
+      trim: true
+    },
+
     recruiterId: {
       type: Schema.Types.ObjectId,
       ref: "users",
-      required: true,
+      required: true
     },
 
     companyName: {
       type: String,
-      required: true,
-      trim: true,
+      required: true
     },
 
     jobRole: {
       type: String,
-      required: true,
-      trim: true,
+      required: true
     },
 
     package: {
       type: String,
-      required: true,
+      required: true
     },
 
     location: {
       type: String,
-      required: true,
+      required: true
     },
 
-    eligibleBranches: [
-      {
-        type: String,
-      },
-    ],
+    eligibleBranches: [String],
 
     minimumCGPA: {
       type: Number,
-      required: true,
+      required: true
     },
 
     driveDate: {
       type: Date,
-      required: true,
+      required: true
     },
 
     lastDateToApply: {
       type: Date,
-      required: true,
+      required: true
     },
 
     status: {
       type: String,
       enum: ["OPEN", "CLOSED"],
-      default: "OPEN",
-    },
+      default: "OPEN"
+    }
+
   },
   {
-    timestamps: true,
+    timestamps: true
   }
 );
 
-export const JobPostingModel = model(
-  "jobpostings",
-  JobPostingSchema
-);
+export const JobPostingModel =
+  model(
+    "jobpostings",
+    JobPostingSchema
+  );
