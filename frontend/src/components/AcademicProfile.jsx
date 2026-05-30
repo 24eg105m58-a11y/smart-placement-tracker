@@ -19,12 +19,14 @@ const AcademicProfile = () => {
         },
       );
 
-      setStudent(res.data.payload);
+      const { _id, __v, createdAt, updatedAt, ...academicData } =
+        res.data.payload;
+
+      setStudent(academicData);
     } catch (err) {
       console.log(err);
     }
   };
-
   const save = async () => {
     await axios.put(
       "http://localhost:5000/student-api/update-academicDetails",
@@ -37,64 +39,52 @@ const AcademicProfile = () => {
     setEdit(false);
   };
 
-  if (!student) return <>Loading...</>;
+  if (!student) {
+    return (
+      <div className="flex items-center justify-center h-48 text-gray-400 animate-pulse">
+        Loading profile...
+      </div>
+    );
+  }
+
+  const labels = {
+    rollNumber: "Roll Number",
+    branch: "Branch",
+    cgpa: "CGPA",
+    graduationYear: "Graduation Year",
+    noBacklogs: "No Active Backlogs",
+    linkedIn: "LinkedIn",
+    github: "GitHub",
+  };
 
   return (
     <div>
-      <div className="flex justify-between">
-        <h1 className="text-3xl font-bold">Academic Profile</h1>
-
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+        <div>
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Academic Profile</h1>
+          <p className="text-gray-500 text-sm mt-1">View and update your academic details</p>
+        </div>
         <button
           onClick={() => (edit ? save() : setEdit(true))}
-          className="
-bg-blue-600
-text-white
-px-5
-py-2
-rounded-xl"
+          className="px-5 py-2.5 bg-blue-600 text-white rounded-xl text-sm font-medium hover:bg-blue-700 transition-colors shrink-0"
         >
-          {edit ? "Save" : "Edit"}
+          {edit ? "Save Changes" : "Edit Profile"}
         </button>
       </div>
 
-      <div
-        className="
-mt-8
-bg-white
-rounded-3xl
-shadow
-p-8
-grid
-grid-cols-2
-gap-6"
-      >
+      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5 sm:p-8 grid grid-cols-1 sm:grid-cols-2 gap-5">
         {Object.entries(student).map(([k, v]) => (
           <div key={k}>
-            <p className="mb-2 text-gray-500">{k}</p>
-
+            <p className="mb-1.5 text-sm font-semibold text-gray-500">{labels[k] || k}</p>
             {edit ? (
               <input
                 value={v}
-                onChange={(e) =>
-                  setStudent({
-                    ...student,
-                    [k]: e.target.value,
-                  })
-                }
-                className="
-w-full
-border
-rounded-xl
-p-3"
+                onChange={(e) => setStudent({ ...student, [k]: e.target.value })}
+                className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-blue-500"
               />
             ) : (
-              <div
-                className="
-bg-gray-50
-p-3
-rounded-xl"
-              >
-                {String(v)}
+              <div className="bg-gray-50 px-4 py-2.5 rounded-xl text-sm text-gray-800">
+                {typeof v === "boolean" ? (v ? "Yes" : "No") : String(v)}
               </div>
             )}
           </div>

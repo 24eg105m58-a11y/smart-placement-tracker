@@ -68,11 +68,11 @@ const CompanyDetails = () => {
 
       toast.success(response.data.message);
 
-      navigate("/recruiter/dashboard");
+      navigate("/recruiter/recruiter-dashboard");
     } catch (err) {
-      console.log(err.response?.data);
+      console.log("Error Response:", err.response?.data);
 
-      toast.error(err?.response?.data?.message || "Unauthorized");
+      toast.error(err.response?.data?.message || "Something went wrong");
     }
   };
 

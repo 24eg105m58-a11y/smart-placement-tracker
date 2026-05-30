@@ -1,11 +1,19 @@
-import React, { useEffect, useState } from "react";
-
+import { useEffect, useState } from "react";
 import axios from "axios";
+import PageHeader from "./ui/PageHeader";
+import DataTable from "./ui/DataTable";
+import { applications as tempApplications } from "@tempData";
+
+const columns = [
+  { key: "driveName", label: "Drive Name" },
+  { key: "appliedOn", label: "Applied On" },
+  { key: "status", label: "Status", type: "status" },
+];
 
 const Applications = () => {
   const [applications, setApplications] = useState([]);
-
   const [loading, setLoading] = useState(true);
+  const [useFallback, setUseFallback] = useState(false);
 
   useEffect(() => {
     getApplications();
@@ -15,141 +23,75 @@ const Applications = () => {
     try {
       const response = await axios.get(
         "http://localhost:5000/student-api/get-applications",
-        {
-          withCredentials: true,
-        },
+        { withCredentials: true },
       );
-
-      setApplications(response.data.payload);
-    } catch (err) {
-      console.log(err);
+      const data = response.data.payload || [];
+      if (data.length > 0) {
+        setApplications(
+          data.map((app, i) => ({
+            id: app._id || i,
+            driveName: app.jobTitle || app.companyName,
+            appliedOn: new Date(app.createdAt).toLocaleDateString(),
+            status: app.status || "Applied",
+          })),
+        );
+      } else {
+        setUseFallback(true);
+        setApplications(
+          tempApplications.slice(0, 5).map((a) => ({
+            id: a.id,
+            driveName: a.driveName,
+            appliedOn: a.appliedOn,
+            status: a.status,
+          })),
+        );
+      }
+    } catch {
+      setUseFallback(true);
+      setApplications(
+        tempApplications.slice(0, 5).map((a) => ({
+          id: a.id,
+          driveName: a.driveName,
+          appliedOn: a.appliedOn,
+          status: a.status,
+        })),
+      );
     } finally {
       setLoading(false);
     }
   };
 
-  const withdraw = async (applicationId) => {
+  const withdraw = async (row) => {
+    if (useFallback) return;
     try {
       await axios.delete(
-        `http://localhost:5000/student-api/withdraw-application/${applicationId}`,
-        {
-          withCredentials: true,
-        },
+        `http://localhost:5000/student-api/withdraw-application/${row.id}`,
+        { withCredentials: true },
       );
-
-      setApplications(applications.filter((app) => app._id !== applicationId));
+      setApplications((prev) => prev.filter((a) => a.id !== row.id));
     } catch (err) {
       console.log(err);
     }
   };
 
   if (loading) {
-    return <div className="text-xl">Loading...</div>;
+    return (
+      <div className="flex items-center justify-center h-48">
+        <div className="text-gray-400 animate-pulse">Loading applications...</div>
+      </div>
+    );
   }
 
   return (
     <div>
-      <h1
-        className="
-        text-3xl
-        font-bold
-        mb-8
-        "
-      >
-        My Applications
-      </h1>
-
-      {applications.length === 0 ? (
-        <div
-          className="
-          bg-white
-          rounded-3xl
-          p-12
-          text-center
-          shadow
-          "
-        >
-          No Applications Yet
-        </div>
-      ) : (
-        <div className="space-y-5">
-          {applications.map((app) => (
-            <div
-              key={app._id}
-              className="
-                bg-white
-                rounded-3xl
-                shadow
-                p-6
-                flex
-                justify-between
-                items-center
-                "
-            >
-              <div>
-                <h2
-                  className="
-                    text-xl
-                    font-bold
-                    "
-                >
-                  {app.companyName}
-                </h2>
-
-                <p className="text-gray-500">{app.jobTitle}</p>
-
-                <p
-                  className="
-                    text-sm
-                    mt-2
-                    "
-                >
-                  Applied: {new Date(app.createdAt).toLocaleDateString()}
-                </p>
-              </div>
-
-              <div
-                className="
-                  flex
-                  gap-4
-                  items-center
-                  "
-              >
-                <span
-                  className={`
-                    px-4
-                    py-2
-                    rounded-full
-                    text-sm
-                    ${
-                      app.status === "Selected"
-                        ? "bg-green-100 text-green-700"
-                        : app.status === "Rejected"
-                          ? "bg-red-100 text-red-700"
-                          : "bg-yellow-100 text-yellow-700"
-                    }
-                    `}
-                >
-                  {app.status || "Pending"}
-                </span>
-
-                <button
-                  onClick={() => withdraw(app._id)}
-                  className="
-                    px-4
-                    py-2
-                    rounded-xl
-                    bg-red-500
-                    text-white
-                    "
-                >
-                  Withdraw
-                </button>
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
+      <PageHeader title="My Applications" subtitle="Track and manage your drive applications" />
+      <DataTable
+        columns={columns}
+        data={applications}
+        searchPlaceholder="Search applications..."
+        onDelete={useFallback ? undefined : withdraw}
+        actions={!useFallback}
+      />
     </div>
   );
 };

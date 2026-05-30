@@ -1,46 +1,44 @@
-import React from "react";
+import { useState } from "react";
+import toast from "react-hot-toast";
+import PageHeader from "./ui/PageHeader";
+import { FormField, inputClass } from "./ui/FormField";
 
 const Settings = () => {
+  const [password, setPassword] = useState("");
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    toast.success("Settings saved successfully!");
+    setPassword("");
+  };
+
   return (
-    <div>
-      <h1 className="text-3xl font-bold mb-6">Settings</h1>
+    <div className="max-w-2xl">
+      <PageHeader title="Settings" subtitle="Manage your account preferences" />
 
-      <div
-        className="
-        bg-white
-        rounded-3xl
-        p-8
-        shadow
-        space-y-6
-        "
+      <form
+        onSubmit={handleSubmit}
+        className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5 sm:p-8 space-y-5"
       >
-        <div>
-          <label className="block mb-2">Change Password</label>
-
+        <FormField label="Change Password">
           <input
             type="password"
-            placeholder="New Password"
-            className="
-            w-full
-            border
-            rounded-xl
-            p-3
-            "
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder="Enter new password"
+            className={inputClass}
           />
-        </div>
+        </FormField>
 
-        <button
-          className="
-          bg-blue-600
-          text-white
-          px-5
-          py-3
-          rounded-xl
-          "
-        >
-          Save Changes
-        </button>
-      </div>
+        <div className="flex justify-end">
+          <button
+            type="submit"
+            className="px-6 py-2.5 rounded-xl bg-blue-600 text-white hover:bg-blue-700 font-medium text-sm"
+          >
+            Save Changes
+          </button>
+        </div>
+      </form>
     </div>
   );
 };

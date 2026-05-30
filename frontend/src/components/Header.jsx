@@ -1,37 +1,43 @@
-import React from "react";
 import { NavLink } from "react-router-dom";
 
-// Pass authentication state as a prop (or use a global auth hook like useAuth)
 const Header = ({ isLoggedIn }) => {
   return (
-    <header className="bg-slate-950 text-white shadow-lg sticky top-0 z-50">
-      <div className="max-w-7xl mx-auto flex justify-between items-center px-6 py-4">
-        <h1 className="text-2xl font-bold tracking-wide">
-          Career <span className="text-blue-400">Canopy</span>
-        </h1>
+    <header className="bg-white border-b border-gray-100 sticky top-0 z-30">
+      <nav className="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between h-16">
+        <NavLink to="/" className="text-xl font-bold text-blue-600">
+          Smart Placement
+        </NavLink>
 
-        <nav className="flex gap-6 text-lg">
-          <NavLink to="/" className="hover:text-blue-400 transition">
+        <div className="flex items-center gap-4 sm:gap-6">
+          <NavLink to="/" className="text-sm text-gray-600 hover:text-blue-600 font-medium hidden sm:block">
             Home
           </NavLink>
 
-          {/* Only show Register and Login if the user is NOT logged in */}
-          {!isLoggedIn && (
+          {!isLoggedIn ? (
             <>
               <NavLink
+                to="/login"
+                className="text-sm text-gray-600 hover:text-blue-600 font-medium"
+              >
+                Login
+              </NavLink>
+              <NavLink
                 to="/register"
-                className="hover:text-blue-400 transition"
+                className="text-sm bg-blue-600 text-white px-4 py-2 rounded-xl hover:bg-blue-700 font-medium transition-colors"
               >
                 Register
               </NavLink>
-
-              <NavLink to="/login" className="hover:text-blue-400 transition">
-                Login
-              </NavLink>
             </>
+          ) : (
+            <NavLink
+              to="/logout"
+              className="text-sm text-red-600 hover:text-red-700 font-medium"
+            >
+              Logout
+            </NavLink>
           )}
-        </nav>
-      </div>
+        </div>
+      </nav>
     </header>
   );
 };
