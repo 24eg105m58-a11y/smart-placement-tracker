@@ -1,55 +1,143 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
+import api from "../api/client";
 import PageHeader from "./ui/PageHeader";
 
 const Resume = () => {
+  const [resume, setResume] = useState(null);
   const [file, setFile] = useState(null);
-  const [uploaded] = useState({ name: "Rahul_Sharma_Resume.pdf", uploadedOn: "2026-05-10" });
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
 
-  const handleUpload = (e) => {
+  const loadResume = async () => {
+    setLoading(true);
+    try {
+      const res = await api.get("/student-api/resume");
+      setResume(res.data.payload || null);
+    } catch (error) {
+      console.log(error);
+      setResume(null);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadResume();
+  }, []);
+
+  const handleUpload = async (e) => {
     e.preventDefault();
+
     if (!file) {
-      toast.error("Please select a file");
+      toast.error("Please select a resume file");
       return;
     }
-    toast.success("Resume uploaded successfully!");
+
+    const formData = new FormData();
+    formData.append("resume", file);
+
+    setSaving(true);
+    try {
+      const res = await api.post("/student-api/resume", formData);
+      setResume(res.data.payload || null);
+      setFile(null);
+      toast.success(res.data.message || "Resume uploaded successfully");
+    } catch (error) {
+      toast.error(error?.response?.data?.message || "Unable to upload resume");
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleRemove = async () => {
+    if (!resume?.id) {
+      return;
+    }
+
+    try {
+      await api.delete(`/student-api/resume/${resume.id}`);
+      toast.success("Resume removed successfully");
+      setResume(null);
+      setFile(null);
+    } catch (error) {
+      toast.error(error?.response?.data?.message || "Unable to remove resume");
+    }
   };
 
   return (
-    <div className="max-w-2xl">
+    <div className="max-w-3xl">
       <PageHeader title="Resume Management" subtitle="Upload, view, and manage your resume" />
 
-      {uploaded && (
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5 sm:p-6 mb-6 flex items-center justify-between gap-4">
-          <div className="flex items-center gap-4">
-            <div className="w-12 h-12 bg-red-50 rounded-xl flex items-center justify-center text-xl">📄</div>
-            <div>
-              <p className="font-semibold text-gray-900">{uploaded.name}</p>
-              <p className="text-sm text-gray-500">Uploaded on {uploaded.uploadedOn}</p>
-            </div>
-          </div>
-          <div className="flex gap-2">
-            <button className="px-4 py-2 text-sm rounded-xl border border-gray-200 hover:bg-gray-50">View</button>
-            <button className="px-4 py-2 text-sm rounded-xl text-red-600 border border-red-200 hover:bg-red-50">Remove</button>
-          </div>
+      {loading ? (
+        <div className="bg-white rounded-2xl border border-gray-100 p-8 text-center text-gray-400">
+          Loading resume...
         </div>
-      )}
+      ) : (
+        <>
+          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5 sm:p-6 mb-6">
+            {resume ? (
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 bg-red-50 rounded-xl flex items-center justify-center text-xl">
+                    📄
+                  </div>
+                  <div>
+                    <p className="font-semibold text-gray-900">{resume.fileName || "Resume"}</p>
+                    <p className="text-sm text-gray-500">Uploaded on {resume.uploadedOn}</p>
+                    <p className="text-xs text-gray-400 mt-1">
+                      ATS Score: {resume.atsScore ?? 0}
+                    </p>
+                  </div>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  <button
+                    type="button"
+                    onClick={() => window.open(resume.resumeUrl, "_blank", "noopener,noreferrer")}
+                    className="px-4 py-2 text-sm rounded-xl border border-gray-200 hover:bg-gray-50"
+                  >
+                    View
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleRemove}
+                    className="px-4 py-2 text-sm rounded-xl text-red-600 border border-red-200 hover:bg-red-50"
+                  >
+                    Remove
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <div className="text-center py-6 text-gray-500">
+                No resume uploaded yet. Upload one below to get started.
+              </div>
+            )}
+          </div>
 
-      <form onSubmit={handleUpload} className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5 sm:p-8">
-        <label className="block text-sm font-semibold text-gray-700 mb-3">Upload New Resume</label>
-        <input
-          type="file"
-          accept=".pdf,.doc,.docx"
-          onChange={(e) => setFile(e.target.files[0])}
-          className="w-full border border-gray-200 rounded-xl p-3 text-sm file:mr-4 file:px-4 file:py-2 file:border-0 file:bg-blue-600 file:text-white file:rounded-lg"
-        />
-        <button
-          type="submit"
-          className="mt-5 w-full sm:w-auto px-6 py-2.5 rounded-xl bg-blue-600 text-white hover:bg-blue-700 font-medium text-sm"
-        >
-          Upload Resume
-        </button>
-      </form>
+          <form
+            onSubmit={handleUpload}
+            className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5 sm:p-8"
+          >
+            <label className="block text-sm font-semibold text-gray-700 mb-3">
+              Upload New Resume
+            </label>
+            <input
+              type="file"
+              accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+              onChange={(e) => setFile(e.target.files?.[0] || null)}
+              className="w-full border border-gray-200 rounded-xl p-3 text-sm file:mr-4 file:px-4 file:py-2 file:border-0 file:bg-blue-600 file:text-white file:rounded-lg"
+            />
+            {file && <p className="mt-3 text-sm text-gray-500">{file.name}</p>}
+            <button
+              type="submit"
+              disabled={saving}
+              className="mt-5 w-full sm:w-auto px-6 py-2.5 rounded-xl bg-blue-600 text-white hover:bg-blue-700 font-medium text-sm disabled:opacity-60"
+            >
+              {saving ? "Uploading..." : "Upload Resume"}
+            </button>
+          </form>
+        </>
+      )}
     </div>
   );
 };

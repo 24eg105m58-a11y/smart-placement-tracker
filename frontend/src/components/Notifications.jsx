@@ -1,8 +1,15 @@
 import PageHeader from "./ui/PageHeader";
-import { studentDashboardData } from "@tempData";
+import { useEffect, useState } from "react";
+import api from "../api/client";
 
 const Notifications = () => {
-  const { notifications } = studentDashboardData;
+  const [notifications, setNotifications] = useState([]);
+
+  useEffect(() => {
+    api.get("/student-api/notifications").then((res) => {
+      setNotifications(res.data.payload || []);
+    }).catch(() => setNotifications([]));
+  }, []);
 
   return (
     <div>

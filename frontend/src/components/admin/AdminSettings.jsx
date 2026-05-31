@@ -1,11 +1,22 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import PageHeader from "../ui/PageHeader";
 import { FormField, inputClass, textareaClass } from "../ui/FormField";
-import { institutionSettings } from "@tempData";
+import api from "../../api/client";
+import { institutionSettings } from "../../constants/placementOptions";
 
 const AdminSettings = () => {
   const [form, setForm] = useState({ ...institutionSettings });
+
+  useEffect(() => {
+    api.get("/admin-api/settings")
+      .then((res) => {
+        if (res.data?.payload) {
+          setForm(res.data.payload);
+        }
+      })
+      .catch(() => {});
+  }, []);
 
   const handleChange = (e) => {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));

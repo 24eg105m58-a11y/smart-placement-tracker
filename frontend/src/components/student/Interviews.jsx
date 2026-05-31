@@ -1,9 +1,16 @@
+import { useEffect, useState } from "react";
 import PageHeader from "../ui/PageHeader";
 import StatusBadge from "../ui/StatusBadge";
-import { studentDashboardData } from "@tempData";
+import api from "../../api/client";
 
 const Interviews = () => {
-  const { interviews } = studentDashboardData;
+  const [interviews, setInterviews] = useState([]);
+
+  useEffect(() => {
+    api.get("/student-api/interviews").then((res) => {
+      setInterviews(res.data.payload || []);
+    }).catch(() => setInterviews([]));
+  }, []);
 
   return (
     <div>

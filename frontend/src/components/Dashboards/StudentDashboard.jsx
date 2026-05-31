@@ -1,28 +1,46 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import api from "../../api/client";
+import { getFullName } from "../../utils/userSession";
 import StatCard from "../ui/StatCard";
 import StatusBadge from "../ui/StatusBadge";
 import ChartCard from "../ui/ChartCard";
-import { studentDashboardData } from "@tempData";
 
 const StudentDashboard = () => {
   const [user, setUser] = useState(null);
-  const { upcomingDrives, appliedCompanies, interviews, placementStatus, eligibilityPercentage, profileCompletion, notifications } =
-    studentDashboardData;
+  const [dashboard, setDashboard] = useState({
+    upcomingDrives: [],
+    appliedCompanies: [],
+    interviews: [],
+    placementStatus: "Loading",
+    eligibilityPercentage: 0,
+    profileCompletion: 0,
+    notifications: [],
+  });
+  const {
+    upcomingDrives,
+    appliedCompanies,
+    interviews,
+    placementStatus,
+    eligibilityPercentage,
+    profileCompletion,
+    notifications,
+  } = dashboard;
 
   useEffect(() => {
-    axios
-      .get("http://localhost:5000/user-api/profile", { withCredentials: true })
-      .then((res) => setUser(res.data.payload))
+    api.get("/user-api/profile").then((res) => setUser(res.data.payload)).catch(() => {});
+    api.get("/student-api/dashboard")
+      .then((res) => setDashboard((prev) => ({ ...prev, ...(res.data.payload || {}) })))
       .catch(() => {});
   }, []);
+
+  const fullName = getFullName(user) || localStorage.getItem("userName") || "there";
 
   return (
     <div className="space-y-6">
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
-        <div className="lg:col-span-2 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-2xl text-white p-6 sm:p-8 shadow-lg shadow-blue-200">
+        <div className="lg:col-span-2 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-2xl text-white p-6 sm:p-8 shadow-lg shadow-blue-200 animate-fade-in-left hover-lift">
           <h1 className="text-2xl sm:text-3xl font-bold">
-            Hello, {user?.firstname || "Student"} 👋
+            Hello, {fullName} 👋
           </h1>
           <p className="mt-2 text-blue-100">Welcome back to Smart Placement Tracker.</p>
           <div className="mt-6 flex flex-wrap gap-3">
@@ -35,7 +53,7 @@ const StudentDashboard = () => {
           </div>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 flex flex-col items-center justify-center">
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 flex flex-col items-center justify-center animate-scale-in animation-delay-200 hover-lift">
           <h2 className="font-semibold text-gray-700 self-start mb-4">Profile Completion</h2>
           <div className="relative w-24 h-24">
             <svg className="w-24 h-24 -rotate-90" viewBox="0 0 100 100">
@@ -68,7 +86,7 @@ const StudentDashboard = () => {
         <ChartCard title="Upcoming Drives">
           <div className="space-y-3">
             {upcomingDrives.slice(0, 4).map((drive) => (
-              <div key={drive.id} className="flex items-center justify-between p-3 rounded-xl bg-gray-50 hover:bg-gray-100 transition-colors">
+              <div key={drive.id} className="flex items-center justify-between p-3 rounded-xl bg-gray-50 hover:bg-gray-100 transition-smooth hover:translate-x-1">
                 <div>
                   <p className="font-medium text-gray-800 text-sm">{drive.driveName}</p>
                   <p className="text-xs text-gray-500">{drive.company} · {drive.date}</p>

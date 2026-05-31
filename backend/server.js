@@ -4,6 +4,7 @@ import mongoose from 'mongoose'
 import { userApp } from './APIs/user-api.js'
 import { studentApp } from './APIs/student-api.js'
 import { companyApp } from './APIs/company-api.js'
+import { adminApp } from './APIs/admin-api.js'
 import cookieParser from "cookie-parser"
 import cors from "cors"
 
@@ -15,7 +16,8 @@ app.use(exp.json())
 
 app.use(cors({
   origin: [
-    "http://localhost:5173"
+    "http://localhost:5173",
+    "http://127.0.0.1:5173"
   ],
   credentials: true
 }))
@@ -26,6 +28,7 @@ app.use(cookieParser())
 app.use("/user-api", userApp)
 app.use("/student-api", studentApp)
 app.use("/company-api", companyApp)
+app.use("/admin-api", adminApp)
 
 const connectDB = async () => {
   try {

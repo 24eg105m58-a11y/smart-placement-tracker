@@ -2,6 +2,13 @@ import { Schema, model } from "mongoose";
 
 const academicDetailsSchema = new Schema(
   {
+    studentId: {
+      type: Schema.Types.ObjectId,
+      ref: "user",
+      required: true,
+      unique: true,
+    },
+
     rollNumber: {
       type: String,
       required: [true, "Roll Number is required for student"],

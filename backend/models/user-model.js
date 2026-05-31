@@ -33,6 +33,11 @@ const UserSchema = new Schema(
       type: String,
     },
 
+    companyName: {
+      type: String,
+      trim: true,
+    },
+
     isUserActive: {
       type: Boolean,
       default: true,

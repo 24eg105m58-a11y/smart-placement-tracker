@@ -1,6 +1,7 @@
+import { useEffect, useState } from "react";
 import PageHeader from "../ui/PageHeader";
 import DataTable from "../ui/DataTable";
-import { applications } from "@tempData";
+import api from "../../api/client";
 
 const columns = [
   { key: "studentName", label: "Student Name" },
@@ -10,6 +11,14 @@ const columns = [
 ];
 
 const AdminApplications = () => {
+  const [applications, setApplications] = useState([]);
+
+  useEffect(() => {
+    api.get("/admin-api/applications").then((res) => {
+      setApplications(res.data.payload || []);
+    }).catch(() => setApplications([]));
+  }, []);
+
   return (
     <div>
       <PageHeader title="Applications" subtitle="Track all student drive applications" />

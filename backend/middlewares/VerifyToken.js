@@ -8,7 +8,6 @@ const { verify } = jwt;
 export const verifyToken = (...allowedRoles) => {
   return async (req, res, next) => {
     try {
-
       const token = req.cookies?.token;
 
       if (!token) {
@@ -23,6 +22,12 @@ export const verifyToken = (...allowedRoles) => {
         process.env.SECRET_KEY
       );
 
+      console.log("=================================");
+      console.log("Allowed Roles:", allowedRoles);
+      console.log("Decoded Token:", decodedToken);
+      console.log("Decoded Role:", decodedToken.role);
+      console.log("=================================");
+
       if (
         allowedRoles.length > 0 &&
         !allowedRoles.includes(decodedToken.role)
@@ -30,14 +35,16 @@ export const verifyToken = (...allowedRoles) => {
         return res.status(403).json({
           success: false,
           message: "Access denied",
+          expectedRole: allowedRoles,
+          currentRole: decodedToken.role,
         });
       }
 
       req.user = decodedToken;
 
       next();
-
     } catch (err) {
+      console.log("JWT Error:", err);
 
       if (err.name === "TokenExpiredError") {
         return res.status(401).json({
@@ -57,7 +64,6 @@ export const verifyToken = (...allowedRoles) => {
         success: false,
         message: "Authentication failed",
       });
-
     }
   };
 };

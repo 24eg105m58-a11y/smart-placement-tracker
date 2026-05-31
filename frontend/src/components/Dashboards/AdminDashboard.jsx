@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -14,12 +15,7 @@ import { Line, Doughnut } from "react-chartjs-2";
 import StatCard from "../ui/StatCard";
 import ChartCard from "../ui/ChartCard";
 import StatusBadge from "../ui/StatusBadge";
-import {
-  dashboardStats,
-  placementOverview,
-  placementStatus,
-  recentDrives,
-} from "@tempData";
+import api from "../../api/client";
 
 ChartJS.register(
   CategoryScale,
@@ -34,6 +30,31 @@ ChartJS.register(
 );
 
 const AdminDashboard = () => {
+  const [dashboard, setDashboard] = useState({
+    dashboardStats: {
+      students: 0,
+      companies: 0,
+      jobDrives: 0,
+      placements: 0,
+    },
+    placementOverview: [],
+    placementStatus: [],
+    recentDrives: [],
+  });
+
+  useEffect(() => {
+    api.get("/admin-api/dashboard").then((res) => {
+      setDashboard((prev) => ({ ...prev, ...(res.data.payload || {}) }));
+    }).catch(() => {});
+  }, []);
+
+  const {
+    dashboardStats,
+    placementOverview,
+    placementStatus,
+    recentDrives,
+  } = dashboard;
+
   const lineData = {
     labels: placementOverview.map((d) => d.month),
     datasets: [

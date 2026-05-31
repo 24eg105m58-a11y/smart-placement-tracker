@@ -13,6 +13,31 @@ config();
 const { sign } = jwt;
 export const userApp = exp.Router();
 
+const setAuthCookie = (res, user) => {
+  const signedToken = sign(
+    {
+      id: user._id,
+      email: user.email,
+      role: user.role,
+      firstname: user.firstname,
+      lastname: user.lastname,
+      profileImageUrl: user.profileImageUrl,
+    },
+    process.env.SECRET_KEY,
+    { expiresIn: "1h" },
+  );
+
+  res.cookie("token", signedToken, {
+    httpOnly: true,
+    secure: false,
+    sameSite: "lax",
+  });
+
+  const userObj = user.toObject();
+  delete userObj.password;
+  return userObj;
+};
+
 // register
 userApp.post("/register", upload.single("profileImageUrl"), async (req, res, next) => {
   let cloudinaryResult;
@@ -43,9 +68,12 @@ userApp.post("/register", upload.single("profileImageUrl"), async (req, res, nex
     const newUserDoc = new UserModel(newUser);
     await newUserDoc.save();
 
+    const userObj = setAuthCookie(res, newUserDoc);
+
     return res.status(201).json({
       success: true,
       message: "User created successfully",
+      payload: userObj,
     });
   } catch (err) {
     if (cloudinaryResult?.public_id) {
@@ -76,27 +104,7 @@ userApp.post("/login", async (req, res, next) => {
       });
     }
 
-    const signedToken = sign(
-      {
-        id: user._id,
-        email: user.email,
-        role: user.role,
-        firstname: user.firstname,
-        lastname: user.lastname,
-        profileImageUrl: user.profileImageUrl,
-      },
-      process.env.SECRET_KEY,
-      { expiresIn: "1h" }
-    );
-
-    res.cookie("token", signedToken, {
-      httpOnly: true,
-      secure: false,
-      sameSite: "lax",
-    });
-
-    const userObj = user.toObject();
-    delete userObj.password;
+    const userObj = setAuthCookie(res, user);
 
     return res.status(200).json({
       success: true,
@@ -109,18 +117,20 @@ userApp.post("/login", async (req, res, next) => {
 });
 
 // logout
-userApp.get("/logout", async (req, res) => {
+userApp.get("/logout", (req, res) => {
   res.clearCookie("token", {
     httpOnly: true,
     secure: false,
     sameSite: "lax",
   });
 
-  return res.status(200).json({
+  res.status(200).json({
     success: true,
-    message: "Logout successful",
+    message: "Logged out successfully",
   });
 });
+
+
 
 // check auth
 userApp.get("/check-auth", verifyToken("STUDENT", "ADMIN", "RECRUITER"), (req, res) => {
@@ -130,6 +140,80 @@ userApp.get("/check-auth", verifyToken("STUDENT", "ADMIN", "RECRUITER"), (req, r
     payload: req.user,
   });
 });
+
+// profile
+userApp.get("/profile", verifyToken("STUDENT", "ADMIN", "RECRUITER"), async (req, res, next) => {
+  try {
+    const user = await UserModel.findById(req.user.id).select("-password");
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Profile fetched",
+      payload: user,
+    });
+  } catch (err) {
+    next(err);
+  }
+});
+
+// update profile
+userApp.put(
+  "/profile",
+  verifyToken("STUDENT", "ADMIN", "RECRUITER"),
+  upload.single("profileImageUrl"),
+  async (req, res, next) => {
+    let cloudinaryResult;
+    try {
+      const user = await UserModel.findById(req.user.id);
+
+      if (!user) {
+        return res.status(404).json({
+          success: false,
+          message: "User not found",
+        });
+      }
+
+      if (req.body.firstname !== undefined) {
+        user.firstname = req.body.firstname;
+      }
+
+      if (req.body.lastname !== undefined) {
+        user.lastname = req.body.lastname;
+      }
+
+      if (req.body.email !== undefined) {
+        user.email = req.body.email;
+      }
+
+      if (req.file) {
+        cloudinaryResult = await uploadToCloudinary(req.file.buffer);
+        user.profileImageUrl = cloudinaryResult.secure_url;
+      }
+
+      await user.save();
+
+      const userObj = setAuthCookie(res, user);
+
+      return res.status(200).json({
+        success: true,
+        message: "Profile updated successfully",
+        payload: userObj,
+      });
+    } catch (err) {
+      if (cloudinaryResult?.public_id) {
+        await cloudinary.uploader.destroy(cloudinaryResult.public_id);
+      }
+      next(err);
+    }
+  },
+);
 
 // change password
 userApp.put("/password", verifyToken("STUDENT", "ADMIN", "RECRUITER"), async (req, res, next) => {

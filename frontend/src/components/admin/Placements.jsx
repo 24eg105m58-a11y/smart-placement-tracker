@@ -1,6 +1,7 @@
+import { useEffect, useState } from "react";
 import PageHeader from "../ui/PageHeader";
 import DataTable from "../ui/DataTable";
-import { placements } from "@tempData";
+import api from "../../api/client";
 
 const columns = [
   { key: "studentName", label: "Student Name" },
@@ -10,6 +11,14 @@ const columns = [
 ];
 
 const Placements = () => {
+  const [placements, setPlacements] = useState([]);
+
+  useEffect(() => {
+    api.get("/admin-api/placements").then((res) => {
+      setPlacements(res.data.payload || []);
+    }).catch(() => setPlacements([]));
+  }, []);
+
   return (
     <div>
       <PageHeader title="Placements" subtitle="View confirmed student placements and packages" />

@@ -14,6 +14,7 @@ import AcademicProfile from "./components/AcademicProfile";
 import AcademicDetails from "./components/AcademicDetails";
 import Resume from "./components/Resume";
 import Applications from "./components/Applications";
+import StudentJobs from "./components/student/Jobs";
 import Notifications from "./components/Notifications";
 import Settings from "./components/Settings";
 import UpcomingDrives from "./components/student/UpcomingDrives";
@@ -22,7 +23,7 @@ import Interviews from "./components/student/Interviews";
 import RecruiterLayout from "./components/Dashboards/RecruiterLayout";
 import RecruiterDashboard from "./components/Dashboards/RecruiterDashboard";
 import CompanyDetails from "./components/CompanyDetails";
-import CreateJob from "./components/recruiter/CreateJob";
+import RecruiterJobs from "./components/recruiter/Jobs";
 import Applicants from "./components/recruiter/Applicants";
 import RecruiterInterviews from "./components/recruiter/RecruiterInterviews";
 
@@ -60,6 +61,7 @@ const routerObj = createBrowserRouter([
               { path: "student-dashboard", element: <StudentDashboard /> },
               { path: "student-dashboard/academic-profile", element: <AcademicProfile /> },
               { path: "student-dashboard/resume", element: <Resume /> },
+              { path: "student-dashboard/jobs", element: <StudentJobs /> },
               { path: "student-dashboard/applications", element: <Applications /> },
               { path: "student-dashboard/upcoming-drives", element: <UpcomingDrives /> },
               { path: "student-dashboard/interviews", element: <Interviews /> },
@@ -79,7 +81,7 @@ const routerObj = createBrowserRouter([
             element: <RecruiterLayout />,
             children: [
               { path: "recruiter-dashboard", element: <RecruiterDashboard /> },
-              { path: "recruiter-dashboard/jobs", element: <CreateJob /> },
+              { path: "recruiter-dashboard/jobs", element: <RecruiterJobs /> },
               { path: "recruiter-dashboard/applicants", element: <Applicants /> },
               { path: "recruiter-dashboard/interviews", element: <RecruiterInterviews /> },
             ],
@@ -112,7 +114,7 @@ const routerObj = createBrowserRouter([
 const App = () => {
   return (
     <>
-      <Toaster position="top-right" toastOptions={{ duration: 3000 }} />
+      <Toaster position="top-center" toastOptions={{ duration: 3000 }} />
       <RouterProvider router={routerObj} />
     </>
   );

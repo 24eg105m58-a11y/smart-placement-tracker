@@ -1,6 +1,7 @@
+import { useEffect, useState } from "react";
 import PageHeader from "../ui/PageHeader";
 import DataTable from "../ui/DataTable";
-import { recruiterDashboardData } from "@tempData";
+import api from "../../api/client";
 
 const columns = [
   { key: "name", label: "Name" },
@@ -11,7 +12,13 @@ const columns = [
 ];
 
 const Applicants = () => {
-  const data = recruiterDashboardData.recentApplicants.map((a, i) => ({ ...a, id: i + 1 }));
+  const [data, setData] = useState([]);
+
+  useEffect(() => {
+    api.get("/company-api/get-applications").then((res) => {
+      setData(res.data.payload || []);
+    }).catch(() => setData([]));
+  }, []);
 
   return (
     <div>

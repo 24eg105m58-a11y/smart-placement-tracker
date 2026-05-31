@@ -1,6 +1,8 @@
+import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
 import PageHeader from "../ui/PageHeader";
 import DataTable from "../ui/DataTable";
-import { jobDrives } from "@tempData";
+import api from "../../api/client";
 
 const columns = [
   { key: "driveName", label: "Drive Name" },
@@ -11,15 +13,26 @@ const columns = [
 ];
 
 const JobDrives = () => {
+  const [jobDrives, setJobDrives] = useState([]);
+
+  useEffect(() => {
+    api.get("/admin-api/job-drives").then((res) => {
+      setJobDrives(res.data.payload || []);
+    }).catch(() => setJobDrives([]));
+  }, []);
+
   return (
     <div>
       <PageHeader
         title="Job Drives"
         subtitle="Schedule and manage campus recruitment drives"
         action={
-          <button className="inline-flex items-center gap-2 px-5 py-2.5 bg-blue-600 text-white rounded-xl text-sm font-medium hover:bg-blue-700 transition-colors">
+          <Link
+            to="/recruiter/recruiter-dashboard/jobs"
+            className="inline-flex items-center gap-2 px-5 py-2.5 bg-blue-600 text-white rounded-xl text-sm font-medium hover:bg-blue-700 transition-colors"
+          >
             + Create Drive
-          </button>
+          </Link>
         }
       />
       <DataTable columns={columns} data={jobDrives} searchPlaceholder="Search drives..." />

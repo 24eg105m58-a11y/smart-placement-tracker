@@ -4,13 +4,23 @@ const resumeSchema = new Schema({
 
   studentId: {
     type: Schema.Types.ObjectId,
-    ref: "Student",
+    ref: "user",
     required: true,
   },
 
   resumeUrl: {
     type: String,
     required: true,
+  },
+
+  cloudinaryPublicId: {
+    type: String,
+    default: "",
+  },
+
+  fileName: {
+    type: String,
+    default: "Resume",
   },
 
   atsScore: {
@@ -24,4 +34,5 @@ const resumeSchema = new Schema({
   timestamps: true,
 });
 
-export default model("Resume", resumeSchema);
+export const ResumeModel = model("Resume", resumeSchema);
+export default ResumeModel;

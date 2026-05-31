@@ -1,11 +1,25 @@
 import React, { useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
-import axios from "axios";
 import toast from "react-hot-toast";
+import { Eye, EyeOff } from "lucide-react"; // Import eye icons
+import api from "../api/client";
+import { storeUserSession } from "../utils/userSession";
+import LoginPromoPanel from "./LoginPromoPanel";
 
 const Login = () => {
   const navigate = useNavigate();
-  const [formData, setFormData] = useState({ email: "", password: "", remember: false });
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+    remember: false,
+  });
+
+  // State to control password visibility
+  const [showPassword, setShowPassword] = useState(false);
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -18,16 +32,14 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post(
-        "http://localhost:5000/user-api/login",
-        { email: formData.email, password: formData.password },
-        { withCredentials: true },
-      );
+      const response = await api.post("/user-api/login", {
+        email: formData.email,
+        password: formData.password,
+      });
 
       toast.success("Login Successful");
+      storeUserSession(response.data.payload);
       const role = response.data?.payload?.role;
-      localStorage.setItem("isLoggedIn", "true");
-      localStorage.setItem("role", role);
 
       if (role === "STUDENT") navigate("/student/student-dashboard");
       else if (role === "RECRUITER") navigate("/recruiter/recruiter-dashboard");
@@ -39,35 +51,33 @@ const Login = () => {
 
   return (
     <div className="min-h-screen flex">
-      {/* Left panel */}
-      <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-blue-600 to-indigo-700 items-center justify-center p-12">
-        <div className="text-white max-w-md">
-          <h1 className="text-4xl font-bold mb-4">Smart Placement Tracker</h1>
-          <p className="text-blue-100 text-lg leading-relaxed">
-            Streamline campus recruitment for students, recruiters, and placement officers.
-          </p>
-          <div className="mt-10 flex justify-center">
-            <div className="w-48 h-48 bg-white/10 rounded-full flex items-center justify-center text-7xl">
-              🎓
-            </div>
-          </div>
-        </div>
-      </div>
+      <LoginPromoPanel />
 
-      {/* Right panel */}
-      <div className="flex-1 flex items-center justify-center bg-gray-50 p-6 sm:p-10">
+      <div className="flex-1 flex items-center justify-center bg-gray-50 p-6 sm:p-10 animate-fade-in-right">
         <div className="w-full max-w-md">
-          <div className="lg:hidden text-center mb-8">
-            <h1 className="text-2xl font-bold text-blue-600">Smart Placement</h1>
+          <div className="lg:hidden text-center mb-8 animate-slide-down">
+            <p className="text-xl font-extrabold text-slate-900">SMART</p>
+            <p className="text-xs font-semibold text-blue-500 tracking-[0.2em]">
+              PLACEMENT TRACKER
+            </p>
           </div>
 
-          <div className="bg-white shadow-lg rounded-2xl p-6 sm:p-8 border border-gray-100">
-            <h2 className="text-2xl font-bold text-gray-900 mb-1">Welcome back</h2>
-            <p className="text-gray-500 text-sm mb-6">Sign in to your account</p>
+          <div className="bg-white shadow-lg rounded-2xl p-6 sm:p-8 border border-gray-100 animate-scale-in animation-delay-200 hover-lift">
+            <h2 className="text-2xl font-bold text-gray-900 mb-1 animate-fade-in-up animation-delay-300">
+              Welcome back
+            </h2>
+            <p className="text-gray-500 text-sm mb-6 animate-fade-in-up animation-delay-400">
+              Sign in to your account
+            </p>
 
-            <form onSubmit={handleSubmit} className="space-y-5">
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-1.5">Email address</label>
+            <form
+              onSubmit={handleSubmit}
+              className="space-y-5 animate-fade-in-up animation-delay-500"
+            >
+              <div className="transition-smooth focus-within:translate-x-0.5">
+                <label className="block text-sm font-semibold text-gray-700 mb-1.5">
+                  Email address
+                </label>
                 <input
                   type="email"
                   name="email"
@@ -75,24 +85,36 @@ const Login = () => {
                   onChange={handleChange}
                   required
                   placeholder="you@college.edu"
-                  className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-smooth"
                 />
               </div>
 
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-1.5">Password</label>
-                <input
-                  type="password"
-                  name="password"
-                  value={formData.password}
-                  onChange={handleChange}
-                  required
-                  placeholder="••••••••"
-                  className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                />
+              <div className="transition-smooth">
+                <label className="block text-sm font-semibold text-gray-700 mb-1.5">
+                  Password
+                </label>
+                {/* Relative container handles the inner positioning of the eye icon button */}
+                <div className="relative w-full">
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    name="password"
+                    value={formData.password}
+                    onChange={handleChange}
+                    required
+                    placeholder="••••••••"
+                    className="w-full border border-gray-200 rounded-xl pl-4 pr-12 py-3 text-sm outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-smooth"
+                  />
+                  <button
+                    type="button"
+                    onClick={togglePasswordVisibility}
+                    className="absolute inset-y-0 right-0 flex items-center pr-4 text-gray-400 hover:text-gray-600 transition-colors"
+                  >
+                    {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                  </button>
+                </div>
               </div>
 
-              <div className="flex items-center justify-between text-sm">
+              <div className="flex items-center justify-between text-sm animate-fade-in animation-delay-600">
                 <label className="flex items-center gap-2 cursor-pointer">
                   <input
                     type="checkbox"
@@ -103,20 +125,28 @@ const Login = () => {
                   />
                   <span className="text-gray-600">Remember me</span>
                 </label>
-                <a href="#" className="text-blue-600 hover:underline font-medium">Forgot password?</a>
+                <a
+                  href="#"
+                  className="text-blue-600 hover:underline font-medium"
+                >
+                  Forgot password?
+                </a>
               </div>
 
               <button
                 type="submit"
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-xl font-semibold transition-colors"
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-xl font-semibold transition-smooth btn-press hover:shadow-lg hover:shadow-blue-200 animate-fade-in-up animation-delay-700"
               >
                 Login
               </button>
             </form>
 
-            <p className="text-center text-sm text-gray-500 mt-6">
+            <p className="text-center text-sm text-gray-500 mt-6 animate-fade-in animation-delay-800">
               Don't have an account?{" "}
-              <NavLink to="/register" className="text-blue-600 font-semibold hover:underline">
+              <NavLink
+                to="/register"
+                className="text-blue-600 font-semibold hover:underline"
+              >
                 Sign up
               </NavLink>
             </p>

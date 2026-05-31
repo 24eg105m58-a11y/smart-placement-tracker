@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import PageHeader from "../ui/PageHeader";
 import { FormField, inputClass, selectClass, textareaClass, FormActions } from "../ui/FormField";
-import { branches, batches } from "@tempData";
+import { branches, batches } from "../../constants/placementOptions";
 
 const AddStudent = () => {
   const navigate = useNavigate();

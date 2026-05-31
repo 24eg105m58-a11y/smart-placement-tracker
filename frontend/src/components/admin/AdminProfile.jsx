@@ -1,28 +1,72 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import PageHeader from "../ui/PageHeader";
 import { FormField, inputClass } from "../ui/FormField";
+import api from "../../api/client";
 
 const AdminProfile = () => {
-  const [form, setForm] = useState({
-    fullName: "Admin User",
-    email: "admin@college.edu",
-    phone: "+91 9876543210",
-    role: "Admin",
-    password: "",
+  const [profile, setProfile] = useState({
+    firstname: "",
+    lastname: "",
+    email: "",
+    profileImageUrl: "",
+    profileImage: null,
   });
+  const [saving, setSaving] = useState(false);
+
+  useEffect(() => {
+    api.get("/user-api/profile")
+      .then((res) => {
+        const user = res.data.payload || {};
+        setProfile({
+          firstname: user.firstname || "",
+          lastname: user.lastname || "",
+          email: user.email || "",
+          profileImageUrl: user.profileImageUrl || "",
+          profileImage: null,
+        });
+      })
+      .catch(() => {});
+  }, []);
 
   const handleChange = (e) => {
-    setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+    const { name, value, type, files } = e.target;
+    setProfile((prev) => ({
+      ...prev,
+      [name]: type === "file" ? files[0] : value,
+    }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    toast.success("Profile updated successfully!");
+    setSaving(true);
+
+    try {
+      const formData = new FormData();
+      formData.append("firstname", profile.firstname);
+      formData.append("lastname", profile.lastname);
+      formData.append("email", profile.email);
+      if (profile.profileImage) {
+        formData.append("profileImageUrl", profile.profileImage);
+      }
+
+      const response = await api.put("/user-api/profile", formData);
+      const updated = response.data.payload || {};
+      setProfile((prev) => ({
+        ...prev,
+        profileImageUrl: updated.profileImageUrl || prev.profileImageUrl,
+        profileImage: null,
+      }));
+      toast.success(response.data.message || "Profile updated successfully");
+    } catch (error) {
+      toast.error(error?.response?.data?.message || "Unable to update profile");
+    } finally {
+      setSaving(false);
+    }
   };
 
   return (
-    <div className="max-w-2xl mx-auto">
+    <div className="max-w-4xl mx-auto">
       <PageHeader title="Profile" subtitle="Manage your account information" />
 
       <form
@@ -30,48 +74,44 @@ const AdminProfile = () => {
         className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5 sm:p-8 space-y-6"
       >
         <div className="flex flex-col items-center pb-6 border-b border-gray-100">
-          <div className="w-24 h-24 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white text-3xl font-bold">
-            A
+          <div className="w-24 h-24 rounded-full overflow-hidden bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white text-3xl font-bold">
+            {profile.profileImageUrl ? (
+              <img src={profile.profileImageUrl} alt="Admin" className="w-full h-full object-cover" />
+            ) : (
+              `${profile.firstname?.[0] || ""}${profile.lastname?.[0] || ""}`.toUpperCase() || "A"
+            )}
           </div>
-          <button type="button" className="mt-3 text-sm text-blue-600 hover:underline font-medium">
+          <label className="mt-3 text-sm text-blue-600 hover:underline font-medium cursor-pointer">
             Change Photo
-          </button>
+            <input
+              type="file"
+              accept="image/*"
+              name="profileImage"
+              onChange={handleChange}
+              className="hidden"
+            />
+          </label>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-          <FormField label="Full Name">
-            <input className={inputClass} name="fullName" value={form.fullName} onChange={handleChange} />
+          <FormField label="First Name">
+            <input className={inputClass} name="firstname" value={profile.firstname} onChange={handleChange} />
           </FormField>
-          <FormField label="Email Address">
-            <input type="email" className={inputClass} name="email" value={form.email} onChange={handleChange} />
+          <FormField label="Last Name">
+            <input className={inputClass} name="lastname" value={profile.lastname} onChange={handleChange} />
           </FormField>
-          <FormField label="Phone Number">
-            <input className={inputClass} name="phone" value={form.phone} onChange={handleChange} />
-          </FormField>
-          <FormField label="Role">
-            <input className={`${inputClass} bg-gray-50`} name="role" value={form.role} readOnly />
+          <FormField label="Email Address" fullWidth>
+            <input type="email" className={inputClass} name="email" value={profile.email} onChange={handleChange} />
           </FormField>
         </div>
 
-        <FormField label="Password">
-          <div className="flex flex-col sm:flex-row gap-3">
-            <input
-              type="password"
-              className={inputClass}
-              name="password"
-              value={form.password}
-              onChange={handleChange}
-              placeholder="Enter new password"
-            />
-            <button type="button" className="px-5 py-2.5 rounded-xl border border-gray-200 text-sm font-medium hover:bg-gray-50 shrink-0">
-              Change Password
-            </button>
-          </div>
-        </FormField>
-
         <div className="flex justify-end pt-2">
-          <button type="submit" className="px-6 py-2.5 rounded-xl bg-blue-600 text-white hover:bg-blue-700 font-medium text-sm">
-            Update Profile
+          <button
+            type="submit"
+            className="px-6 py-2.5 rounded-xl bg-blue-600 text-white hover:bg-blue-700 font-medium text-sm"
+            disabled={saving}
+          >
+            {saving ? "Saving..." : "Update Profile"}
           </button>
         </div>
       </form>

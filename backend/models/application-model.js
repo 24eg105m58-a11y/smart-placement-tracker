@@ -7,7 +7,7 @@ const ApplicationSchema = new Schema(
     // student details
     studentId: {
       type: Schema.Types.ObjectId,
-      ref: "users",
+      ref: "user",
       required: true,
     },
 
@@ -16,7 +16,6 @@ const ApplicationSchema = new Schema(
       type: Schema.Types.ObjectId,
       ref: "jobpostings",
       required: true,
-      unique: [true, "Already Applied"]
     },
 
     companyName: {
@@ -29,6 +28,16 @@ const ApplicationSchema = new Schema(
       required: true,
     },
 
+    studentName: {
+      type: String,
+      default: "",
+    },
+
+    package: {
+      type: String,
+      default: "",
+    },
+
 
     // eligibility details
     CGPA: {
@@ -38,7 +47,7 @@ const ApplicationSchema = new Schema(
 
     eligibleBranches: {
       type: String,
-      reuired: [true, "Branch is required"]
+      required: [true, "Branch is required"],
     },
     driveDate: {
       type: Date,
@@ -61,11 +70,28 @@ const ApplicationSchema = new Schema(
       type: String,
       default: "Application Submitted",
     },
+
+    interviewDate: {
+      type: Date,
+      default: null,
+    },
+
+    interviewTime: {
+      type: String,
+      default: "",
+    },
+
+    interviewMode: {
+      type: String,
+      default: "",
+    },
   },
   {
     timestamps: true,
   }
 );
+
+ApplicationSchema.index({ studentId: 1, jobId: 1 }, { unique: true });
 
 export const ApplicationModel = model(
   "applications",

@@ -1,6 +1,10 @@
 import React, { useState } from "react";
+import toast from "react-hot-toast";
 import { NavLink, useNavigate } from "react-router-dom";
-import axios from "axios";
+import { Eye, EyeOff } from "lucide-react"; // Import eye icons
+import api from "../api/client";
+import { storeUserSession } from "../utils/userSession";
+
 const Register = () => {
   const navigate = useNavigate();
 
@@ -10,8 +14,16 @@ const Register = () => {
     lastname: "",
     email: "",
     password: "",
+    companyName: "",
     profileImage: null,
   });
+
+  // State to control password visibility
+  const [showPassword, setShowPassword] = useState(false);
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
 
   const handleChange = (e) => {
     const { name, value, type, files } = e.target;
@@ -29,14 +41,14 @@ const Register = () => {
       const userData = new FormData();
 
       userData.append("firstname", formData.firstname);
-
       userData.append("lastname", formData.lastname);
-
       userData.append("email", formData.email);
-
       userData.append("password", formData.password);
-
       userData.append("role", formData.role.toUpperCase());
+
+      if (formData.role === "recruiter" && formData.companyName) {
+        userData.append("companyName", formData.companyName);
+      }
 
       if (formData.profileImage) {
         userData.append("profileImageUrl", formData.profileImage);
@@ -44,48 +56,43 @@ const Register = () => {
 
       userData.append("isUserActive", true);
 
-      const response = await axios.post(
-        "http://localhost:5000/user-api/register",
-
-        userData,
-
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-
-          withCredentials: true,
+      const response = await api.post("/user-api/register", userData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
         },
-      );
+      });
 
-      console.log(response.data);
+      toast.success(response.data.message || "Registration successful!");
 
-      alert(response.data.message);
+      storeUserSession(response.data.payload);
 
-      /* REDIRECT */
+      const role = response.data?.payload?.role;
 
-      if (formData.role === "student") {
-        navigate("/student/student-dashboard/academic-details");
-      }
-
-      if (formData.role === "recruiter") {
-        navigate("/recruiter/dashboard/company-details");
+      if (role === "STUDENT") {
+        navigate("/student/academic-details");
+      } else if (role === "RECRUITER") {
+        navigate("/recruiter/company-details");
+      } else if (role === "ADMIN") {
+        navigate("/admin/dashboard");
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
 
-      alert(error?.response?.data?.message || "Registration failed");
+      toast.error(error?.response?.data?.message || "Registration failed");
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4 py-12">
-      <div className="w-full max-w-xl bg-white shadow-md rounded-xl p-8">
-        <h1 className="text-2xl font-bold text-center mb-6 text-gray-800">
+    <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4 py-12 animate-fade-in">
+      <div className="w-full max-w-xl bg-white shadow-md rounded-xl p-8 animate-scale-in hover-lift">
+        <h1 className="text-2xl font-bold text-center mb-6 text-gray-800 animate-slide-down">
           Register / Signup
         </h1>
 
-        <form onSubmit={handleSubmit} className="space-y-5">
+        <form
+          onSubmit={handleSubmit}
+          className="space-y-5 animate-fade-in-up animation-delay-200"
+        >
           {/* Role */}
           <div>
             <label className="block mb-1 text-sm font-semibold text-gray-700">
@@ -118,6 +125,23 @@ const Register = () => {
               </label>
             </div>
           </div>
+
+          {formData.role === "recruiter" && (
+            <div>
+              <label className="block mb-1 text-sm font-semibold text-gray-700">
+                Company Name
+              </label>
+              <input
+                type="text"
+                name="companyName"
+                value={formData.companyName}
+                onChange={handleChange}
+                placeholder="Your company name"
+                required
+                className="w-full text-sm border border-gray-300 rounded-lg px-3 py-1.5 outline-none focus:ring-2 focus:ring-blue-400"
+              />
+            </div>
+          )}
 
           {/* Inputs */}
           <div className="grid grid-cols-2 gap-4">
@@ -174,15 +198,25 @@ const Register = () => {
                 Password
               </label>
 
-              <input
-                type="password"
-                name="password"
-                value={formData.password}
-                onChange={handleChange}
-                placeholder="Enter password"
-                required
-                className="w-full text-sm border border-gray-300 rounded-lg px-3 py-1.5 outline-none focus:ring-2 focus:ring-blue-400"
-              />
+              {/* Password field with absolute toggle button */}
+              <div className="relative w-full">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  name="password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  placeholder="Enter password"
+                  required
+                  className="w-full text-sm border border-gray-300 rounded-lg pl-3 pr-10 py-1.5 outline-none focus:ring-2 focus:ring-blue-400"
+                />
+                <button
+                  type="button"
+                  onClick={togglePasswordVisibility}
+                  className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 hover:text-gray-600 transition-colors"
+                >
+                  {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                </button>
+              </div>
             </div>
           </div>
 
@@ -214,7 +248,7 @@ const Register = () => {
           {/* Button */}
           <button
             type="submit"
-            className="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2.5 rounded-lg transition duration-300 text-sm mt-2"
+            className="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2.5 rounded-lg transition-smooth text-sm mt-2 btn-press hover:shadow-lg hover:shadow-blue-200"
           >
             Signup
           </button>

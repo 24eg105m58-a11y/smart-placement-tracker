@@ -21,6 +21,7 @@ const menuConfig = {
       { name: "Dashboard", path: "/student/student-dashboard", icon: "📊" },
       { name: "Academic Profile", path: "/student/student-dashboard/academic-profile", icon: "📚" },
       { name: "Resume", path: "/student/student-dashboard/resume", icon: "📄" },
+      { name: "Jobs", path: "/student/student-dashboard/jobs", icon: "💼" },
       { name: "Applications", path: "/student/student-dashboard/applications", icon: "📋" },
       { name: "Upcoming Drives", path: "/student/student-dashboard/upcoming-drives", icon: "📅" },
       { name: "Interviews", path: "/student/student-dashboard/interviews", icon: "🎯" },
@@ -33,7 +34,7 @@ const menuConfig = {
     items: [
       { name: "Dashboard", path: "/recruiter/recruiter-dashboard", icon: "📊" },
       { name: "Company Details", path: "/recruiter/company-details", icon: "🏢" },
-      { name: "Create Jobs", path: "/recruiter/recruiter-dashboard/jobs", icon: "💼" },
+      { name: "Jobs", path: "/recruiter/recruiter-dashboard/jobs", icon: "💼" },
       { name: "Applicants", path: "/recruiter/recruiter-dashboard/applicants", icon: "👥" },
       { name: "Interviews", path: "/recruiter/recruiter-dashboard/interviews", icon: "🎯" },
     ],
@@ -77,10 +78,10 @@ const DashboardSidebar = ({ role, portalTitle, open, onClose }) => {
             end={item.path.endsWith("dashboard") || item.path.endsWith("recruiter-dashboard")}
             onClick={onClose}
             className={({ isActive }) =>
-              `flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200 ${
+              `flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-300 ease-out ${
                 isActive
-                  ? "bg-blue-600 text-white shadow-md shadow-blue-200"
-                  : "text-gray-600 hover:bg-blue-50 hover:text-blue-600"
+                  ? "bg-blue-600 text-white shadow-md shadow-blue-200 scale-[1.02]"
+                  : "text-gray-600 hover:bg-blue-50 hover:text-blue-600 hover:translate-x-1"
               }`
             }
           >
@@ -94,7 +95,7 @@ const DashboardSidebar = ({ role, portalTitle, open, onClose }) => {
         <NavLink
           to="/logout"
           onClick={onClose}
-          className="flex items-center justify-center gap-2 w-full bg-red-50 text-red-600 px-4 py-3 rounded-xl text-sm font-medium hover:bg-red-100 transition-colors"
+          className="flex items-center justify-center gap-2 w-full bg-red-50 text-red-600 px-4 py-3 rounded-xl text-sm font-medium hover:bg-red-100 transition-smooth hover:scale-[1.02] btn-press"
         >
           Logout
         </NavLink>

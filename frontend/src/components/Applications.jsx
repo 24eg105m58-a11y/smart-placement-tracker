@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import api from "../api/client";
 import PageHeader from "./ui/PageHeader";
 import DataTable from "./ui/DataTable";
-import { applications as tempApplications } from "@tempData";
 
 const columns = [
   { key: "driveName", label: "Drive Name" },
@@ -13,7 +12,6 @@ const columns = [
 const Applications = () => {
   const [applications, setApplications] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [useFallback, setUseFallback] = useState(false);
 
   useEffect(() => {
     getApplications();
@@ -21,53 +19,19 @@ const Applications = () => {
 
   const getApplications = async () => {
     try {
-      const response = await axios.get(
-        "http://localhost:5000/student-api/get-applications",
-        { withCredentials: true },
-      );
-      const data = response.data.payload || [];
-      if (data.length > 0) {
-        setApplications(
-          data.map((app, i) => ({
-            id: app._id || i,
-            driveName: app.jobTitle || app.companyName,
-            appliedOn: new Date(app.createdAt).toLocaleDateString(),
-            status: app.status || "Applied",
-          })),
-        );
-      } else {
-        setUseFallback(true);
-        setApplications(
-          tempApplications.slice(0, 5).map((a) => ({
-            id: a.id,
-            driveName: a.driveName,
-            appliedOn: a.appliedOn,
-            status: a.status,
-          })),
-        );
-      }
-    } catch {
-      setUseFallback(true);
-      setApplications(
-        tempApplications.slice(0, 5).map((a) => ({
-          id: a.id,
-          driveName: a.driveName,
-          appliedOn: a.appliedOn,
-          status: a.status,
-        })),
-      );
+      const response = await api.get("/student-api/get-applications");
+      setApplications(response.data.payload || []);
+    } catch (error) {
+      console.log(error);
+      setApplications([]);
     } finally {
       setLoading(false);
     }
   };
 
   const withdraw = async (row) => {
-    if (useFallback) return;
     try {
-      await axios.delete(
-        `http://localhost:5000/student-api/withdraw-application/${row.id}`,
-        { withCredentials: true },
-      );
+      await api.delete(`/student-api/withdraw-application/${row.id}`);
       setApplications((prev) => prev.filter((a) => a.id !== row.id));
     } catch (err) {
       console.log(err);
@@ -89,8 +53,8 @@ const Applications = () => {
         columns={columns}
         data={applications}
         searchPlaceholder="Search applications..."
-        onDelete={useFallback ? undefined : withdraw}
-        actions={!useFallback}
+        onDelete={withdraw}
+        actions
       />
     </div>
   );

@@ -1,6 +1,7 @@
 import PageHeader from "../ui/PageHeader";
 import DataTable from "../ui/DataTable";
-import { jobDrives } from "@tempData";
+import { useEffect, useState } from "react";
+import api from "../../api/client";
 
 const columns = [
   { key: "driveName", label: "Drive Name" },
@@ -11,7 +12,13 @@ const columns = [
 ];
 
 const UpcomingDrives = () => {
-  const drives = jobDrives.filter((d) => d.status !== "Completed");
+  const [drives, setDrives] = useState([]);
+
+  useEffect(() => {
+    api.get("/student-api/get-jobs").then((res) => {
+      setDrives(res.data.payload || []);
+    }).catch(() => setDrives([]));
+  }, []);
 
   return (
     <div>

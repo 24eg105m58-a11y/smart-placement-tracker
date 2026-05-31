@@ -76,6 +76,13 @@ const CompanyDetailsSchema = new Schema(
       default: "",
     },
 
+    recruiterId: {
+      type: Schema.Types.ObjectId,
+      ref: "user",
+      required: [true, "Recruiter reference is required."],
+      unique: true,
+    },
+
     isApproved: {
       type: Boolean,
       default: false,

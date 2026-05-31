@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import toast from "react-hot-toast";
-import { Navigate, useNavigate } from "react-router";
+import { useNavigate } from "react-router";
+import api from "../api/client";
 
 const AcademicDetails = () => {
   const [formData, setFormData] = useState({
@@ -31,15 +32,38 @@ const AcademicDetails = () => {
     e.preventDefault();
 
     try {
-      console.log(formData);
+      const data = new FormData();
 
-      toast.success("Academic Details Submitted");
-      // API CALL HERE
+      data.append("rollNumber", formData.rollNumber);
+      data.append("branch", formData.branch);
+      data.append("cgpa", formData.cgpa);
+      data.append("graduationYear", formData.graduationYear);
+      data.append("noBacklogs", formData.noBacklogs);
+      data.append("linkedIn", formData.linkedIn);
+      data.append("github", formData.github);
+
+      if (formData.resume) {
+        data.append("resume", formData.resume);
+      }
+
+      await api.post("/student-api/add-academicDetails", {
+        rollNumber: formData.rollNumber,
+        branch: formData.branch,
+        cgpa: Number(formData.cgpa),
+        graduationYear: Number(formData.graduationYear),
+        noBacklogs: formData.noBacklogs,
+        linkedIn: formData.linkedIn,
+        github: formData.github,
+      });
+
+      toast.success("Academic details saved!");
+
       navigate("/student/student-dashboard");
     } catch (error) {
-      console.log(error);
+      console.log("Status:", error.response?.status);
+      console.log("Data:", error.response?.data);
 
-      toast.error("Something went wrong");
+      toast.error(error.response?.data?.message || "Something went wrong");
     }
   };
 

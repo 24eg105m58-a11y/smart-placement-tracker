@@ -11,7 +11,7 @@ const JobPostingSchema = new Schema(
 
     recruiterId: {
       type: Schema.Types.ObjectId,
-      ref: "users",
+      ref: "user",
       required: true
     },
 
@@ -23,6 +23,12 @@ const JobPostingSchema = new Schema(
     jobRole: {
       type: String,
       required: true
+    },
+
+    description: {
+      type: String,
+      default: "",
+      trim: true
     },
 
     package: {
