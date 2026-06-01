@@ -27,13 +27,20 @@ const StudentDashboard = () => {
   } = dashboard;
 
   useEffect(() => {
-    api.get("/user-api/profile").then((res) => setUser(res.data.payload)).catch(() => {});
-    api.get("/student-api/dashboard")
-      .then((res) => setDashboard((prev) => ({ ...prev, ...(res.data.payload || {}) })))
+    api
+      .get("/user-api/profile")
+      .then((res) => setUser(res.data.payload))
+      .catch(() => {});
+    api
+      .get("/student-api/dashboard")
+      .then((res) =>
+        setDashboard((prev) => ({ ...prev, ...(res.data.payload || {}) })),
+      )
       .catch(() => {});
   }, []);
 
-  const fullName = getFullName(user) || localStorage.getItem("userName") || "there";
+  const fullName =
+    getFullName(user) || localStorage.getItem("userName") || "there";
 
   return (
     <div className="space-y-6">
@@ -42,7 +49,9 @@ const StudentDashboard = () => {
           <h1 className="text-2xl sm:text-3xl font-bold">
             Hello, {fullName} 👋
           </h1>
-          <p className="mt-2 text-blue-100">Welcome back to Smart Placement Tracker.</p>
+          <p className="mt-2 text-blue-100">
+            Welcome back to Smart Placement Tracker.
+          </p>
           <div className="mt-6 flex flex-wrap gap-3">
             <span className="bg-white/20 px-4 py-2 rounded-xl text-sm font-medium">
               Status: {placementStatus}
@@ -54,10 +63,19 @@ const StudentDashboard = () => {
         </div>
 
         <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 flex flex-col items-center justify-center animate-scale-in animation-delay-200 hover-lift">
-          <h2 className="font-semibold text-gray-700 self-start mb-4">Profile Completion</h2>
+          <h2 className="font-semibold text-gray-700 self-start mb-4">
+            Profile Completion
+          </h2>
           <div className="relative w-24 h-24">
             <svg className="w-24 h-24 -rotate-90" viewBox="0 0 100 100">
-              <circle cx="50" cy="50" r="42" fill="none" stroke="#e5e7eb" strokeWidth="8" />
+              <circle
+                cx="50"
+                cy="50"
+                r="42"
+                fill="none"
+                stroke="#e5e7eb"
+                strokeWidth="8"
+              />
               <circle
                 cx="50"
                 cy="50"
@@ -77,21 +95,72 @@ const StudentDashboard = () => {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
-        <StatCard title="Upcoming Drives" value={upcomingDrives.length} icon="📅" color="blue" />
-        <StatCard title="Applications" value={appliedCompanies.length} icon="📋" color="purple" />
-        <StatCard title="Interviews" value={interviews.filter((i) => i.status === "Scheduled").length} icon="🎯" color="orange" />
+        <StatCard
+          title="Upcoming Drives"
+          value={upcomingDrives.length}
+          icon="📅"
+          color="blue"
+        />
+        <StatCard
+          title="Applications"
+          value={appliedCompanies.length}
+          icon="📋"
+          color="purple"
+        />
+        <StatCard
+          title="Interviews"
+          value={interviews.filter((i) => i.status === "Scheduled").length}
+          icon="🎯"
+          color="orange"
+        />
       </div>
 
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 sm:gap-6">
         <ChartCard title="Upcoming Drives">
           <div className="space-y-3">
             {upcomingDrives.slice(0, 4).map((drive) => (
-              <div key={drive.id} className="flex items-center justify-between p-3 rounded-xl bg-gray-50 hover:bg-gray-100 transition-smooth hover:translate-x-1">
-                <div>
-                  <p className="font-medium text-gray-800 text-sm">{drive.driveName}</p>
-                  <p className="text-xs text-gray-500">{drive.company} · {drive.date}</p>
+              <div
+                key={drive.id}
+                className={`flex items-center justify-between gap-3 p-3 rounded-xl border transition-smooth hover:translate-x-1 ${
+                  drive.applied
+                    ? "bg-emerald-50 border-emerald-200"
+                    : "bg-gray-50 border-gray-100 hover:bg-gray-100"
+                }`}
+              >
+                <div className="flex items-center gap-3 min-w-0">
+                  <div className="h-10 w-10 overflow-hidden rounded-xl border border-gray-100 bg-white flex items-center justify-center text-xs font-semibold text-gray-500 shrink-0">
+                    {drive.companyLogo ? (
+                      <img
+                        src={drive.companyLogo}
+                        alt={drive.company}
+                        className="h-full w-full object-cover"
+                      />
+                    ) : (
+                      drive.company
+                        .split(" ")
+                        .filter(Boolean)
+                        .map((part) => part[0])
+                        .slice(0, 2)
+                        .join("")
+                    )}
+                  </div>
+                  <div className="min-w-0">
+                    <p className="font-medium text-gray-800 text-sm truncate">
+                      {drive.driveName}
+                    </p>
+                    <p className="text-xs text-gray-500 truncate">
+                      {drive.company} · {drive.date}
+                    </p>
+                  </div>
                 </div>
-                <StatusBadge status={drive.status} />
+                <div className="flex flex-col items-end gap-2 shrink-0">
+                  <StatusBadge status={drive.status} />
+                  {drive.applied && (
+                    <span className="rounded-full bg-emerald-100 px-2.5 py-1 text-[11px] font-semibold text-emerald-700">
+                      Applied
+                    </span>
+                  )}
+                </div>
               </div>
             ))}
           </div>
@@ -100,7 +169,10 @@ const StudentDashboard = () => {
         <ChartCard title="Recent Notifications">
           <div className="space-y-3">
             {notifications.slice(0, 4).map((n) => (
-              <div key={n.id} className={`p-3 rounded-xl ${n.read ? "bg-gray-50" : "bg-blue-50 border border-blue-100"}`}>
+              <div
+                key={n.id}
+                className={`p-3 rounded-xl ${n.read ? "bg-gray-50" : "bg-blue-50 border border-blue-100"}`}
+              >
                 <p className="font-medium text-sm text-gray-800">{n.title}</p>
                 <p className="text-xs text-gray-500 mt-0.5">{n.message}</p>
                 <p className="text-xs text-gray-400 mt-1">{n.time}</p>
@@ -116,17 +188,30 @@ const StudentDashboard = () => {
             <thead>
               <tr className="border-b border-gray-100">
                 {["Company", "Role", "Applied On", "Status"].map((h) => (
-                  <th key={h} className="px-3 py-2 text-left text-xs font-semibold text-gray-500 uppercase">{h}</th>
+                  <th
+                    key={h}
+                    className="px-3 py-2 text-left text-xs font-semibold text-gray-500 uppercase"
+                  >
+                    {h}
+                  </th>
                 ))}
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-50">
               {appliedCompanies.map((app, i) => (
                 <tr key={i}>
-                  <td className="px-3 py-3 text-sm font-medium">{app.company}</td>
-                  <td className="px-3 py-3 text-sm text-gray-600">{app.role}</td>
-                  <td className="px-3 py-3 text-sm text-gray-600">{app.appliedOn}</td>
-                  <td className="px-3 py-3"><StatusBadge status={app.status} /></td>
+                  <td className="px-3 py-3 text-sm font-medium">
+                    {app.company}
+                  </td>
+                  <td className="px-3 py-3 text-sm text-gray-600">
+                    {app.role}
+                  </td>
+                  <td className="px-3 py-3 text-sm text-gray-600">
+                    {app.appliedOn}
+                  </td>
+                  <td className="px-3 py-3">
+                    <StatusBadge status={app.status} />
+                  </td>
                 </tr>
               ))}
             </tbody>

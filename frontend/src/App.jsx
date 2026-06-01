@@ -15,6 +15,7 @@ import AcademicDetails from "./components/AcademicDetails";
 import Resume from "./components/Resume";
 import Applications from "./components/Applications";
 import StudentJobs from "./components/student/Jobs";
+import AIInsights from "./components/student/AIInsights";
 import Notifications from "./components/Notifications";
 import Settings from "./components/Settings";
 import UpcomingDrives from "./components/student/UpcomingDrives";
@@ -62,6 +63,7 @@ const routerObj = createBrowserRouter([
               { path: "student-dashboard/academic-profile", element: <AcademicProfile /> },
               { path: "student-dashboard/resume", element: <Resume /> },
               { path: "student-dashboard/jobs", element: <StudentJobs /> },
+              { path: "student-dashboard/ai-insights", element: <AIInsights /> },
               { path: "student-dashboard/applications", element: <Applications /> },
               { path: "student-dashboard/upcoming-drives", element: <UpcomingDrives /> },
               { path: "student-dashboard/interviews", element: <Interviews /> },

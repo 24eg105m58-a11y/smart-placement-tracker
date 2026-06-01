@@ -19,6 +19,7 @@ const pageTitles = {
   "/student/student-dashboard/academic-profile": "Academic Profile",
   "/student/student-dashboard/resume": "Resume Management",
   "/student/student-dashboard/jobs": "Jobs",
+  "/student/student-dashboard/ai-insights": "AI Insights",
   "/student/student-dashboard/applications": "Applications",
   "/student/student-dashboard/upcoming-drives": "Upcoming Drives",
   "/student/student-dashboard/interviews": "Interview Schedule",

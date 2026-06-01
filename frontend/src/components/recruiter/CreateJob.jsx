@@ -4,7 +4,7 @@ import toast from "react-hot-toast";
 import PageHeader from "../ui/PageHeader";
 import { FormField, inputClass, textareaClass, FormActions } from "../ui/FormField";
 import api from "../../api/client";
-import { branches } from "../../constants/placementOptions";
+import { jobBranchOptions } from "../../constants/placementOptions";
 
 const CreateJob = () => {
   const navigate = useNavigate();
@@ -45,22 +45,6 @@ const CreateJob = () => {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
-  const toggleBranch = (branch) => {
-    setForm((prev) => {
-      const next = new Set(prev.branches);
-      if (next.has(branch)) {
-        next.delete(branch);
-      } else {
-        next.add(branch);
-      }
-
-      return {
-        ...prev,
-        branches: Array.from(next),
-      };
-    });
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -99,13 +83,13 @@ const CreateJob = () => {
           <input type="number" step="0.01" className={inputClass} name="minCgpa" value={form.minCgpa} onChange={handleChange} required />
         </FormField>
         <FormField label="Allowed Branches">
-          <div className="rounded-xl border border-gray-200 bg-white p-3 grid grid-cols-2 sm:grid-cols-3 gap-2">
-            {branches.map((branch) => {
-              const checked = form.branches.includes(branch);
+          <div className="rounded-xl border border-gray-200 bg-white p-3 grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-96 overflow-y-auto">
+            {jobBranchOptions.map((branch) => {
+              const checked = form.branches.includes(branch.value);
               return (
                 <label
-                  key={branch}
-                  className={`flex items-center gap-2 rounded-lg border px-3 py-2 text-sm transition-colors ${
+                  key={branch.value}
+                  className={`flex items-center gap-3 rounded-lg border px-3 py-2 text-sm transition-colors ${
                     checked
                       ? "border-blue-200 bg-blue-50 text-blue-700"
                       : "border-gray-200 hover:bg-gray-50 text-gray-700"
@@ -114,10 +98,35 @@ const CreateJob = () => {
                   <input
                     type="checkbox"
                     checked={checked}
-                    onChange={() => toggleBranch(branch)}
+                    onChange={() =>
+                      setForm((prev) => {
+                        const next = new Set(prev.branches);
+                        if (branch.value === "ANY") {
+                          if (next.has("ANY")) {
+                            next.delete("ANY");
+                          } else {
+                            next.clear();
+                            next.add("ANY");
+                          }
+                          return { ...prev, branches: Array.from(next) };
+                        }
+
+                        if (next.has(branch.value)) {
+                          next.delete(branch.value);
+                        } else {
+                          next.add(branch.value);
+                        }
+
+                        if (next.has("ANY")) {
+                          next.delete("ANY");
+                        }
+
+                        return { ...prev, branches: Array.from(next) };
+                      })
+                    }
                     className="h-4 w-4 accent-blue-500"
                   />
-                  <span>{branch}</span>
+                  <span className="leading-5">{branch.label}</span>
                 </label>
               );
             })}

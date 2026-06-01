@@ -4,13 +4,8 @@ import toast from "react-hot-toast";
 import api from "../../api/client";
 import PageHeader from "../ui/PageHeader";
 import StatusBadge from "../ui/StatusBadge";
-import {
-  FormField,
-  inputClass,
-  textareaClass,
-  FormActions,
-} from "../ui/FormField";
-import { branches } from "../../constants/placementOptions";
+import { FormField, inputClass, textareaClass, FormActions } from "../ui/FormField";
+import { jobBranchOptions } from "../../constants/placementOptions";
 
 const emptyForm = {
   companyName: localStorage.getItem("companyName") || "",
@@ -25,6 +20,7 @@ const emptyForm = {
 };
 
 const canEditJob = (job) => !job.locked;
+const dayMs = 24 * 60 * 60 * 1000;
 
 const Jobs = () => {
   const navigate = useNavigate();
@@ -52,7 +48,8 @@ const Jobs = () => {
   useEffect(() => {
     loadJobs();
 
-    api.get("/company-api/get-companyDetails")
+    api
+      .get("/company-api/get-companyDetails")
       .then((res) => {
         const company = res.data.payload;
         if (company?.companyName) {
@@ -66,22 +63,6 @@ const Jobs = () => {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const toggleBranch = (branch) => {
-    setForm((prev) => {
-      const branchesSet = new Set(prev.branches);
-      if (branchesSet.has(branch)) {
-        branchesSet.delete(branch);
-      } else {
-        branchesSet.add(branch);
-      }
-
-      return {
-        ...prev,
-        branches: Array.from(branchesSet),
-      };
-    });
   };
 
   const resetForm = () => {
@@ -129,19 +110,21 @@ const Jobs = () => {
     }
 
     setEditingJobId(job.id);
-      setForm({
-        companyName: job.company || "",
-        package: job.package || "",
-        role: job.role || job.driveName || "",
-        description: job.description || "",
-        minCgpa: job.minimumCGPA ?? "",
-        branches: job.eligibleBranches
-          ? job.eligibleBranches.split(",").map((branch) => branch.trim()).filter(Boolean)
-          : [],
-        lastDate: job.lastDateToApply || "",
-        interviewDate: job.date || "",
-        location: job.location || "",
-      });
+    setForm({
+      companyName: job.company || "",
+      package: job.package || "",
+      role: job.role || job.driveName || "",
+      description: job.description || "",
+      minCgpa: job.minimumCGPA ?? "",
+      branches: job.eligibleBranches
+        ? job.eligibleBranches === "Any Branch"
+          ? ["ANY"]
+          : job.eligibleBranches.split(",").map((branch) => branch.trim()).filter(Boolean)
+        : [],
+      lastDate: job.lastDateToApply || "",
+      interviewDate: job.date || "",
+      location: job.location || "",
+    });
   };
 
   const deleteJob = async (job) => {
@@ -179,6 +162,34 @@ const Jobs = () => {
     setApplicants([]);
   };
 
+  const getUrgency = (job) => {
+    const dates = [job.lastDateToApply, job.date]
+      .filter(Boolean)
+      .map((value) => new Date(value))
+      .filter((date) => !Number.isNaN(date.getTime()));
+
+    if (dates.length === 0) {
+      return null;
+    }
+
+    const deadline = new Date(Math.min(...dates.map((date) => date.getTime())));
+    const diff = deadline.getTime() - Date.now();
+
+    if (diff < 0) {
+      return { tone: "overdue", label: "Expired" };
+    }
+
+    if (diff <= dayMs) {
+      return { tone: "critical", label: "Expires in 24h" };
+    }
+
+    if (diff <= dayMs * 2) {
+      return { tone: "warning", label: "Expires in 2 days" };
+    }
+
+    return null;
+  };
+
   return (
     <div className="space-y-6">
       <PageHeader
@@ -214,13 +225,13 @@ const Jobs = () => {
           <input type="number" step="0.01" className={inputClass} name="minCgpa" value={form.minCgpa} onChange={handleChange} required />
         </FormField>
         <FormField label="Allowed Branches">
-          <div className="rounded-xl border border-gray-200 bg-white p-3 grid grid-cols-2 sm:grid-cols-3 gap-2">
-            {branches.map((branch) => {
-              const checked = form.branches.includes(branch);
+          <div className="rounded-xl border border-gray-200 bg-white p-3 grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-96 overflow-y-auto">
+            {jobBranchOptions.map((branch) => {
+              const checked = form.branches.includes(branch.value);
               return (
                 <label
-                  key={branch}
-                  className={`flex items-center gap-2 rounded-lg border px-3 py-2 text-sm transition-colors ${
+                  key={branch.value}
+                  className={`flex items-center gap-3 rounded-lg border px-3 py-2 text-sm transition-colors ${
                     checked
                       ? "border-blue-200 bg-blue-50 text-blue-700"
                       : "border-gray-200 hover:bg-gray-50 text-gray-700"
@@ -229,10 +240,35 @@ const Jobs = () => {
                   <input
                     type="checkbox"
                     checked={checked}
-                    onChange={() => toggleBranch(branch)}
+                    onChange={() =>
+                      setForm((prev) => {
+                        const next = new Set(prev.branches);
+                        if (branch.value === "ANY") {
+                          if (next.has("ANY")) {
+                            next.delete("ANY");
+                          } else {
+                            next.clear();
+                            next.add("ANY");
+                          }
+                          return { ...prev, branches: Array.from(next) };
+                        }
+
+                        if (next.has(branch.value)) {
+                          next.delete(branch.value);
+                        } else {
+                          next.add(branch.value);
+                        }
+
+                        if (next.has("ANY")) {
+                          next.delete("ANY");
+                        }
+
+                        return { ...prev, branches: Array.from(next) };
+                      })
+                    }
                     className="h-4 w-4 accent-blue-500"
                   />
-                  <span>{branch}</span>
+                  <span className="leading-5">{branch.label}</span>
                 </label>
               );
             })}
@@ -285,51 +321,73 @@ const Jobs = () => {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-50">
-                {jobs.map((job) => (
-                  <tr key={job.id} className="hover:bg-gray-50/80">
-                    <td className="px-4 py-3.5">
-                      <div className="font-medium text-gray-800">{job.driveName}</div>
-                      <div className="text-xs text-gray-500 mt-0.5">{job.location || "On campus"}</div>
-                    </td>
-                    <td className="px-4 py-3.5 text-sm text-gray-600">{job.company}</td>
-                    <td className="px-4 py-3.5 text-sm text-gray-600">{job.lastDateToApply || "-"}</td>
-                    <td className="px-4 py-3.5 text-sm text-gray-600">{job.date || "-"}</td>
-                    <td className="px-4 py-3.5 text-sm text-gray-600">{job.applicantCount || 0}</td>
-                    <td className="px-4 py-3.5">
-                      <div className="space-y-1">
-                        <StatusBadge status={job.status} />
-                        {job.locked && <p className="text-xs text-amber-600">Locked</p>}
-                      </div>
-                    </td>
-                    <td className="px-4 py-3.5">
-                      <div className="flex flex-wrap gap-2">
-                        <button
-                          type="button"
-                          onClick={() => viewApplicants(job)}
-                          className="px-3 py-2 rounded-lg text-xs font-medium bg-indigo-50 text-indigo-700 hover:bg-indigo-100"
-                        >
-                          View Applicants
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => startEdit(job)}
-                          disabled={!canEditJob(job)}
-                          className="px-3 py-2 rounded-lg text-xs font-medium bg-blue-50 text-blue-700 hover:bg-blue-100 disabled:opacity-40 disabled:cursor-not-allowed"
-                        >
-                          Edit
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => deleteJob(job)}
-                          disabled={!canEditJob(job)}
-                          className="px-3 py-2 rounded-lg text-xs font-medium bg-red-50 text-red-700 hover:bg-red-100 disabled:opacity-40 disabled:cursor-not-allowed"
-                        >
-                          Delete
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
+                {jobs.map((job) => {
+                  const urgency = getUrgency(job);
+
+                  return (
+                    <tr
+                      key={job.id}
+                      className={`transition-colors ${urgency ? "bg-amber-50/70" : "hover:bg-gray-50/80"}`}
+                    >
+                      <td className="px-4 py-3.5">
+                        <div className="flex items-center gap-2">
+                          <div className="font-medium text-gray-800">{job.driveName}</div>
+                          {urgency && (
+                            <span
+                              className={`text-[11px] font-semibold px-2 py-1 rounded-full ${
+                                urgency.tone === "critical"
+                                  ? "bg-red-100 text-red-700"
+                                  : urgency.tone === "warning"
+                                    ? "bg-amber-100 text-amber-700"
+                                    : "bg-slate-200 text-slate-700"
+                              }`}
+                            >
+                              {urgency.label}
+                            </span>
+                          )}
+                        </div>
+                        <div className="text-xs text-gray-500 mt-0.5">{job.location || "On campus"}</div>
+                      </td>
+                      <td className="px-4 py-3.5 text-sm text-gray-600">{job.company}</td>
+                      <td className="px-4 py-3.5 text-sm text-gray-600">{job.lastDateToApply || "-"}</td>
+                      <td className="px-4 py-3.5 text-sm text-gray-600">{job.date || "-"}</td>
+                      <td className="px-4 py-3.5 text-sm text-gray-600">{job.applicantCount || 0}</td>
+                      <td className="px-4 py-3.5">
+                        <div className="space-y-1">
+                          <StatusBadge status={job.status} />
+                          {job.locked && <p className="text-xs text-amber-600">Locked</p>}
+                        </div>
+                      </td>
+                      <td className="px-4 py-3.5">
+                        <div className="flex flex-wrap gap-2">
+                          <button
+                            type="button"
+                            onClick={() => viewApplicants(job)}
+                            className="px-3 py-2 rounded-lg text-xs font-medium bg-indigo-50 text-indigo-700 hover:bg-indigo-100"
+                          >
+                            View Applicants
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => startEdit(job)}
+                            disabled={!canEditJob(job)}
+                            className="px-3 py-2 rounded-lg text-xs font-medium bg-blue-50 text-blue-700 hover:bg-blue-100 disabled:opacity-40 disabled:cursor-not-allowed"
+                          >
+                            Edit
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => deleteJob(job)}
+                            disabled={!canEditJob(job)}
+                            className="px-3 py-2 rounded-lg text-xs font-medium bg-red-50 text-red-700 hover:bg-red-100 disabled:opacity-40 disabled:cursor-not-allowed"
+                          >
+                            Delete
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>

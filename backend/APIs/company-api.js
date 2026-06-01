@@ -43,7 +43,9 @@ const toDriveRow = (job, applicantCount = 0) => ({
   date: formatDate(job.driveDate),
   lastDateToApply: formatDate(job.lastDateToApply),
   eligibleBranches: Array.isArray(job.eligibleBranches)
-    ? job.eligibleBranches.join(", ")
+    ? (job.eligibleBranches.length === 0 || job.eligibleBranches.includes("ANY")
+        ? "Any Branch"
+        : job.eligibleBranches.join(", "))
     : job.eligibleBranches || "",
   status: job.status === "OPEN" ? "Upcoming" : "Completed",
   package: job.package,
@@ -77,6 +79,7 @@ const toApplicantRow = (app) => ({
   branch: app.eligibleBranches,
   status: app.applicationStatus,
   appliedOn: formatDate(app.createdAt),
+  driveDate: formatDate(app.driveDate),
   email: app.studentId?.email || "",
   rollNumber: app.studentRollNumber || "",
 });

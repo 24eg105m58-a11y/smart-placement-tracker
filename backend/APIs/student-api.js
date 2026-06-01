@@ -5,8 +5,11 @@ import { verifyToken } from "../middlewares/VerifyToken.js";
 import { ApplicationModel } from "../models/application-model.js";
 import { JobPostingModel } from "../models/jobPostings-model.js";
 import { ResumeModel } from "../models/resume-model.js";
+import { CompanyDetailsModel } from "../models/companyDetails-model.js";
+import UserModel from "../models/user-model.js";
 import { uploadToCloudinary } from "../config/cloudinaryUpload.js";
 import cloudinary from "../config/cloudinary.js";
+import Groq from "groq-sdk";
 
 export const studentApp = exp.Router();
 const resumeUpload = multer({
@@ -16,10 +19,33 @@ const resumeUpload = multer({
   },
 });
 
+const groqApiKey = process.env.GROQ_API_KEY || process.env.GROK_API_KEY;
+const groqClient = groqApiKey ? new Groq({ apiKey: groqApiKey }) : null;
+
 const formatDate = (value) => {
   if (!value) return "";
   const date = new Date(value);
   return Number.isNaN(date.getTime()) ? "" : date.toISOString().split("T")[0];
+};
+
+const normalizeCompanyKey = (value = "") => value.trim().toUpperCase();
+
+const formatBranchDisplay = (branches = []) => {
+  if (branches.length === 0 || branches.includes("ANY")) {
+    return "Any Branch";
+  }
+
+  return branches.join(", ");
+};
+
+const buildCompanyLogoMap = async () => {
+  const companies = await CompanyDetailsModel.find({}, "companyName companyLogo");
+  return new Map(
+    companies.map((company) => [
+      normalizeCompanyKey(company.companyName),
+      company.companyLogo || "",
+    ]),
+  );
 };
 
 const formatJobStatus = (job) => {
@@ -31,17 +57,19 @@ const formatJobStatus = (job) => {
   return driveDate.getTime() >= Date.now() ? "Upcoming" : "Ongoing";
 };
 
-const toStudentDrive = (job) => ({
+const toStudentDrive = (job, companyLogo = "", applied = false) => ({
   id: job._id,
   driveName: job.jobRole,
   company: job.companyName,
+  companyLogo,
   date: formatDate(job.driveDate),
   package: job.package,
   status: formatJobStatus(job),
   eligibleBranches: Array.isArray(job.eligibleBranches)
-    ? job.eligibleBranches.join(", ")
+    ? formatBranchDisplay(job.eligibleBranches)
     : job.eligibleBranches || "",
   role: job.jobRole,
+  applied,
 });
 
 const toStudentApplication = (app) => ({
@@ -63,12 +91,16 @@ const toResumePayload = (resume) => ({
   extractedSkills: resume.extractedSkills || [],
 });
 
-const toStudentJob = ({ job, academic, appliedJobIds }) => {
+const isAnyBranchJob = (branches) =>
+  branches.length === 0 || branches.includes("ANY");
+
+const toStudentJob = ({ job, academic, appliedJobIds, companyLogo = "" }) => {
   const branches = Array.isArray(job.eligibleBranches)
     ? job.eligibleBranches
     : [job.eligibleBranches].filter(Boolean);
   const eligibleByBranch =
-    branches.length === 0 || (academic?.branch ? branches.includes(academic.branch) : false);
+    isAnyBranchJob(branches) ||
+    (academic?.branch ? branches.includes(academic.branch) : false);
   const eligibleByCgpa = academic ? academic.cgpa >= Number(job.minimumCGPA || 0) : false;
   const eligible = Boolean(academic) && eligibleByBranch && eligibleByCgpa;
   const alreadyApplied = appliedJobIds.has(String(job._id));
@@ -78,11 +110,12 @@ const toStudentJob = ({ job, academic, appliedJobIds }) => {
     jobId: job._id,
     driveName: job.jobRole,
     company: job.companyName,
+    companyLogo,
     date: formatDate(job.driveDate),
     lastDateToApply: formatDate(job.lastDateToApply),
     package: job.package,
     status: formatJobStatus(job),
-    eligibleBranches: branches.join(", "),
+    eligibleBranches: formatBranchDisplay(branches),
     role: job.jobRole,
     location: job.location || "",
     minimumCGPA: job.minimumCGPA,
@@ -102,13 +135,13 @@ const toStudentJob = ({ job, academic, appliedJobIds }) => {
 };
 
 const buildStudentDashboard = async (studentId) => {
-  const [academic, jobs, applications] = await Promise.all([
+  const [academic, jobs, applications, companyLogoMap] = await Promise.all([
     AcademicDetailsModel.findOne({ studentId }),
     JobPostingModel.find().sort({ driveDate: 1 }),
     ApplicationModel.find({ studentId }).sort({ createdAt: -1 }),
+    buildCompanyLogoMap(),
   ]);
 
-  const upcomingDrives = jobs.map(toStudentDrive);
   const appliedCompanies = applications.map((app) => ({
     company: app.companyName,
     role: app.jobRole,
@@ -149,6 +182,7 @@ const buildStudentDashboard = async (studentId) => {
     ? jobs.filter((job) => {
         const branchMatch =
           !job.eligibleBranches?.length ||
+          job.eligibleBranches.includes("ANY") ||
           job.eligibleBranches.includes(academic.branch);
         return branchMatch && academic.cgpa >= Number(job.minimumCGPA || 0);
       }).length
@@ -177,13 +211,169 @@ const buildStudentDashboard = async (studentId) => {
     : 0;
 
   return {
-    upcomingDrives,
+    upcomingDrives: jobs.map((job) =>
+      toStudentDrive(
+        job,
+        companyLogoMap.get(normalizeCompanyKey(job.companyName)) || "",
+        applications.some((app) => String(app.jobId) === String(job._id)),
+      ),
+    ),
     appliedCompanies,
     interviews,
     placementStatus,
     eligibilityPercentage: Math.round((matchingJobs / totalJobs) * 100),
     profileCompletion,
     notifications,
+  };
+};
+
+const buildStudentAiContext = async (studentId) => {
+  const [academic, jobs, applications, companyLogoMap, user] = await Promise.all([
+    AcademicDetailsModel.findOne({ studentId }),
+    JobPostingModel.find().sort({ driveDate: 1 }),
+    ApplicationModel.find({ studentId }).sort({ createdAt: -1 }),
+    buildCompanyLogoMap(),
+    UserModel.findById(studentId).select("firstname lastname"),
+  ]);
+
+  const appliedJobIds = new Set(applications.map((app) => String(app.jobId)));
+
+  const recommendations = jobs
+    .map((job) => {
+      const branches = Array.isArray(job.eligibleBranches)
+        ? job.eligibleBranches
+        : [job.eligibleBranches].filter(Boolean);
+      const eligibleByBranch =
+        isAnyBranchJob(branches) ||
+        (academic?.branch ? branches.includes(academic.branch) : false);
+      const eligibleByCgpa = academic ? academic.cgpa >= Number(job.minimumCGPA || 0) : false;
+      const eligible = Boolean(academic) && eligibleByBranch && eligibleByCgpa;
+      const alreadyApplied = appliedJobIds.has(String(job._id));
+      const referenceDate = new Date(job.lastDateToApply || job.driveDate);
+      const daysLeft = Number.isNaN(referenceDate.getTime())
+        ? Number.POSITIVE_INFINITY
+        : Math.ceil((referenceDate.getTime() - Date.now()) / (24 * 60 * 60 * 1000));
+
+      let score = 0;
+      if (eligible) score += 50;
+      if (alreadyApplied) score -= 100;
+      if (eligibleByBranch) score += 15;
+      if (eligibleByCgpa) score += 15;
+      if (daysLeft >= 0 && daysLeft <= 2) score += 10;
+
+      return {
+        id: job._id,
+        driveName: job.jobRole,
+        company: job.companyName,
+        companyLogo: companyLogoMap.get(normalizeCompanyKey(job.companyName)) || "",
+        package: job.package,
+        date: formatDate(job.driveDate),
+        lastDateToApply: formatDate(job.lastDateToApply),
+        eligible,
+        alreadyApplied,
+        score,
+        reason: !academic
+          ? "Complete academic details first"
+          : alreadyApplied
+            ? "Already applied"
+            : !eligibleByBranch
+              ? "Branch mismatch"
+              : !eligibleByCgpa
+                ? "CGPA below requirement"
+                : daysLeft <= 2
+                  ? "Deadline is close"
+                  : "Good fit",
+      };
+    })
+    .sort((a, b) => b.score - a.score)
+    .slice(0, 5);
+
+  return {
+    student: {
+      name: user ? `${user.firstname || ""} ${user.lastname || ""}`.trim() : "",
+      branch: academic?.branch || "",
+      cgpa: academic?.cgpa ?? null,
+      graduationYear: academic?.graduationYear ?? null,
+      noBacklogs: academic?.noBacklogs ?? null,
+      resumeUploaded: Boolean(academic?.resume),
+      linkedIn: academic?.linkedIn || "",
+      github: academic?.github || "",
+    },
+    stats: {
+      eligibilityPercentage: jobs.length
+        ? Math.round(
+            (jobs.filter((job) => {
+              const branches = Array.isArray(job.eligibleBranches)
+                ? job.eligibleBranches
+                : [job.eligibleBranches].filter(Boolean);
+              return (
+                Boolean(academic) &&
+                (isAnyBranchJob(branches) ||
+                  (academic.branch ? branches.includes(academic.branch) : false)) &&
+                academic.cgpa >= Number(job.minimumCGPA || 0)
+              );
+            }).length / jobs.length) * 100,
+          )
+        : 0,
+      applicationsCount: applications.length,
+      placed: applications.some((app) => app.applicationStatus === "SELECTED"),
+    },
+    recommendations,
+    jobs,
+    applications,
+  };
+};
+
+const generateAiInsightText = async (context) => {
+  const ruleBased = [
+    context.student.branch ? `Branch: ${context.student.branch}` : "Branch not updated yet.",
+    typeof context.student.cgpa === "number" ? `CGPA: ${context.student.cgpa}` : "CGPA not available.",
+    context.student.resumeUploaded ? "Resume uploaded." : "Resume still needs to be uploaded.",
+    context.recommendations.length
+      ? `Top recommendation: ${context.recommendations[0].company} - ${context.recommendations[0].driveName}`
+      : "No eligible drives found yet.",
+  ];
+
+  if (!groqClient) {
+    return {
+      summary:
+        "I can suggest the best drives based on your academic profile, eligibility, and deadlines. Keep your CGPA, resume, and branch details updated to unlock more opportunities.",
+      tips: ruleBased,
+    };
+  }
+
+  const response = await groqClient.chat.completions.create({
+    model: "llama-3.1-8b-instant",
+    temperature: 0.4,
+    messages: [
+      {
+        role: "system",
+        content:
+          "You are a helpful campus placement coach. Give short, practical placement guidance in simple language.",
+      },
+      {
+        role: "user",
+        content: JSON.stringify(
+          {
+            student: context.student,
+            stats: context.stats,
+            recommendations: context.recommendations.slice(0, 3),
+          },
+          null,
+          2,
+        ),
+      },
+      {
+        role: "user",
+        content:
+          "Write a short summary and 3 bullet tips about which drives the student should focus on next.",
+      },
+    ],
+  });
+
+  return {
+    summary: response.choices?.[0]?.message?.content?.trim() || ruleBased[0],
+    tips: ruleBased,
   };
 };
 
@@ -426,12 +616,13 @@ studentApp.delete(
 
 // get-jobs
 studentApp.get("/get-jobs", verifyToken("STUDENT"), async (req, res) => {
-  const [jobs, academic, applications] = await Promise.all([
+  const [jobs, academic, applications, companyLogoMap] = await Promise.all([
     JobPostingModel.find({ status: "OPEN" }).sort({
       driveDate: 1,
     }),
     AcademicDetailsModel.findOne({ studentId: req.user.id }),
     ApplicationModel.find({ studentId: req.user.id }),
+    buildCompanyLogoMap(),
   ]);
 
   res.json({
@@ -441,6 +632,7 @@ studentApp.get("/get-jobs", verifyToken("STUDENT"), async (req, res) => {
         job,
         academic,
         appliedJobIds: new Set(applications.map((app) => String(app.jobId))),
+        companyLogo: companyLogoMap.get(normalizeCompanyKey(job.companyName)) || "",
       }),
     ),
   });
@@ -481,6 +673,7 @@ studentApp.post(
 
       const branchAllowed =
         !job.eligibleBranches?.length ||
+        job.eligibleBranches.includes("ANY") ||
         job.eligibleBranches.includes(academic.branch);
 
       if (!branchAllowed) {
@@ -602,6 +795,102 @@ studentApp.get(
       res.json({
         success: true,
         payload: dashboard.interviews,
+      });
+    } catch (err) {
+      res.status(500).json({
+        success: false,
+        message: err.message,
+      });
+    }
+  },
+);
+
+studentApp.get(
+  "/ai-insights",
+  verifyToken("STUDENT"),
+  async (req, res) => {
+    try {
+      const context = await buildStudentAiContext(req.user.id);
+      const ai = await generateAiInsightText(context);
+
+      res.json({
+        success: true,
+        payload: {
+          ...context,
+          insightSummary: ai.summary,
+          tips: ai.tips,
+        },
+      });
+    } catch (err) {
+      res.status(500).json({
+        success: false,
+        message: err.message,
+      });
+    }
+  },
+);
+
+studentApp.post(
+  "/ai-chat",
+  verifyToken("STUDENT"),
+  async (req, res) => {
+    try {
+      const { message = "", history = [] } = req.body || {};
+      const context = await buildStudentAiContext(req.user.id);
+
+      if (!groqClient) {
+        const lower = String(message).toLowerCase();
+        const topRecommendation = context.recommendations[0];
+        const reply = lower.includes("apply")
+          ? `Focus on ${topRecommendation?.company || "the next eligible drive"} first. ${topRecommendation?.reason || "It looks like a good fit."}`
+          : lower.includes("resume")
+            ? "Keep your resume updated and make sure it reflects projects, achievements, and keywords from the drive description."
+            : `Your strongest next step is ${topRecommendation ? `${topRecommendation.company} - ${topRecommendation.driveName}` : "updating your academic profile"}.`;
+
+        return res.json({
+          success: true,
+          payload: {
+            reply,
+          },
+        });
+      }
+
+      const completion = await groqClient.chat.completions.create({
+        model: "llama-3.1-8b-instant",
+        temperature: 0.5,
+        messages: [
+          {
+            role: "system",
+            content:
+              "You are a campus placement assistant for students. Answer concisely, practically, and kindly. Use the student's eligibility, CGPA, branch, resume status, and drive list to guide them.",
+          },
+          ...history.slice(-8).map((entry) => ({
+            role: entry.role === "assistant" ? "assistant" : "user",
+            content: String(entry.content || ""),
+          })),
+          {
+            role: "user",
+            content: JSON.stringify(
+              {
+                message,
+                student: context.student,
+                stats: context.stats,
+                topRecommendations: context.recommendations.slice(0, 3),
+              },
+              null,
+              2,
+            ),
+          },
+        ],
+      });
+
+      res.json({
+        success: true,
+        payload: {
+          reply:
+            completion.choices?.[0]?.message?.content?.trim() ||
+            "I could not generate a response right now.",
+        },
       });
     } catch (err) {
       res.status(500).json({

@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router";
 import api from "../api/client";
+import { branchOptions } from "../constants/placementOptions";
 
 const AcademicDetails = () => {
   const [formData, setFormData] = useState({
@@ -124,48 +125,11 @@ const AcademicDetails = () => {
               className="w-full border border-gray-300 rounded-lg px-4 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-400 bg-white"
             >
               <option value="">Select Branch</option>
-
-              <option value="CSE">Computer Science Engineering (CSE)</option>
-
-              <option value="CSM">Computer Science & AI/ML (CSM)</option>
-
-              <option value="CSD">Computer Science & Data Science (CSD)</option>
-
-              <option value="CSC">
-                Computer Science & Cyber Security (CSC)
-              </option>
-
-              <option value="IT">Information Technology (IT)</option>
-
-              <option value="ECE">
-                Electronics & Communication Engineering (ECE)
-              </option>
-
-              <option value="EEE">
-                Electrical & Electronics Engineering (EEE)
-              </option>
-
-              <option value="MECH">Mechanical Engineering</option>
-
-              <option value="CIVIL">Civil Engineering</option>
-
-              <option value="CHEM">Chemical Engineering</option>
-
-              <option value="AERO">Aeronautical Engineering</option>
-
-              <option value="AUTO">Automobile Engineering</option>
-
-              <option value="MINING">Mining Engineering</option>
-
-              <option value="BIOTECH">Biotechnology Engineering</option>
-
-              <option value="AGRI">Agricultural Engineering</option>
-
-              <option value="PETRO">Petroleum Engineering</option>
-
-              <option value="METALLURGY">Metallurgical Engineering</option>
-
-              <option value="TEXTILE">Textile Engineering</option>
+              {branchOptions.map((branch) => (
+                <option key={branch.value} value={branch.value}>
+                  {branch.label}
+                </option>
+              ))}
             </select>
           </div>
 

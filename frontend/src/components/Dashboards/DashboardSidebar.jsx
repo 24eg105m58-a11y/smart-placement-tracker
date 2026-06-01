@@ -22,6 +22,7 @@ const menuConfig = {
       { name: "Academic Profile", path: "/student/student-dashboard/academic-profile", icon: "📚" },
       { name: "Resume", path: "/student/student-dashboard/resume", icon: "📄" },
       { name: "Jobs", path: "/student/student-dashboard/jobs", icon: "💼" },
+      { name: "AI Insights", path: "/student/student-dashboard/ai-insights", icon: "🤖" },
       { name: "Applications", path: "/student/student-dashboard/applications", icon: "📋" },
       { name: "Upcoming Drives", path: "/student/student-dashboard/upcoming-drives", icon: "📅" },
       { name: "Interviews", path: "/student/student-dashboard/interviews", icon: "🎯" },
