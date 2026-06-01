@@ -95,9 +95,15 @@ const toInterviewRow = (app) => ({
   time: app.interviewTime || "10:00 AM",
   mode: app.interviewMode || "Offline",
   status:
-    app.interviewDate || ["SHORTLISTED", "SELECTED"].includes(app.applicationStatus)
-      ? "Scheduled"
-      : "Pending",
+    app.applicationStatus === "REJECTED"
+      ? "Rejected"
+      : app.applicationStatus === "HOLD"
+        ? "On Hold"
+      : app.applicationStatus === "SELECTED"
+        ? "Selected"
+        : app.interviewDate || ["SHORTLISTED", "SELECTED"].includes(app.applicationStatus)
+          ? "Scheduled"
+          : "Pending",
 });
 
 const buildRecruiterDashboard = async (recruiterId) => {
@@ -514,6 +520,13 @@ companyApp.patch(
 
       if (req.body.applicationStatus) {
         application.applicationStatus = req.body.applicationStatus;
+        if (req.body.applicationStatus === "SELECTED") {
+          application.currentRound = req.body.currentRound || "Offer";
+        } else if (req.body.applicationStatus === "REJECTED") {
+          application.currentRound = req.body.currentRound || "Rejected";
+        } else if (req.body.applicationStatus === "HOLD") {
+          application.currentRound = req.body.currentRound || "On Hold";
+        }
       } else if (!application.applicationStatus || application.applicationStatus === "APPLIED") {
         application.applicationStatus = "SHORTLISTED";
       }

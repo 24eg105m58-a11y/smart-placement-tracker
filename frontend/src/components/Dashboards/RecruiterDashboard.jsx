@@ -34,15 +34,15 @@ const RecruiterDashboard = () => {
 
   return (
     <div className="space-y-6">
-      <div className="bg-gradient-to-r from-blue-600 to-indigo-600 rounded-2xl text-white p-6 sm:p-8 shadow-lg shadow-blue-200 animate-fade-in-left hover-lift">
+      <div className="bg-gradient-to-r from-sky-600 to-blue-600 rounded-2xl text-white p-6 sm:p-8 shadow-lg shadow-sky-200 animate-fade-in-left hover-lift">
         <h1 className="text-2xl sm:text-3xl font-bold">Hello, {fullName} 👋</h1>
-        <p className="mt-2 text-blue-100">Manage your job postings and applicants from here.</p>
+        <p className="mt-2 text-sky-100">Manage your job postings and applicants from here.</p>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
-        <StatCard title="Active Jobs" value={activeJobs} icon="💼" color="blue" />
-        <StatCard title="Total Applicants" value={totalApplicants} icon="👥" color="purple" />
-        <StatCard title="Scheduled Interviews" value={scheduledInterviews} icon="🎯" color="orange" />
+        <StatCard title="Active Jobs" value={activeJobs} icon="💼" color="stone" />
+        <StatCard title="Total Applicants" value={totalApplicants} icon="👥" color="amber" />
+        <StatCard title="Scheduled Interviews" value={scheduledInterviews} icon="🎯" color="emerald" />
       </div>
 
       <ChartCard title="Recent Applicants">

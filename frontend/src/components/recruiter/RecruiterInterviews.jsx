@@ -125,6 +125,40 @@ const RecruiterInterviews = () => {
     }
   };
 
+  const handleDecision = async (applicationStatus) => {
+    if (!form.applicationId) {
+      toast.error("Please select an applicant first");
+      return;
+    }
+
+    setSaving(true);
+    try {
+      await api.patch(`/company-api/interviews/${form.applicationId}`, {
+        applicationStatus,
+        currentRound:
+          applicationStatus === "SELECTED"
+            ? "Offer"
+            : applicationStatus === "REJECTED"
+              ? "Rejected"
+              : form.currentRound,
+      });
+
+      toast.success(
+        applicationStatus === "SELECTED"
+          ? "Student marked as selected"
+          : "Student marked as rejected",
+      );
+      setOpen(false);
+      setForm(emptySchedule);
+      setSelectedApplicationId("");
+      await loadData();
+    } catch (error) {
+      toast.error(error?.response?.data?.message || "Unable to save decision");
+    } finally {
+      setSaving(false);
+    }
+  };
+
   const displayInterviews = interviews.length
     ? interviews
     : applications.slice(0, 4).map((app) => ({
@@ -145,16 +179,16 @@ const RecruiterInterviews = () => {
       <PageHeader
         title="Interviews"
         subtitle="Schedule and manage interview rounds"
-        action={
-          <button
-            type="button"
-            onClick={() => openSchedule(null)}
-            className="px-5 py-2.5 bg-blue-600 text-white rounded-xl text-sm font-medium hover:bg-blue-700"
-          >
-            + Schedule Interview
-          </button>
-        }
-      />
+          action={
+            <button
+              type="button"
+              onClick={() => openSchedule(null)}
+              className="px-5 py-2.5 bg-stone-900 text-white rounded-xl text-sm font-medium hover:bg-stone-800"
+            >
+              + Schedule Interview
+            </button>
+          }
+        />
 
       {loading ? (
         <div className="bg-white rounded-2xl border border-gray-100 p-10 text-center text-gray-400">
@@ -235,7 +269,7 @@ const RecruiterInterviews = () => {
             <div className="grid flex-1 min-h-0 grid-cols-1 lg:grid-cols-[0.82fr_1.18fr]">
               <aside className="border-b lg:border-b-0 lg:border-r border-gray-100 bg-slate-50/80 p-5 overflow-y-auto">
                 <div className="rounded-2xl bg-white border border-gray-100 p-4 shadow-sm">
-                  <p className="text-xs uppercase tracking-[0.22em] text-blue-600 font-bold">Selected applicant</p>
+                  <p className="text-xs uppercase tracking-[0.22em] text-stone-600 font-bold">Selected applicant</p>
                   <p className="mt-2 text-base font-semibold text-gray-900 truncate">
                     {selectedApplication?.name || "No applicant selected"}
                   </p>
@@ -284,7 +318,7 @@ const RecruiterInterviews = () => {
                             }
                             className={`w-full text-left rounded-xl border px-4 py-3 mb-2 transition-all ${
                               active
-                                ? "border-blue-200 bg-blue-50 text-blue-700"
+                                ? "border-stone-300 bg-stone-100 text-stone-900"
                                 : "border-gray-100 bg-white hover:bg-gray-50"
                             }`}
                           >
@@ -313,7 +347,7 @@ const RecruiterInterviews = () => {
                       name="applicationId"
                       value={form.applicationId}
                       onChange={handleChange}
-                      className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+                      className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-stone-500 bg-white"
                       required
                     >
                       <option value="">Select applicant</option>
@@ -331,7 +365,7 @@ const RecruiterInterviews = () => {
                       name="currentRound"
                       value={form.currentRound}
                       onChange={handleChange}
-                      className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-blue-500"
+                      className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-stone-500"
                       placeholder="Technical Interview"
                       required
                     />
@@ -343,7 +377,7 @@ const RecruiterInterviews = () => {
                       name="interviewMode"
                       value={form.interviewMode}
                       onChange={handleChange}
-                      className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+                      className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-stone-500 bg-white"
                     >
                       <option value="Offline">Offline</option>
                       <option value="Online">Online</option>
@@ -358,7 +392,7 @@ const RecruiterInterviews = () => {
                       name="interviewDate"
                       value={form.interviewDate}
                       onChange={handleChange}
-                      className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-blue-500"
+                      className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-stone-500"
                       required
                     />
                   </label>
@@ -370,7 +404,7 @@ const RecruiterInterviews = () => {
                       name="interviewTime"
                       value={form.interviewTime}
                       onChange={handleChange}
-                      className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-blue-500"
+                      className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-stone-500"
                       required
                     />
                   </label>
@@ -396,6 +430,39 @@ const RecruiterInterviews = () => {
                   </div>
                 </div>
 
+                <div className="mt-6 rounded-2xl border border-stone-200 bg-stone-50 p-4">
+                  <div className="flex items-center justify-between gap-3">
+                    <div>
+                      <p className="text-sm font-semibold text-stone-900">Final decision</p>
+                      <p className="text-xs text-stone-500">
+                        Mark the interview outcome and send the result to the student.
+                      </p>
+                    </div>
+                    <span className="text-[11px] font-semibold rounded-full bg-white px-2.5 py-1 text-stone-600 border border-stone-200">
+                      Notification ready
+                    </span>
+                  </div>
+
+                  <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <button
+                      type="button"
+                      onClick={() => handleDecision("SELECTED")}
+                      disabled={saving || !form.applicationId}
+                      className="rounded-xl bg-stone-900 px-4 py-3 text-sm font-semibold text-white transition-colors hover:bg-stone-800 disabled:opacity-60"
+                    >
+                      Recruit / Select
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => handleDecision("REJECTED")}
+                      disabled={saving || !form.applicationId}
+                      className="rounded-xl border border-stone-300 bg-white px-4 py-3 text-sm font-semibold text-stone-700 transition-colors hover:bg-stone-100 disabled:opacity-60"
+                    >
+                      Reject Candidate
+                    </button>
+                  </div>
+                </div>
+
                 <div className="mt-6 flex justify-end gap-3">
                   <button
                     type="button"
@@ -411,7 +478,7 @@ const RecruiterInterviews = () => {
                   <button
                     type="submit"
                     disabled={saving}
-                    className="px-6 py-2.5 rounded-xl bg-blue-600 text-white hover:bg-blue-700 font-medium text-sm transition-colors disabled:opacity-60"
+                    className="px-6 py-2.5 rounded-xl bg-stone-900 text-white hover:bg-stone-800 font-medium text-sm transition-colors disabled:opacity-60"
                   >
                     {saving ? "Saving..." : "Save Schedule"}
                   </button>

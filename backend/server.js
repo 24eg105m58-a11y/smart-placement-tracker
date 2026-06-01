@@ -5,6 +5,7 @@ import { userApp } from './APIs/user-api.js'
 import { studentApp } from './APIs/student-api.js'
 import { companyApp } from './APIs/company-api.js'
 import { adminApp } from './APIs/admin-api.js'
+import { ApplicationModel } from './models/application-model.js'
 import cookieParser from "cookie-parser"
 import cors from "cors"
 
@@ -33,6 +34,7 @@ app.use("/admin-api", adminApp)
 const connectDB = async () => {
   try {
     await mongoose.connect(process.env.DB_URL)
+    await ApplicationModel.syncIndexes()
 
     console.log("Connected to Database...")
 

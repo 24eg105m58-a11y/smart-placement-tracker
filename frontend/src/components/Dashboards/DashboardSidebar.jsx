@@ -59,12 +59,12 @@ const DashboardSidebar = ({ role, portalTitle, open, onClose }) => {
       <div className="p-5 border-b border-gray-100">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-xl font-bold text-blue-600">Smart Placement</h1>
+            <h1 className="text-xl font-bold text-sky-700">CareerCanopy</h1>
             <p className="text-xs text-gray-500 mt-0.5">{title}</p>
           </div>
           <button
             onClick={onClose}
-            className="lg:hidden p-2 text-gray-400 hover:text-gray-600 rounded-lg"
+            className="lg:hidden p-2 text-sky-400 hover:text-sky-600 rounded-lg"
           >
             ✕
           </button>
@@ -81,8 +81,8 @@ const DashboardSidebar = ({ role, portalTitle, open, onClose }) => {
             className={({ isActive }) =>
               `flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-300 ease-out ${
                 isActive
-                  ? "bg-blue-600 text-white shadow-md shadow-blue-200 scale-[1.02]"
-                  : "text-gray-600 hover:bg-blue-50 hover:text-blue-600 hover:translate-x-1"
+                  ? "bg-sky-50 text-sky-700 shadow-md shadow-sky-100 scale-[1.02]"
+                  : "text-slate-600 hover:bg-sky-50 hover:text-sky-700 hover:translate-x-1"
               }`
             }
           >

@@ -1,10 +1,10 @@
-const StatCard = ({ title, value, icon, trend, color = "blue" }) => {
+const StatCard = ({ title, value, icon, trend, color = "stone" }) => {
   const colors = {
-    blue: "from-blue-500 to-blue-600",
-    green: "from-green-500 to-green-600",
-    purple: "from-purple-500 to-purple-600",
-    orange: "from-orange-500 to-orange-600",
-    indigo: "from-indigo-500 to-indigo-600",
+    stone: "from-stone-700 to-stone-900",
+    emerald: "from-emerald-500 to-emerald-600",
+    amber: "from-amber-500 to-amber-600",
+    slate: "from-slate-500 to-slate-700",
+    zinc: "from-zinc-600 to-zinc-800",
   };
 
   return (
@@ -14,7 +14,7 @@ const StatCard = ({ title, value, icon, trend, color = "blue" }) => {
           <p className="text-sm text-gray-500 font-medium">{title}</p>
           <p className="text-2xl sm:text-3xl font-bold text-gray-900 mt-1">{value}</p>
           {trend && (
-            <p className="text-xs text-green-600 mt-2 font-medium">{trend}</p>
+          <p className="text-xs text-stone-600 mt-2 font-medium">{trend}</p>
           )}
         </div>
         {icon && (

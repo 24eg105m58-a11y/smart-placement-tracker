@@ -60,6 +60,7 @@ const ApplicationSchema = new Schema(
       enum: [
         "APPLIED",
         "SHORTLISTED",
+        "HOLD",
         "REJECTED",
         "SELECTED",
       ],

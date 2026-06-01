@@ -19,7 +19,11 @@ const resumeUpload = multer({
   },
 });
 
-const groqApiKey = process.env.GROQ_API_KEY || process.env.GROK_API_KEY;
+const groqApiKey =
+  process.env.GROQ_API_KEY ||
+  process.env.GROK_API_KEY ||
+  process.env.XAI_CONSOLE_API_KEY ||
+  process.env.XAI_API_KEY;
 const groqClient = groqApiKey ? new Groq({ apiKey: groqApiKey }) : null;
 
 const formatDate = (value) => {
@@ -81,6 +85,58 @@ const toStudentApplication = (app) => ({
   appliedOn: formatDate(app.createdAt),
   status: app.applicationStatus,
 });
+
+const toNotification = (app) => {
+  const status = app.applicationStatus || "APPLIED";
+
+  if (status === "SELECTED") {
+    return {
+      id: String(app._id),
+      title: "You have been selected",
+      message: `${app.companyName} selected you for ${app.jobRole}.`,
+      time: formatDate(app.updatedAt || app.createdAt),
+      read: false,
+    };
+  }
+
+  if (status === "REJECTED") {
+    return {
+      id: String(app._id),
+      title: "Interview result updated",
+      message: `${app.companyName} did not shortlist you for ${app.jobRole}.`,
+      time: formatDate(app.updatedAt || app.createdAt),
+      read: true,
+    };
+  }
+
+  if (status === "HOLD") {
+    return {
+      id: String(app._id),
+      title: "Application on hold",
+      message: `${app.companyName} kept your application on hold for ${app.jobRole}.`,
+      time: formatDate(app.updatedAt || app.createdAt),
+      read: false,
+    };
+  }
+
+  if (status === "SHORTLISTED") {
+    return {
+      id: String(app._id),
+      title: "You were shortlisted",
+      message: `${app.companyName} shortlisted you for ${app.jobRole}.`,
+      time: formatDate(app.updatedAt || app.createdAt),
+      read: false,
+    };
+  }
+
+  return {
+    id: String(app._id),
+    title: "Application received",
+    message: `${app.companyName} received your application for ${app.jobRole}.`,
+    time: formatDate(app.updatedAt || app.createdAt),
+    read: false,
+  };
+};
 
 const toResumePayload = (resume) => ({
   id: resume._id,
@@ -161,13 +217,7 @@ const buildStudentDashboard = async (studentId) => {
     }));
 
   const notifications = [
-    ...applications.slice(0, 2).map((app) => ({
-      id: String(app._id),
-      title: `Application ${app.applicationStatus.toLowerCase()}`,
-      message: `${app.companyName} - ${app.jobRole}`,
-      time: formatDate(app.updatedAt || app.createdAt),
-      read: app.applicationStatus === "REJECTED",
-    })),
+    ...applications.map(toNotification),
     ...jobs.slice(0, 2).map((job) => ({
       id: String(job._id),
       title: "New drive posted",
@@ -191,9 +241,11 @@ const buildStudentDashboard = async (studentId) => {
   const placementStatus =
     applications.some((app) => app.applicationStatus === "SELECTED")
       ? "Placed"
-      : applications.length > 0
-        ? "In Process"
-        : "Not Started";
+      : applications.some((app) => app.applicationStatus === "HOLD")
+        ? "On Hold"
+        : applications.length > 0
+          ? "In Process"
+          : "Not Started";
 
   const profileCompletion = academic
     ? Math.min(
@@ -921,6 +973,7 @@ studentApp.delete(
       }
 
       res.json({
+        success: true,
         message: "Application Withdrawn Successfully",
       });
     } catch (err) {

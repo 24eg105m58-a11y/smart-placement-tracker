@@ -61,15 +61,15 @@ const AdminDashboard = () => {
       {
         label: "Placed",
         data: placementOverview.map((d) => d.placed),
-        borderColor: "#2563eb",
-        backgroundColor: "rgba(37, 99, 235, 0.1)",
+        borderColor: "#44403c",
+        backgroundColor: "rgba(68, 64, 60, 0.08)",
         fill: true,
         tension: 0.4,
       },
       {
         label: "Applied",
         data: placementOverview.map((d) => d.applied),
-        borderColor: "#94a3b8",
+        borderColor: "#a16207",
         backgroundColor: "transparent",
         borderDash: [5, 5],
         tension: 0.4,
@@ -90,11 +90,19 @@ const AdminDashboard = () => {
 
   return (
     <div className="space-y-6">
+      <div className="rounded-3xl bg-gradient-to-r from-sky-600 to-blue-600 text-white p-6 sm:p-8 shadow-lg shadow-sky-200 animate-fade-in-left hover-lift">
+        <p className="text-xs uppercase tracking-[0.22em] text-sky-100 font-semibold">Placement Control Center</p>
+        <h1 className="mt-2 text-2xl sm:text-3xl font-bold">Operational view for placements and drives</h1>
+        <p className="mt-2 max-w-2xl text-sky-100">
+          Track students, company participation, live drives, and placement outcomes in one view.
+        </p>
+      </div>
+
       <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 sm:gap-6">
-        <StatCard title="Students" value={dashboardStats.students.toLocaleString()} icon="🎓" color="blue" trend="+12% this month" />
-        <StatCard title="Companies" value={dashboardStats.companies} icon="🏢" color="purple" trend="+3 new" />
-        <StatCard title="Job Drives" value={dashboardStats.jobDrives} icon="📅" color="orange" trend="5 upcoming" />
-        <StatCard title="Placements" value={dashboardStats.placements} icon="✅" color="green" trend="64% rate" />
+        <StatCard title="Students" value={dashboardStats.students.toLocaleString()} icon="🎓" color="slate" trend="+12% this month" />
+        <StatCard title="Companies" value={dashboardStats.companies} icon="🏢" color="blue" trend="+3 new" />
+        <StatCard title="Job Drives" value={dashboardStats.jobDrives} icon="📅" color="amber" trend="5 upcoming" />
+        <StatCard title="Placements" value={dashboardStats.placements} icon="✅" color="emerald" trend="64% rate" />
       </div>
 
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-4 sm:gap-6">
@@ -136,7 +144,7 @@ const AdminDashboard = () => {
             <thead>
               <tr className="bg-gray-50">
                 {["Company", "Drive Name", "Date", "Status"].map((h) => (
-                  <th key={h} className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase">
+                  <th key={h} className="px-4 py-3 text-left text-xs font-semibold text-stone-500 uppercase">
                     {h}
                   </th>
                 ))}
@@ -145,9 +153,9 @@ const AdminDashboard = () => {
             <tbody className="divide-y divide-gray-50">
               {recentDrives.map((drive) => (
                 <tr key={drive.id} className="hover:bg-gray-50/80">
-                  <td className="px-4 py-3.5 text-sm font-medium text-gray-800">{drive.company}</td>
-                  <td className="px-4 py-3.5 text-sm text-gray-600">{drive.driveName}</td>
-                  <td className="px-4 py-3.5 text-sm text-gray-600">{drive.date}</td>
+                  <td className="px-4 py-3.5 text-sm font-medium text-stone-800">{drive.company}</td>
+                  <td className="px-4 py-3.5 text-sm text-stone-600">{drive.driveName}</td>
+                  <td className="px-4 py-3.5 text-sm text-stone-600">{drive.date}</td>
                   <td className="px-4 py-3.5">
                     <StatusBadge status={drive.status} />
                   </td>

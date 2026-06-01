@@ -76,11 +76,11 @@ const DashboardHeader = ({ role, onMenuClick }) => {
     : role?.[0]?.toUpperCase();
 
   return (
-    <header className="relative z-50 bg-white border-b border-gray-100 px-4 sm:px-6 lg:px-8 py-3 sm:py-4 flex items-center justify-between shrink-0 animate-slide-down">
+    <header className="relative z-50 bg-white/95 backdrop-blur border-b border-sky-100 px-4 sm:px-6 lg:px-8 py-3 sm:py-4 flex items-center justify-between shrink-0 animate-slide-down">
       <div className="flex items-center gap-3">
         <button
           onClick={onMenuClick}
-          className="lg:hidden p-2 rounded-lg hover:bg-gray-100 text-gray-600"
+          className="lg:hidden p-2 rounded-lg hover:bg-sky-50 text-slate-600"
           aria-label="Open menu"
         >
           <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -89,11 +89,11 @@ const DashboardHeader = ({ role, onMenuClick }) => {
         </button>
         <div>
           {fullName && (
-            <p className="text-xs text-gray-400 hidden sm:block">
-              Welcome, <span className="font-medium text-gray-600">{fullName}</span>
+            <p className="text-xs text-slate-400 hidden sm:block">
+              Welcome, <span className="font-medium text-slate-600">{fullName}</span>
             </p>
           )}
-          <h2 className="text-lg sm:text-xl font-semibold text-gray-900">{title}</h2>
+          <h2 className="text-lg sm:text-xl font-semibold text-slate-900">{title}</h2>
         </div>
       </div>
 
@@ -101,9 +101,9 @@ const DashboardHeader = ({ role, onMenuClick }) => {
         <button
           type="button"
           onClick={() => setMenuOpen((prev) => !prev)}
-          className="flex items-center gap-2 sm:gap-3 hover:bg-gray-50 rounded-xl px-2 sm:px-3 py-2 transition-colors"
+          className="flex items-center gap-2 sm:gap-3 hover:bg-sky-50 rounded-xl px-2 sm:px-3 py-2 transition-colors"
         >
-          <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full overflow-hidden bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white text-xs font-bold shrink-0">
+          <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full overflow-hidden bg-gradient-to-br from-sky-600 to-blue-600 flex items-center justify-center text-white text-xs font-bold shrink-0">
             {user?.profileImageUrl ? (
               <img
                 src={user.profileImageUrl}
@@ -114,18 +114,18 @@ const DashboardHeader = ({ role, onMenuClick }) => {
               initials
             )}
           </div>
-          <span className="text-sm font-medium text-gray-700 hidden sm:block">
+            <span className="text-sm font-medium text-slate-700 hidden sm:block">
             {fullName || "My Profile"}
           </span>
-          <svg className="hidden sm:block w-4 h-4 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
+          <svg className="hidden sm:block w-4 h-4 text-slate-400" viewBox="0 0 20 20" fill="currentColor">
             <path fillRule="evenodd" d="M5.23 7.21a.75.75 0 0 1 1.06.02L10 10.942l3.71-3.71a.75.75 0 1 1 1.06 1.06l-4.24 4.24a.75.75 0 0 1-1.06 0L5.21 8.29a.75.75 0 0 1 .02-1.08Z" clipRule="evenodd" />
           </svg>
         </button>
 
         {menuOpen && (
-          <div className="absolute right-0 mt-3 w-72 rounded-2xl border border-gray-100 bg-white shadow-xl shadow-slate-200/60 overflow-hidden z-[70]">
-            <div className="p-4 border-b border-gray-100 flex items-center gap-3">
-              <div className="w-12 h-12 rounded-full overflow-hidden bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-semibold shrink-0">
+          <div className="absolute right-0 mt-3 w-72 rounded-2xl border border-sky-100 bg-white shadow-xl shadow-sky-100/70 overflow-hidden z-[70]">
+            <div className="p-4 border-b border-sky-100 flex items-center gap-3">
+              <div className="w-12 h-12 rounded-full overflow-hidden bg-gradient-to-br from-sky-600 to-blue-600 flex items-center justify-center text-white font-semibold shrink-0">
                 {user?.profileImageUrl ? (
                   <img src={user.profileImageUrl} alt={fullName} className="w-full h-full object-cover" />
                 ) : (
@@ -133,9 +133,9 @@ const DashboardHeader = ({ role, onMenuClick }) => {
                 )}
               </div>
               <div className="min-w-0">
-                <p className="font-semibold text-gray-900 truncate">{fullName || "My Profile"}</p>
-                <p className="text-xs text-gray-500 truncate">{user?.email || ""}</p>
-                <p className="text-[11px] uppercase tracking-[0.18em] text-blue-600 mt-1">{user?.role || role}</p>
+                <p className="font-semibold text-slate-900 truncate">{fullName || "My Profile"}</p>
+                <p className="text-xs text-slate-500 truncate">{user?.email || ""}</p>
+                <p className="text-[11px] uppercase tracking-[0.18em] text-sky-600 mt-1">{user?.role || role}</p>
               </div>
             </div>
 
@@ -143,7 +143,7 @@ const DashboardHeader = ({ role, onMenuClick }) => {
               <Link
                 to={profilePath}
                 onClick={() => setMenuOpen(false)}
-                className="block px-3 py-2.5 rounded-xl text-sm text-gray-700 hover:bg-gray-50"
+                className="block px-3 py-2.5 rounded-xl text-sm text-slate-700 hover:bg-sky-50"
               >
                 View Profile
               </Link>

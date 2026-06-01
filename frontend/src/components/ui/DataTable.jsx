@@ -9,6 +9,12 @@ const DataTable = ({
   pageSize = 8,
   onEdit,
   onDelete,
+  onHold,
+  onView,
+  editLabel,
+  deleteLabel,
+  holdLabel,
+  viewLabel,
   actions = true,
 }) => {
   const [search, setSearch] = useState("");
@@ -122,19 +128,37 @@ const DataTable = ({
                         {onEdit && (
                           <button
                             onClick={() => onEdit(row)}
-                            className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
-                            title="Edit"
+                            className="px-3 py-1.5 text-xs font-semibold rounded-lg text-sky-700 bg-sky-50 hover:bg-sky-100 transition-colors"
+                            title={editLabel || "Edit"}
                           >
-                            ✏️
+                            {editLabel || "Edit"}
+                          </button>
+                        )}
+                        {onView && (
+                          <button
+                            onClick={() => onView(row)}
+                            className="px-3 py-1.5 text-xs font-semibold rounded-lg text-slate-700 bg-slate-100 hover:bg-slate-200 transition-colors"
+                            title={viewLabel || "View Details"}
+                          >
+                            {viewLabel || "View"}
                           </button>
                         )}
                         {onDelete && (
                           <button
                             onClick={() => onDelete(row)}
-                            className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors"
-                            title="Delete"
+                            className="px-3 py-1.5 text-xs font-semibold rounded-lg text-rose-700 bg-rose-50 hover:bg-rose-100 transition-colors"
+                            title={deleteLabel || "Delete"}
                           >
-                            🗑️
+                            {deleteLabel || "Delete"}
+                          </button>
+                        )}
+                        {onHold && (
+                          <button
+                            onClick={() => onHold(row)}
+                            className="px-3 py-1.5 text-xs font-semibold rounded-lg text-amber-700 bg-amber-50 hover:bg-amber-100 transition-colors"
+                            title={holdLabel || "Hold"}
+                          >
+                            {holdLabel || "Hold"}
                           </button>
                         )}
                       </div>

@@ -45,12 +45,12 @@ const StudentDashboard = () => {
   return (
     <div className="space-y-6">
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
-        <div className="lg:col-span-2 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-2xl text-white p-6 sm:p-8 shadow-lg shadow-blue-200 animate-fade-in-left hover-lift">
+        <div className="lg:col-span-2 bg-gradient-to-r from-sky-600 to-blue-600 rounded-2xl text-white p-6 sm:p-8 shadow-lg shadow-sky-200 animate-fade-in-left hover-lift">
           <h1 className="text-2xl sm:text-3xl font-bold">
             Hello, {fullName} 👋
           </h1>
-          <p className="mt-2 text-blue-100">
-            Welcome back to Smart Placement Tracker.
+          <p className="mt-2 text-sky-100">
+            Welcome back to CareerCanopy.
           </p>
           <div className="mt-6 flex flex-wrap gap-3">
             <span className="bg-white/20 px-4 py-2 rounded-xl text-sm font-medium">
@@ -62,8 +62,8 @@ const StudentDashboard = () => {
           </div>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 flex flex-col items-center justify-center animate-scale-in animation-delay-200 hover-lift">
-          <h2 className="font-semibold text-gray-700 self-start mb-4">
+        <div className="bg-white rounded-2xl shadow-sm border border-sky-100 p-6 flex flex-col items-center justify-center animate-scale-in animation-delay-200 hover-lift">
+          <h2 className="font-semibold text-slate-700 self-start mb-4">
             Profile Completion
           </h2>
           <div className="relative w-24 h-24">
@@ -87,7 +87,7 @@ const StudentDashboard = () => {
                 strokeLinecap="round"
               />
             </svg>
-            <span className="absolute inset-0 flex items-center justify-center text-xl font-bold text-blue-600">
+            <span className="absolute inset-0 flex items-center justify-center text-xl font-bold text-sky-700">
               {profileCompletion}%
             </span>
           </div>
@@ -99,19 +99,19 @@ const StudentDashboard = () => {
           title="Upcoming Drives"
           value={upcomingDrives.length}
           icon="📅"
-          color="blue"
+          color="slate"
         />
         <StatCard
           title="Applications"
           value={appliedCompanies.length}
           icon="📋"
-          color="purple"
+          color="blue"
         />
         <StatCard
           title="Interviews"
           value={interviews.filter((i) => i.status === "Scheduled").length}
           icon="🎯"
-          color="orange"
+          color="emerald"
         />
       </div>
 
@@ -121,14 +121,14 @@ const StudentDashboard = () => {
             {upcomingDrives.slice(0, 4).map((drive) => (
               <div
                 key={drive.id}
-                className={`flex items-center justify-between gap-3 p-3 rounded-xl border transition-smooth hover:translate-x-1 ${
+                className={`flex items-center justify-between gap-3 p-3 rounded-xl border transition-smooth hover:-translate-y-0.5 ${
                   drive.applied
-                    ? "bg-emerald-50 border-emerald-200"
-                    : "bg-gray-50 border-gray-100 hover:bg-gray-100"
+                    ? "bg-emerald-50 border-emerald-200 shadow-sm"
+                    : "bg-stone-50 border-stone-200 hover:bg-stone-100"
                 }`}
               >
                 <div className="flex items-center gap-3 min-w-0">
-                  <div className="h-10 w-10 overflow-hidden rounded-xl border border-gray-100 bg-white flex items-center justify-center text-xs font-semibold text-gray-500 shrink-0">
+                  <div className="h-10 w-10 overflow-hidden rounded-xl border border-stone-200 bg-white flex items-center justify-center text-xs font-semibold text-stone-500 shrink-0">
                     {drive.companyLogo ? (
                       <img
                         src={drive.companyLogo}
@@ -145,10 +145,10 @@ const StudentDashboard = () => {
                     )}
                   </div>
                   <div className="min-w-0">
-                    <p className="font-medium text-gray-800 text-sm truncate">
+                    <p className="font-medium text-stone-800 text-sm truncate">
                       {drive.driveName}
                     </p>
-                    <p className="text-xs text-gray-500 truncate">
+                    <p className="text-xs text-stone-500 truncate">
                       {drive.company} · {drive.date}
                     </p>
                   </div>
@@ -171,11 +171,11 @@ const StudentDashboard = () => {
             {notifications.slice(0, 4).map((n) => (
               <div
                 key={n.id}
-                className={`p-3 rounded-xl ${n.read ? "bg-gray-50" : "bg-blue-50 border border-blue-100"}`}
+                className={`p-3 rounded-xl ${n.read ? "bg-stone-50" : "bg-amber-50 border border-amber-100"}`}
               >
-                <p className="font-medium text-sm text-gray-800">{n.title}</p>
-                <p className="text-xs text-gray-500 mt-0.5">{n.message}</p>
-                <p className="text-xs text-gray-400 mt-1">{n.time}</p>
+                <p className="font-medium text-sm text-stone-800">{n.title}</p>
+                <p className="text-xs text-stone-500 mt-0.5">{n.message}</p>
+                <p className="text-xs text-stone-400 mt-1">{n.time}</p>
               </div>
             ))}
           </div>
