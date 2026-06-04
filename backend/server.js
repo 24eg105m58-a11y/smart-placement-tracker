@@ -13,13 +13,22 @@ config()
 
 const app = exp()
 
+app.set("trust proxy", 1)
+
+const allowedOrigins = [
+  "http://localhost:5173",
+  "http://127.0.0.1:5173",
+  "https://career-canopy-two.vercel.app",
+  process.env.FRONTEND_URL,
+  ...(process.env.FRONTEND_URLS
+    ? process.env.FRONTEND_URLS.split(",").map((origin) => origin.trim()).filter(Boolean)
+    : []),
+].filter(Boolean)
+
 app.use(exp.json())
 
 app.use(cors({
-  origin: [
-    "http://localhost:5173",
-    "http://127.0.0.1:5173", "https://career-canopy-two.vercel.app"
-  ],
+  origin: allowedOrigins,
   credentials: true
 }))
 

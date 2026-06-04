@@ -13,6 +13,13 @@ config();
 const { sign } = jwt;
 export const userApp = exp.Router();
 
+const isProduction = process.env.NODE_ENV === "production";
+const authCookieOptions = {
+  httpOnly: true,
+  secure: isProduction,
+  sameSite: isProduction ? "none" : "lax",
+};
+
 const setAuthCookie = (res, user) => {
   const signedToken = sign(
     {
@@ -27,11 +34,7 @@ const setAuthCookie = (res, user) => {
     { expiresIn: "1h" },
   );
 
-  res.cookie("token", signedToken, {
-    httpOnly: true,
-    secure: false,
-    sameSite: "lax",
-  });
+  res.cookie("token", signedToken, authCookieOptions);
 
   const userObj = user.toObject();
   delete userObj.password;
@@ -118,11 +121,7 @@ userApp.post("/login", async (req, res, next) => {
 
 // logout
 userApp.get("/logout", (req, res) => {
-  res.clearCookie("token", {
-    httpOnly: true,
-    secure: false,
-    sameSite: "lax",
-  });
+  res.clearCookie("token", authCookieOptions);
 
   res.status(200).json({
     success: true,
