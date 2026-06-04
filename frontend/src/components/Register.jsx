@@ -55,7 +55,7 @@ const Register = () => {
       }
 
       userData.append("isUserActive", true);
-
+      // here api,
       const response = await api.post("/user-api/register", userData, {
         headers: {
           "Content-Type": "multipart/form-data",
