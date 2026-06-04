@@ -394,39 +394,48 @@ const generateAiInsightText = async (context) => {
     };
   }
 
-  const response = await groqClient.chat.completions.create({
-    model: "llama-3.1-8b-instant",
-    temperature: 0.4,
-    messages: [
-      {
-        role: "system",
-        content:
-          "You are a helpful campus placement coach. Give short, practical placement guidance in simple language.",
-      },
-      {
-        role: "user",
-        content: JSON.stringify(
-          {
-            student: context.student,
-            stats: context.stats,
-            recommendations: context.recommendations.slice(0, 3),
-          },
-          null,
-          2,
-        ),
-      },
-      {
-        role: "user",
-        content:
-          "Write a short summary and 3 bullet tips about which drives the student should focus on next.",
-      },
-    ],
-  });
+  try {
+    const response = await groqClient.chat.completions.create({
+      model: "llama-3.1-8b-instant",
+      temperature: 0.4,
+      messages: [
+        {
+          role: "system",
+          content:
+            "You are a helpful campus placement coach. Give short, practical placement guidance in simple language.",
+        },
+        {
+          role: "user",
+          content: JSON.stringify(
+            {
+              student: context.student,
+              stats: context.stats,
+              recommendations: context.recommendations.slice(0, 3),
+            },
+            null,
+            2,
+          ),
+        },
+        {
+          role: "user",
+          content:
+            "Write a short summary and 3 bullet tips about which drives the student should focus on next.",
+        },
+      ],
+    });
 
-  return {
-    summary: response.choices?.[0]?.message?.content?.trim() || ruleBased[0],
-    tips: ruleBased,
-  };
+    return {
+      summary: response.choices?.[0]?.message?.content?.trim() || ruleBased[0],
+      tips: ruleBased,
+    };
+  } catch (err) {
+    console.log("AI insight generation failed, using fallback:", err?.message || err);
+    return {
+      summary:
+        "I could not reach the AI service right now, so I’m showing a rule-based placement summary instead. Update your academic details, resume, and branch info to improve your drive matches.",
+      tips: ruleBased,
+    };
+  }
 };
 
 // post academic details
@@ -874,10 +883,28 @@ studentApp.get(
         },
       });
     } catch (err) {
-      res.status(500).json({
-        success: false,
-        message: err.message,
-      });
+      console.log("AI insights route failed:", err?.message || err);
+      try {
+        const context = await buildStudentAiContext(req.user.id);
+        res.json({
+          success: true,
+          payload: {
+            ...context,
+            insightSummary:
+              "I could not load live AI results right now, but your placement data is available. Keep improving your profile to raise your matches.",
+            tips: [
+              context.student.branch ? `Branch: ${context.student.branch}` : "Branch not updated yet.",
+              typeof context.student.cgpa === "number" ? `CGPA: ${context.student.cgpa}` : "CGPA not available.",
+              context.student.resumeUploaded ? "Resume uploaded." : "Resume still needs to be uploaded.",
+            ],
+          },
+        });
+      } catch (fallbackErr) {
+        res.status(500).json({
+          success: false,
+          message: fallbackErr.message,
+        });
+      }
     }
   },
 );
