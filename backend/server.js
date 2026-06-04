@@ -33,7 +33,7 @@ app.use("/admin-api", adminApp)
 
 const connectDB = async () => {
   try {
-    await mongoose.connect(process.env.DB_URL)
+    await mongoose.connect(/*process.env.DB_URL|| */process.env.MONGODB_URL)
     await ApplicationModel.syncIndexes()
 
     console.log("Connected to Database...")
