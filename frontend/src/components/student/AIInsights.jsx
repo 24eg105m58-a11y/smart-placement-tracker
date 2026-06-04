@@ -35,7 +35,9 @@ const AIInsights = () => {
       setData(res.data.payload || null);
     } catch (error) {
       console.log(error);
-      toast.error(error?.response?.data?.message || "Unable to load AI insights");
+      toast.error(
+        error?.response?.data?.message || "Unable to load AI insights",
+      );
       setData(null);
     } finally {
       setLoading(false);
@@ -69,13 +71,22 @@ const AIInsights = () => {
 
       setMessages((prev) => [
         ...prev,
-        { role: "assistant", content: res.data.payload?.reply || "I could not generate a reply right now." },
+        {
+          role: "assistant",
+          content:
+            res.data.payload?.reply ||
+            "I could not generate a reply right now.",
+        },
       ]);
     } catch (error) {
       toast.error(error?.response?.data?.message || "Unable to send message");
       setMessages((prev) => [
         ...prev,
-        { role: "assistant", content: "I could not respond right now. Please try again in a moment." },
+        {
+          role: "assistant",
+          content:
+            "I could not respond right now. Please try again in a moment.",
+        },
       ]);
     } finally {
       setSending(false);
@@ -105,9 +116,12 @@ const AIInsights = () => {
         <>
           <div className="grid gap-4 lg:grid-cols-[1.1fr_0.9fr]">
             <div className="rounded-2xl border border-blue-100 bg-white p-6 shadow-sm">
-              <p className="text-xs font-bold uppercase tracking-[0.26em] text-blue-600">Placement coach</p>
+              <p className="text-xs font-bold uppercase tracking-[0.26em] text-blue-600">
+                Placement coach
+              </p>
               <h2 className="mt-3 text-2xl font-black text-slate-950">
-                {data?.insightSummary || "Keep your profile updated and focus on drives that match your branch and CGPA."}
+                {data?.insightSummary ||
+                  "Keep your profile updated and focus on drives that match your branch and CGPA."}
               </h2>
 
               <div className="mt-5 grid gap-3 sm:grid-cols-3">
@@ -116,9 +130,16 @@ const AIInsights = () => {
                   ["CGPA", data?.student?.cgpa ?? "-"],
                   ["Applications", data?.stats?.applicationsCount ?? 0],
                 ].map(([label, value]) => (
-                  <div key={label} className="rounded-2xl bg-slate-50 p-4 border border-slate-100">
-                    <p className="text-xs uppercase tracking-wide text-slate-400">{label}</p>
-                    <p className="mt-2 text-lg font-bold text-slate-900">{value}</p>
+                  <div
+                    key={label}
+                    className="rounded-2xl bg-slate-50 p-4 border border-slate-100"
+                  >
+                    <p className="text-xs uppercase tracking-wide text-slate-400">
+                      {label}
+                    </p>
+                    <p className="mt-2 text-lg font-bold text-slate-900">
+                      {value}
+                    </p>
                   </div>
                 ))}
               </div>
@@ -131,13 +152,17 @@ const AIInsights = () => {
                   {data?.stats?.placed ? "Placed" : "In Process"}
                 </span>
                 <span className="rounded-full bg-amber-100 px-3 py-1.5 text-xs font-semibold text-amber-700">
-                  Resume {data?.student?.resumeUploaded ? "Uploaded" : "Pending"}
+                  Resume{" "}
+                  {data?.student?.resumeUploaded ? "Uploaded" : "Pending"}
                 </span>
               </div>
 
               <div className="mt-6 grid gap-3">
                 {(data?.tips || []).map((tip) => (
-                  <div key={tip} className="rounded-2xl border border-gray-100 bg-gray-50 px-4 py-3 text-sm text-gray-700">
+                  <div
+                    key={tip}
+                    className="rounded-2xl border border-gray-100 bg-gray-50 px-4 py-3 text-sm text-gray-700"
+                  >
                     {tip}
                   </div>
                 ))}
@@ -145,11 +170,14 @@ const AIInsights = () => {
             </div>
 
             <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
-              <h3 className="text-lg font-semibold text-slate-900">Top drive recommendations</h3>
+              <h3 className="text-lg font-semibold text-slate-900">
+                Top drive recommendations
+              </h3>
               <div className="mt-4 space-y-3">
                 {(data?.recommendations || []).length === 0 ? (
                   <div className="rounded-2xl border border-dashed border-gray-200 bg-gray-50 p-6 text-center text-sm text-gray-500">
-                    No eligible drives found yet. Try updating your academic details.
+                    No eligible drives found yet. Try updating your academic
+                    details.
                   </div>
                 ) : (
                   data.recommendations.map((drive) => (
@@ -170,15 +198,22 @@ const AIInsights = () => {
                           )}
                         </div>
                         <div className="min-w-0">
-                          <p className="font-semibold text-gray-900 truncate">{drive.company}</p>
-                          <p className="text-sm text-gray-600 truncate">{drive.driveName}</p>
+                          <p className="font-semibold text-gray-900 truncate">
+                            {drive.company}
+                          </p>
+                          <p className="text-sm text-gray-600 truncate">
+                            {drive.driveName}
+                          </p>
                           <p className="mt-1 text-xs text-gray-500">
-                            Apply until {drive.lastDateToApply || "-"} · {drive.reason}
+                            Apply until {drive.lastDateToApply || "-"} ·{" "}
+                            {drive.reason}
                           </p>
                         </div>
                       </div>
                       <div className="flex flex-col items-end gap-2 shrink-0">
-                        <StatusBadge status={drive.eligible ? "Upcoming" : "Ongoing"} />
+                        <StatusBadge
+                          status={drive.eligible ? "Upcoming" : "Ongoing"}
+                        />
                         {drive.alreadyApplied && (
                           <span className="rounded-full bg-emerald-100 px-2.5 py-1 text-[11px] font-semibold text-emerald-700">
                             Applied
@@ -194,31 +229,45 @@ const AIInsights = () => {
 
           <div className="grid gap-4 lg:grid-cols-[0.95fr_1.05fr]">
             <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
-              <h3 className="text-lg font-semibold text-slate-900">Your profile snapshot</h3>
+              <h3 className="text-lg font-semibold text-slate-900">
+                Your profile snapshot
+              </h3>
               <div className="mt-4 space-y-3 text-sm text-gray-700">
                 <div className="flex items-center justify-between rounded-xl bg-gray-50 px-4 py-3">
                   <span>Graduation Year</span>
-                  <span className="font-medium">{data?.student?.graduationYear || "-"}</span>
+                  <span className="font-medium">
+                    {data?.student?.graduationYear || "-"}
+                  </span>
                 </div>
                 <div className="flex items-center justify-between rounded-xl bg-gray-50 px-4 py-3">
                   <span>No Backlogs</span>
-                  <span className="font-medium">{data?.student?.noBacklogs ? "Yes" : "No"}</span>
+                  <span className="font-medium">
+                    {data?.student?.noBacklogs ? "Yes" : "No"}
+                  </span>
                 </div>
                 <div className="flex items-center justify-between rounded-xl bg-gray-50 px-4 py-3">
                   <span>LinkedIn</span>
-                  <span className="font-medium truncate max-w-[220px]">{data?.student?.linkedIn || "-"}</span>
+                  <span className="font-medium truncate max-w-[220px]">
+                    {data?.student?.linkedIn || "-"}
+                  </span>
                 </div>
                 <div className="flex items-center justify-between rounded-xl bg-gray-50 px-4 py-3">
                   <span>GitHub</span>
-                  <span className="font-medium truncate max-w-[220px]">{data?.student?.github || "-"}</span>
+                  <span className="font-medium truncate max-w-[220px]">
+                    {data?.student?.github || "-"}
+                  </span>
                 </div>
               </div>
             </div>
 
             <div className="rounded-2xl border border-gray-100 bg-white shadow-sm overflow-hidden">
               <div className="border-b border-gray-100 px-5 py-4">
-                <h3 className="text-lg font-semibold text-slate-900">Chatbot</h3>
-                <p className="text-sm text-gray-500">Ask about drives, eligibility, resumes, or next steps</p>
+                <h3 className="text-lg font-semibold text-slate-900">
+                  Chatbot
+                </h3>
+                <p className="text-sm text-gray-500">
+                  Ask about drives, eligibility, resumes, or next steps
+                </p>
               </div>
 
               <div className="h-[420px] overflow-y-auto p-5 space-y-3 bg-slate-50">
@@ -237,7 +286,10 @@ const AIInsights = () => {
                 <div ref={chatEndRef} />
               </div>
 
-              <form onSubmit={sendMessage} className="p-4 border-t border-gray-100 bg-white">
+              <form
+                onSubmit={sendMessage}
+                className="p-4 border-t border-gray-100 bg-white"
+              >
                 <div className="flex gap-3">
                   <input
                     value={message}
