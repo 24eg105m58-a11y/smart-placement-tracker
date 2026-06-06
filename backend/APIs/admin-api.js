@@ -40,7 +40,7 @@ const buildDashboard = async () => {
       ApplicationModel.countDocuments(),
       ApplicationModel.countDocuments({ applicationStatus: "SELECTED" }),
     ]);
-
+  //comment
   const monthSeries = getMonthSeries();
   const allApplications = await ApplicationModel.find().sort({ createdAt: 1 });
   const allJobs = await JobPostingModel.find().sort({ createdAt: -1 });
