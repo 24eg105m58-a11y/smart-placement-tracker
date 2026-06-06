@@ -1,0 +1,81 @@
+[{
+  "_id": {
+    "$oid": "6a1d0594205e29df32a90daa"
+  },
+  "companyName": "GOOGLE",
+  "companyEmail": "sundar@mail.com",
+  "companyWebsite": "http://www.google.com",
+  "companyLocation": "Mountain View, California, USA",
+  "companyType": "MNC",
+  "companyDescription": "Google’s hiring process is as unique as its culture. We want all candidates — from entry-level to leadership — to have access to the same information and resources (after all, it is our mission to organize the world’s information and make it universally accessible and useful for everyone).\r\n\r\nWith this in mind, here’s an overview of our hiring process to help you prepare and apply for roles and internships at Google.",
+  "hrName": "sundar pichai",
+  "hrPhone": "7418520963",
+  "hrLinkedIn": "http://www.sundar-linkedin.com",
+  "companyLogo": "https://res.cloudinary.com/dpivtxawn/image/upload/v1780286870/blog_users_b2/aqh9iyy79sbsjgmrw3em.png",
+  "recruiterId": {
+    "$oid": "6a1d04ac205e29df32a90da9"
+  },
+  "isApproved": false,
+  "approvedBy": null,
+  "createdAt": {
+    "$date": "2026-06-01T04:07:48.179Z"
+  },
+  "updatedAt": {
+    "$date": "2026-06-01T04:07:48.179Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6a1d08c0205e29df32a90db1"
+  },
+  "companyName": "APPLE",
+  "companyEmail": "tim@mail.com",
+  "companyWebsite": "http://www.apple.com",
+  "companyLocation": "1 Apple Park Way, Cupertino, CA 95014, USA",
+  "companyType": "MNC",
+  "companyDescription": "Apple creates extraordinary products, services, and customer experiences. Organized by functional specialties rather than traditional business units, Apple is driven by experts leading experts. They empower individuals to do their life’s best work within a collaborative, inclusive, and innovation-focused culture.",
+  "hrName": "tim cook",
+  "hrPhone": "8520963741",
+  "hrLinkedIn": "http://www.timcook-linkedin.com",
+  "companyLogo": "https://res.cloudinary.com/dpivtxawn/image/upload/v1780287681/blog_users_b2/ghcxscpendjrxdurnait.png",
+  "recruiterId": {
+    "$oid": "6a1d0855205e29df32a90db0"
+  },
+  "isApproved": false,
+  "approvedBy": null,
+  "createdAt": {
+    "$date": "2026-06-01T04:21:20.404Z"
+  },
+  "updatedAt": {
+    "$date": "2026-06-01T04:21:20.404Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6a1d2b78205e29df32a90db8"
+  },
+  "companyName": "MICROSOFT",
+  "companyEmail": "satya@mail.com",
+  "companyWebsite": "https://www.microsoft.com",
+  "companyLocation": "807, New Delhi House, Barakhamba Road, New Delhi – 110001, India",
+  "companyType": "MNC",
+  "companyDescription": "Microsoft Corporation is a leading American multinational technology company headquartered in Redmond, Washington. Founded by Bill Gates and Paul Allen in 1975, it is the world's largest software company by revenue and a global leader in cloud computing, artificial intelligence, personal computing, and video gaming.",
+  "hrName": "satya nadella",
+  "hrPhone": "9630258741",
+  "hrLinkedIn": "http://www.satya-linkedin.com",
+  "companyLogo": "https://res.cloudinary.com/dpivtxawn/image/upload/v1780296570/blog_users_b2/go1whmdsw6jib3rtxfzc.png",
+  "recruiterId": {
+    "$oid": "6a1d2b00205e29df32a90db7"
+  },
+  "isApproved": false,
+  "approvedBy": null,
+  "createdAt": {
+    "$date": "2026-06-01T06:49:28.229Z"
+  },
+  "updatedAt": {
+    "$date": "2026-06-01T06:49:28.229Z"
+  },
+  "__v": 0
+}]

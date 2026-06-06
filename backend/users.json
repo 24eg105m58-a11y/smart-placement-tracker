@@ -1,0 +1,183 @@
+[{
+  "_id": {
+    "$oid": "6a1d03664e443d1f8b36b1de"
+  },
+  "firstname": "Admin",
+  "lastname": "User",
+  "email": "admin@mail.com",
+  "password": "$2b$12$OurMrKctKtmhHXWuoroB0.dRD0/q5BIKzg35M6R1aY/ax5jfPRzy6",
+  "role": "ADMIN",
+  "profileImageUrl": "",
+  "isUserActive": true,
+  "createdAt": {
+    "$date": "2026-05-31T00:00:00.000Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-31T00:00:00.000Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6a1d04ac205e29df32a90da9"
+  },
+  "firstname": "sundar",
+  "lastname": "pichai",
+  "email": "sundar@mail.com",
+  "password": "$2b$12$L.yqNx3sje1De5TeYJUoyeMweo.zLGfxzslPCAP3G306w/pRTWEgi",
+  "role": "RECRUITER",
+  "profileImageUrl": "https://res.cloudinary.com/dpivtxawn/image/upload/v1780286637/blog_users_b2/rccotalafnh4oq7kaspt.jpg",
+  "companyName": "google",
+  "isUserActive": true,
+  "createdAt": {
+    "$date": "2026-06-01T04:03:56.137Z"
+  },
+  "updatedAt": {
+    "$date": "2026-06-01T04:03:56.137Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6a1d0855205e29df32a90db0"
+  },
+  "firstname": "tim",
+  "lastname": "cook",
+  "email": "tim@mail.com",
+  "password": "$2b$12$xJBm9Pf6nFklcG00w2OPK.1tAEn7Vm4fXTf8k4XxljUs5T4cmip4i",
+  "role": "RECRUITER",
+  "profileImageUrl": "https://res.cloudinary.com/dpivtxawn/image/upload/v1780287575/blog_users_b2/lrnrhpzoy1ow23v0l1n1.jpg",
+  "companyName": "apple",
+  "isUserActive": true,
+  "createdAt": {
+    "$date": "2026-06-01T04:19:33.995Z"
+  },
+  "updatedAt": {
+    "$date": "2026-06-01T04:19:33.995Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6a1d2b00205e29df32a90db7"
+  },
+  "firstname": "satya",
+  "lastname": "nadella",
+  "email": "satya@mail.com",
+  "password": "$2b$12$2OC4I9o5tNi7dBgtv5x/du/ZozmWPN.X2qw79X5TLAwINNKztGvjS",
+  "role": "RECRUITER",
+  "profileImageUrl": "https://res.cloudinary.com/dpivtxawn/image/upload/v1780296450/blog_users_b2/ukxxjfsq7wpzjheg7zfr.jpg",
+  "companyName": "microsoft",
+  "isUserActive": true,
+  "createdAt": {
+    "$date": "2026-06-01T06:47:28.799Z"
+  },
+  "updatedAt": {
+    "$date": "2026-06-01T06:47:28.799Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6a1d2de4205e29df32a90dbe"
+  },
+  "firstname": "william",
+  "lastname": "buyers",
+  "email": "william@mail.com",
+  "password": "$2b$12$AE3WauAPuVyBJZ9OZl6F4eSLGYuAcvkRjWVhO2wXtHAhyI4Z/P5t2",
+  "role": "STUDENT",
+  "profileImageUrl": "https://res.cloudinary.com/dpivtxawn/image/upload/v1780297189/blog_users_b2/ghkhzuqhal04btydzgpq.webp",
+  "isUserActive": true,
+  "createdAt": {
+    "$date": "2026-06-01T06:59:48.202Z"
+  },
+  "updatedAt": {
+    "$date": "2026-06-01T06:59:48.202Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6a1d2ef0205e29df32a90dc2"
+  },
+  "firstname": "jane",
+  "lastname": "hopper",
+  "email": "jane@mail.com",
+  "password": "$2b$12$AxDqcXQWddb/cZlQyNND/.ycNbCpHje7Y0oVGqucEUN4YeCuDKP9G",
+  "role": "STUDENT",
+  "profileImageUrl": "https://res.cloudinary.com/dpivtxawn/image/upload/v1780297458/blog_users_b2/tromrrmtu4lvnsd76fds.jpg",
+  "isUserActive": true,
+  "createdAt": {
+    "$date": "2026-06-01T07:04:16.575Z"
+  },
+  "updatedAt": {
+    "$date": "2026-06-01T07:04:16.575Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6a1d3f4d9b3c39fa2262fbfe"
+  },
+  "firstname": "micheal",
+  "lastname": "wheeler",
+  "email": "micheal@mail.com",
+  "password": "$2b$12$AwZkD.Weu98j57pIynEtOORMqZSg/ezhcXFV02U9rSG/DQdoSDiMy",
+  "role": "STUDENT",
+  "profileImageUrl": "https://res.cloudinary.com/dpivtxawn/image/upload/v1780301647/blog_users_b2/o6pb8qvhuifjoyd7fxqs.jpg",
+  "isUserActive": true,
+  "createdAt": {
+    "$date": "2026-06-01T08:14:05.589Z"
+  },
+  "updatedAt": {
+    "$date": "2026-06-01T08:14:05.589Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6a1d41b09b3c39fa2262fc02"
+  },
+  "firstname": "dustin",
+  "lastname": "henderson",
+  "email": "dustin@mail.com",
+  "password": "$2b$12$jWLKFnIdl4Asgqjch6VtGupK0sOXkAqabGl.B35ImPKXzM3ieMCSW",
+  "role": "STUDENT",
+  "profileImageUrl": "https://res.cloudinary.com/dpivtxawn/image/upload/v1780302258/blog_users_b2/gsxpsbmnzzr1gce3akny.webp",
+  "isUserActive": true,
+  "createdAt": {
+    "$date": "2026-06-01T08:24:16.916Z"
+  },
+  "updatedAt": {
+    "$date": "2026-06-01T08:24:16.916Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6a1d42d59b3c39fa2262fc08"
+  },
+  "firstname": "lucas",
+  "lastname": "sinclair",
+  "email": "lucas@mail.com",
+  "password": "$2b$12$r0ue/QNlL4R3WVMaM/Q6..mdrnqB5Cj4.BiMuU3W3PuJD1939YEUu",
+  "role": "STUDENT",
+  "profileImageUrl": "https://res.cloudinary.com/dpivtxawn/image/upload/v1780305842/blog_users_b2/suxkqzzmljz0xbkcxgd3.jpg",
+  "isUserActive": true,
+  "createdAt": {
+    "$date": "2026-06-01T08:29:09.720Z"
+  },
+  "updatedAt": {
+    "$date": "2026-06-01T09:24:01.245Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6a21405d984f76d0f8b73a3c"
+  },
+  "firstname": "steve",
+  "lastname": "harrington",
+  "email": "steve@mail.com",
+  "password": "$2b$12$Q.3Om6GVNo7EVuCoYGwcK.HIa69Bw8REAN.jIvJjDTeI69m02arwG",
+  "role": "STUDENT",
+  "profileImageUrl": "https://res.cloudinary.com/dpivtxawn/image/upload/v1780564064/blog_users_b2/kvcdvozjq7hmltodntxe.webp",
+  "isUserActive": true,
+  "createdAt": {
+    "$date": "2026-06-04T09:07:41.409Z"
+  },
+  "updatedAt": {
+    "$date": "2026-06-04T09:07:41.409Z"
+  }
+}]
