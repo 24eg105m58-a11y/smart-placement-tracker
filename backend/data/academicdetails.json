@@ -1,0 +1,138 @@
+[{
+  "_id": {
+    "$oid": "6a1d2e0ce6a24f20f61a2764"
+  },
+  "studentId": {
+    "$oid": "6a1d2de4205e29df32a90dbe"
+  },
+  "__v": 0,
+  "branch": "CSE",
+  "cgpa": 8,
+  "createdAt": {
+    "$date": "2026-06-01T07:00:28.369Z"
+  },
+  "github": "http://www.github-william.com",
+  "graduationYear": 2028,
+  "linkedIn": "http://www/linkedin-william.com",
+  "noBacklogs": true,
+  "resume": "",
+  "rollNumber": "24EG105M01",
+  "updatedAt": {
+    "$date": "2026-06-01T07:00:28.369Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6a1d2f19e6a24f20f61a2765"
+  },
+  "studentId": {
+    "$oid": "6a1d2ef0205e29df32a90dc2"
+  },
+  "__v": 0,
+  "branch": "CSM",
+  "cgpa": 8.5,
+  "createdAt": {
+    "$date": "2026-06-01T07:04:57.746Z"
+  },
+  "github": "http://www.github-janehopper.com",
+  "graduationYear": 2027,
+  "linkedIn": "http://www/linkedin-janehopper.com",
+  "noBacklogs": true,
+  "resume": "",
+  "rollNumber": "24EG105N01",
+  "updatedAt": {
+    "$date": "2026-06-01T07:04:57.746Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6a1d3f7ae6a24f20f61a2766"
+  },
+  "studentId": {
+    "$oid": "6a1d3f4d9b3c39fa2262fbfe"
+  },
+  "__v": 0,
+  "branch": "CSE",
+  "cgpa": 8.9,
+  "createdAt": {
+    "$date": "2026-06-01T08:14:50.725Z"
+  },
+  "github": "http://www.github-micheal.com",
+  "graduationYear": 2028,
+  "linkedIn": "http://www/linkedin-micheal.com",
+  "noBacklogs": true,
+  "resume": "",
+  "rollNumber": "24EG105M11",
+  "updatedAt": {
+    "$date": "2026-06-01T08:14:50.725Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6a1d41d6e6a24f20f61a2767"
+  },
+  "studentId": {
+    "$oid": "6a1d41b09b3c39fa2262fc02"
+  },
+  "__v": 0,
+  "branch": "CSE",
+  "cgpa": 9.5,
+  "createdAt": {
+    "$date": "2026-06-01T08:24:54.778Z"
+  },
+  "github": "http://www.github-dustin.com",
+  "graduationYear": 2028,
+  "linkedIn": "http://www/linkedin-dustin.com",
+  "noBacklogs": true,
+  "resume": "",
+  "rollNumber": "24EG105M05",
+  "updatedAt": {
+    "$date": "2026-06-01T08:24:54.778Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6a1d437de6a24f20f61a2794"
+  },
+  "studentId": {
+    "$oid": "6a1d42d59b3c39fa2262fc08"
+  },
+  "__v": 0,
+  "branch": "CSE",
+  "cgpa": 8.7,
+  "createdAt": {
+    "$date": "2026-06-01T08:31:57.133Z"
+  },
+  "github": "http://www.github-lucas.com",
+  "graduationYear": 2028,
+  "linkedIn": "http://www/linkedin-lucas.com",
+  "noBacklogs": true,
+  "resume": "",
+  "rollNumber": "24EG105M19",
+  "updatedAt": {
+    "$date": "2026-06-01T08:31:57.133Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6a214093e1049aefae853e40"
+  },
+  "studentId": {
+    "$oid": "6a21405d984f76d0f8b73a3c"
+  },
+  "__v": 0,
+  "branch": "CSM",
+  "cgpa": 8.4,
+  "createdAt": {
+    "$date": "2026-06-04T09:08:35.640Z"
+  },
+  "github": "https://github.com/steve-harrington",
+  "graduationYear": 2026,
+  "linkedIn": "http://linkedin.com/in/steve-harrington-360450323/",
+  "noBacklogs": true,
+  "resume": "",
+  "rollNumber": "22EG107M01",
+  "updatedAt": {
+    "$date": "2026-06-04T09:08:35.640Z"
+  }
+}]

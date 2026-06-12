@@ -1,0 +1,260 @@
+[{
+  "_id": {
+    "$oid": "6a1d2e3a205e29df32a90dbf"
+  },
+  "studentId": {
+    "$oid": "6a1d2de4205e29df32a90dbe"
+  },
+  "jobId": {
+    "$oid": "6a1d092a205e29df32a90db2"
+  },
+  "companyName": "APPLE",
+  "jobRole": "Software Development Engineer (SDE)",
+  "studentName": "william buyers",
+  "package": "₹24 Lakhs – ₹36 Lakhs",
+  "CGPA": 8,
+  "eligibleBranches": "CSE",
+  "driveDate": {
+    "$date": "2026-06-07T00:00:00.000Z"
+  },
+  "applicationStatus": "SHORTLISTED",
+  "currentRound": "SHORTLISTED",
+  "interviewDate": {
+    "$date": "2026-06-16T00:00:00.000Z"
+  },
+  "interviewTime": "10:00",
+  "interviewMode": "Offline",
+  "createdAt": {
+    "$date": "2026-06-01T07:01:14.210Z"
+  },
+  "updatedAt": {
+    "$date": "2026-06-01T07:42:03.054Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6a1d2e40205e29df32a90dc0"
+  },
+  "studentId": {
+    "$oid": "6a1d2de4205e29df32a90dbe"
+  },
+  "jobId": {
+    "$oid": "6a1d2c4d205e29df32a90dba"
+  },
+  "companyName": "MICROSOFT",
+  "jobRole": "Data & Applied Scientist",
+  "studentName": "william buyers",
+  "package": "₹25 Lakhs – ₹38 Lakhs",
+  "CGPA": 8,
+  "eligibleBranches": "CSE",
+  "driveDate": {
+    "$date": "2026-06-14T00:00:00.000Z"
+  },
+  "applicationStatus": "APPLIED",
+  "currentRound": "Application Submitted",
+  "interviewDate": null,
+  "interviewTime": "",
+  "interviewMode": "",
+  "createdAt": {
+    "$date": "2026-06-01T07:01:20.972Z"
+  },
+  "updatedAt": {
+    "$date": "2026-06-01T07:01:20.972Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6a1d2e48205e29df32a90dc1"
+  },
+  "studentId": {
+    "$oid": "6a1d2de4205e29df32a90dbe"
+  },
+  "jobId": {
+    "$oid": "6a1d29de205e29df32a90db4"
+  },
+  "companyName": "APPLE",
+  "jobRole": "AI / Machine Learning Engineer",
+  "studentName": "william buyers",
+  "package": "₹28 Lakhs – ₹40 Lakhs",
+  "CGPA": 8,
+  "eligibleBranches": "CSE",
+  "driveDate": {
+    "$date": "2026-06-16T00:00:00.000Z"
+  },
+  "applicationStatus": "REJECTED",
+  "currentRound": "Rejected",
+  "interviewDate": {
+    "$date": "2026-06-16T00:00:00.000Z"
+  },
+  "interviewTime": "10:00",
+  "interviewMode": "Offline",
+  "createdAt": {
+    "$date": "2026-06-01T07:01:28.606Z"
+  },
+  "updatedAt": {
+    "$date": "2026-06-01T09:55:08.629Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6a1d40289b3c39fa2262fc01"
+  },
+  "studentId": {
+    "$oid": "6a1d3f4d9b3c39fa2262fbfe"
+  },
+  "jobId": {
+    "$oid": "6a1d2bc8205e29df32a90db9"
+  },
+  "companyName": "MICROSOFT",
+  "jobRole": " Software Engineer (L59 / SDE I)",
+  "studentName": "micheal wheeler",
+  "package": "₹28 Lakhs – ₹42 Lakhs",
+  "CGPA": 8.9,
+  "eligibleBranches": "CSE",
+  "driveDate": {
+    "$date": "2026-06-09T00:00:00.000Z"
+  },
+  "applicationStatus": "APPLIED",
+  "currentRound": "Application Submitted",
+  "interviewDate": null,
+  "interviewTime": "",
+  "interviewMode": "",
+  "createdAt": {
+    "$date": "2026-06-01T08:17:44.788Z"
+  },
+  "updatedAt": {
+    "$date": "2026-06-01T08:17:44.788Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6a1d41ea9b3c39fa2262fc05"
+  },
+  "studentId": {
+    "$oid": "6a1d41b09b3c39fa2262fc02"
+  },
+  "jobId": {
+    "$oid": "6a1d0649205e29df32a90dab"
+  },
+  "companyName": "GOOGLE",
+  "jobRole": " Software Engineer (L3 - Entry Level)",
+  "studentName": "dustin henderson",
+  "package": " ₹25 Lakhs – ₹35 Lakhs+",
+  "CGPA": 9.5,
+  "eligibleBranches": "CSE",
+  "driveDate": {
+    "$date": "2026-06-11T00:00:00.000Z"
+  },
+  "applicationStatus": "APPLIED",
+  "currentRound": "Application Submitted",
+  "interviewDate": null,
+  "interviewTime": "",
+  "interviewMode": "",
+  "createdAt": {
+    "$date": "2026-06-01T08:25:14.522Z"
+  },
+  "updatedAt": {
+    "$date": "2026-06-01T08:25:14.522Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6a1d41f49b3c39fa2262fc06"
+  },
+  "studentId": {
+    "$oid": "6a1d41b09b3c39fa2262fc02"
+  },
+  "jobId": {
+    "$oid": "6a1d2c8b205e29df32a90dbb"
+  },
+  "companyName": "MICROSOFT",
+  "jobRole": " Cloud Solution Architect / Engineer",
+  "studentName": "dustin henderson",
+  "package": "₹16 Lakhs – ₹25 Lakhs",
+  "CGPA": 9.5,
+  "eligibleBranches": "CSE",
+  "driveDate": {
+    "$date": "2026-06-19T00:00:00.000Z"
+  },
+  "applicationStatus": "APPLIED",
+  "currentRound": "Application Submitted",
+  "interviewDate": null,
+  "interviewTime": "",
+  "interviewMode": "",
+  "createdAt": {
+    "$date": "2026-06-01T08:25:24.077Z"
+  },
+  "updatedAt": {
+    "$date": "2026-06-01T08:25:24.077Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6a1d4fc889e946866bfc93c7"
+  },
+  "studentId": {
+    "$oid": "6a1d42d59b3c39fa2262fc08"
+  },
+  "jobId": {
+    "$oid": "6a1d092a205e29df32a90db2"
+  },
+  "companyName": "APPLE",
+  "jobRole": "Software Development Engineer (SDE)",
+  "studentName": "lucas sinclair",
+  "package": "₹24 Lakhs – ₹36 Lakhs",
+  "CGPA": 8.7,
+  "eligibleBranches": "CSE",
+  "driveDate": {
+    "$date": "2026-06-07T00:00:00.000Z"
+  },
+  "applicationStatus": "SELECTED",
+  "currentRound": "Offer",
+  "interviewDate": null,
+  "interviewTime": "",
+  "interviewMode": "",
+  "createdAt": {
+    "$date": "2026-06-01T09:24:24.816Z"
+  },
+  "updatedAt": {
+    "$date": "2026-06-01T09:53:33.598Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6a1d4fcb89e946866bfc93c8"
+  },
+  "studentId": {
+    "$oid": "6a1d42d59b3c39fa2262fc08"
+  },
+  "jobId": {
+    "$oid": "6a1d2bc8205e29df32a90db9"
+  },
+  "companyName": "MICROSOFT",
+  "jobRole": " Software Engineer (L59 / SDE I)",
+  "studentName": "lucas sinclair",
+  "package": "₹28 Lakhs – ₹42 Lakhs",
+  "CGPA": 8.7,
+  "eligibleBranches": "CSE",
+  "driveDate": {
+    "$date": "2026-06-09T00:00:00.000Z"
+  },
+  "applicationStatus": "APPLIED",
+  "currentRound": "Application Submitted",
+  "interviewDate": null,
+  "interviewTime": "",
+  "interviewMode": "",
+  "createdAt": {
+    "$date": "2026-06-01T09:24:27.424Z"
+  },
+  "updatedAt": {
+    "$date": "2026-06-01T09:24:27.424Z"
+  },
+  "__v": 0
+}]
