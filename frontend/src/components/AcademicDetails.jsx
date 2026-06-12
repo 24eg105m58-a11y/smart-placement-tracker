@@ -21,7 +21,6 @@ const AcademicDetails = () => {
 
     setFormData((prev) => ({
       ...prev,
-
       [name]:
         type === "checkbox" ? checked : type === "file" ? files[0] : value,
     }));
@@ -47,14 +46,10 @@ const AcademicDetails = () => {
         data.append("resume", formData.resume);
       }
 
-      await api.post("/student-api/add-academicDetails", {
-        rollNumber: formData.rollNumber,
-        branch: formData.branch,
-        cgpa: Number(formData.cgpa),
-        graduationYear: Number(formData.graduationYear),
-        noBacklogs: formData.noBacklogs,
-        linkedIn: formData.linkedIn,
-        github: formData.github,
+      await api.post("/student-api/add-academicDetails", data, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
       });
 
       toast.success("Academic details saved!");

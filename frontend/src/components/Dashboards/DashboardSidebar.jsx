@@ -38,6 +38,7 @@ const menuConfig = {
       { name: "Jobs", path: "/recruiter/recruiter-dashboard/jobs", icon: "💼" },
       { name: "Applicants", path: "/recruiter/recruiter-dashboard/applicants", icon: "👥" },
       { name: "Interviews", path: "/recruiter/recruiter-dashboard/interviews", icon: "🎯" },
+      { name: "Settings", path: "/recruiter/recruiter-dashboard/settings", icon: "⚙️" },
     ],
   },
 };

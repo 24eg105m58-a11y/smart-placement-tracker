@@ -6,6 +6,8 @@ import { studentApp } from './APIs/student-api.js'
 import { companyApp } from './APIs/company-api.js'
 import { adminApp } from './APIs/admin-api.js'
 import { ApplicationModel } from './models/application-model.js'
+import aiInsightsApp
+  from "./APIs/aiInsights-api.js";
 import cookieParser from "cookie-parser"
 import cors from "cors"
 
@@ -39,6 +41,10 @@ app.use("/user-api", userApp)
 app.use("/student-api", studentApp)
 app.use("/company-api", companyApp)
 app.use("/admin-api", adminApp)
+app.use(
+  "/api/ai-insights",
+  aiInsightsApp
+);
 
 const connectDB = async () => {
   try {

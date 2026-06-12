@@ -19,7 +19,7 @@ const emptyForm = {
   location: "",
 };
 
-const canEditJob = (job) => !job.locked;
+const canEditJob = (job) => true;
 const dayMs = 24 * 60 * 60 * 1000;
 
 const Jobs = () => {
@@ -143,6 +143,7 @@ const Jobs = () => {
   };
 
   const viewApplicants = async (job) => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
     setApplicantsJob(job);
     setApplicantsLoading(true);
     try {
@@ -395,19 +396,20 @@ const Jobs = () => {
       </div>
 
       {applicantsJob && (
-        <div className="fixed inset-0 z-50 bg-black/40 px-4 py-6 overflow-y-auto">
-          <div className="mx-auto max-w-4xl bg-white rounded-2xl shadow-2xl border border-gray-100">
-            <div className="p-5 sm:p-6 border-b border-gray-100 flex items-start justify-between gap-4">
+        <div className="fixed inset-0 z-[80] bg-black/50 backdrop-blur-sm flex items-center justify-center px-4 py-4 sm:py-6">
+          <div className="w-full max-w-4xl max-h-[92vh] overflow-y-auto rounded-3xl bg-white shadow-2xl border border-slate-100">
+            <div className="flex items-start justify-between gap-4 border-b border-slate-100 px-6 py-5">
               <div>
-                <h3 className="text-lg font-semibold text-gray-900">
-                  Applicants for {applicantsJob.driveName}
+                <p className="text-xs uppercase tracking-[0.22em] text-sky-600 font-semibold">Applicants List</p>
+                <h3 className="mt-2 text-xl font-bold text-slate-900">
+                  {applicantsJob.driveName}
                 </h3>
-                <p className="text-sm text-gray-500">{applicantsJob.company}</p>
+                <p className="text-sm text-slate-500 mt-1">{applicantsJob.company}</p>
               </div>
               <button
                 type="button"
                 onClick={closeApplicants}
-                className="px-3 py-2 rounded-lg bg-gray-100 text-gray-700 hover:bg-gray-200 text-sm"
+                className="rounded-full bg-slate-100 px-3 py-2 text-sm font-medium text-slate-600 hover:bg-slate-200"
               >
                 Close
               </button>

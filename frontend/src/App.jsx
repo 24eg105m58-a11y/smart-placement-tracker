@@ -40,7 +40,9 @@ import Reports from "./components/admin/Reports";
 import UsersManagement from "./components/admin/UsersManagement";
 import AdminSettings from "./components/admin/AdminSettings";
 import AdminProfile from "./components/admin/AdminProfile";
+import InterviewJobDetails from "./components/student/InterviewJobDetails";
 
+import ApplicationDetails from "./components/student/ApplicationDetails";
 const routerObj = createBrowserRouter([
   {
     path: "/",
@@ -60,15 +62,38 @@ const routerObj = createBrowserRouter([
             element: <StudentLayout />,
             children: [
               { path: "student-dashboard", element: <StudentDashboard /> },
-              { path: "student-dashboard/academic-profile", element: <AcademicProfile /> },
+              {
+                path: "student-dashboard/academic-profile",
+                element: <AcademicProfile />,
+              },
               { path: "student-dashboard/resume", element: <Resume /> },
               { path: "student-dashboard/jobs", element: <StudentJobs /> },
-              { path: "student-dashboard/ai-insights", element: <AIInsights /> },
-              { path: "student-dashboard/applications", element: <Applications /> },
-              { path: "student-dashboard/upcoming-drives", element: <UpcomingDrives /> },
+              {
+                path: "student-dashboard/ai-insights",
+                element: <AIInsights />,
+              },
+              {
+                path: "student-dashboard/applications",
+                element: <Applications />,
+              },
+              {
+                path: "student-dashboard/upcoming-drives",
+                element: <UpcomingDrives />,
+              },
               { path: "student-dashboard/interviews", element: <Interviews /> },
-              { path: "student-dashboard/notifications", element: <Notifications /> },
+              {
+                path: "student-dashboard/notifications",
+                element: <Notifications />,
+              },
               { path: "student-dashboard/settings", element: <Settings /> },
+              {
+                path: "student-dashboard/job/:jobId",
+                element: <InterviewJobDetails />,
+              },
+              {
+                path: "student-dashboard/application/:applicationId",
+                element: <ApplicationDetails />,
+              },
             ],
           },
         ],
@@ -84,8 +109,15 @@ const routerObj = createBrowserRouter([
             children: [
               { path: "recruiter-dashboard", element: <RecruiterDashboard /> },
               { path: "recruiter-dashboard/jobs", element: <RecruiterJobs /> },
-              { path: "recruiter-dashboard/applicants", element: <Applicants /> },
-              { path: "recruiter-dashboard/interviews", element: <RecruiterInterviews /> },
+              {
+                path: "recruiter-dashboard/applicants",
+                element: <Applicants />,
+              },
+              {
+                path: "recruiter-dashboard/interviews",
+                element: <RecruiterInterviews />,
+              },
+              { path: "recruiter-dashboard/settings", element: <Settings /> },
             ],
           },
         ],

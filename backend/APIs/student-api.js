@@ -10,6 +10,7 @@ import UserModel from "../models/user-model.js";
 import { uploadToCloudinary } from "../config/cloudinaryUpload.js";
 import cloudinary from "../config/cloudinary.js";
 import Groq from "groq-sdk";
+import { parseResume } from "../utils/resumeParser.js";
 
 export const studentApp = exp.Router();
 const resumeUpload = multer({
@@ -25,6 +26,51 @@ const groqApiKey =
   process.env.XAI_CONSOLE_API_KEY ||
   process.env.XAI_API_KEY;
 const groqClient = groqApiKey ? new Groq({ apiKey: groqApiKey }) : null;
+
+const isDriveExpired = (job) => {
+  if (job.status === "CLOSED" || job.status === "Completed") return true;
+  const lastDate = job.lastDateToApply ? new Date(job.lastDateToApply) : null;
+  const driveDate = job.driveDate ? new Date(job.driveDate) : null;
+  const now = new Date();
+  now.setHours(0,0,0,0);
+  if (lastDate && lastDate < now) return true;
+  if (driveDate && driveDate < now) return true;
+  return false;
+};
+
+const sortStudentJobs = (jobsList, academic, appliedJobIds) => {
+  const isEligible = (job) => {
+    if (!academic) return false;
+    const branches = Array.isArray(job.eligibleBranches)
+      ? job.eligibleBranches
+      : typeof job.eligibleBranches === "string"
+        ? job.eligibleBranches.split(",").map(b => b.trim())
+        : [];
+    const branchMatch = branches.length === 0 || branches.includes("ANY") || branches.includes("Any Branch") || branches.includes(academic.branch);
+    const cgpaMatch = academic.cgpa >= Number(job.minimumCGPA || 0);
+    return branchMatch && cgpaMatch;
+  };
+
+  return [...jobsList].sort((a, b) => {
+    const expiredA = isDriveExpired(a);
+    const expiredB = isDriveExpired(b);
+    if (expiredA !== expiredB) return expiredA ? 1 : -1;
+
+    const idA = String(a._id || a.id);
+    const idB = String(b._id || b.id);
+    const appliedA = a.applied || appliedJobIds.has(idA);
+    const appliedB = b.applied || appliedJobIds.has(idB);
+    if (appliedA !== appliedB) return appliedA ? -1 : 1;
+
+    const eligibleA = a.eligible || isEligible(a);
+    const eligibleB = b.eligible || isEligible(b);
+    if (eligibleA !== eligibleB) return eligibleA ? -1 : 1;
+
+    const dateA = new Date(a.driveDate || a.date).getTime() || 0;
+    const dateB = new Date(b.driveDate || b.date).getTime() || 0;
+    return dateA - dateB;
+  });
+};
 
 const formatDate = (value) => {
   if (!value) return "";
@@ -61,20 +107,24 @@ const formatJobStatus = (job) => {
   return driveDate.getTime() >= Date.now() ? "Upcoming" : "Ongoing";
 };
 
-const toStudentDrive = (job, companyLogo = "", applied = false) => ({
-  id: job._id,
-  driveName: job.jobRole,
-  company: job.companyName,
-  companyLogo,
-  date: formatDate(job.driveDate),
-  package: job.package,
-  status: formatJobStatus(job),
-  eligibleBranches: Array.isArray(job.eligibleBranches)
-    ? formatBranchDisplay(job.eligibleBranches)
-    : job.eligibleBranches || "",
-  role: job.jobRole,
-  applied,
-});
+const toStudentDrive = (job, companyLogo = "", applied = false) => {
+  const expired = isDriveExpired(job);
+  return {
+    id: job._id,
+    driveName: job.jobRole,
+    company: job.companyName,
+    companyLogo,
+    date: formatDate(job.driveDate),
+    package: job.package,
+    status: expired ? "Completed" : formatJobStatus(job),
+    eligibleBranches: Array.isArray(job.eligibleBranches)
+      ? formatBranchDisplay(job.eligibleBranches)
+      : job.eligibleBranches || "",
+    role: job.jobRole,
+    applied,
+    expired,
+  };
+};
 
 const toStudentApplication = (app) => ({
   id: app._id,
@@ -158,8 +208,9 @@ const toStudentJob = ({ job, academic, appliedJobIds, companyLogo = "" }) => {
     isAnyBranchJob(branches) ||
     (academic?.branch ? branches.includes(academic.branch) : false);
   const eligibleByCgpa = academic ? academic.cgpa >= Number(job.minimumCGPA || 0) : false;
-  const eligible = Boolean(academic) && eligibleByBranch && eligibleByCgpa;
+  const expired = isDriveExpired(job);
   const alreadyApplied = appliedJobIds.has(String(job._id));
+  const eligible = !expired && Boolean(academic) && eligibleByBranch && eligibleByCgpa;
 
   return {
     id: job._id,
@@ -170,7 +221,7 @@ const toStudentJob = ({ job, academic, appliedJobIds, companyLogo = "" }) => {
     date: formatDate(job.driveDate),
     lastDateToApply: formatDate(job.lastDateToApply),
     package: job.package,
-    status: formatJobStatus(job),
+    status: expired ? "Completed" : formatJobStatus(job),
     eligibleBranches: formatBranchDisplay(branches),
     role: job.jobRole,
     location: job.location || "",
@@ -178,24 +229,28 @@ const toStudentJob = ({ job, academic, appliedJobIds, companyLogo = "" }) => {
     description: job.description || "",
     eligible,
     alreadyApplied,
-    eligibilityNote: !academic
-      ? "Complete academic details to check eligibility"
-      : alreadyApplied
-        ? "Already applied"
-        : eligible
-          ? "You are eligible"
-          : !eligibleByBranch
-            ? "Branch not eligible"
-            : "CGPA below requirement",
+    expired,
+    eligibilityNote: expired
+      ? "This job drive has expired"
+      : !academic
+        ? "Complete academic details to check eligibility"
+        : alreadyApplied
+          ? "Already applied"
+          : eligible
+            ? "You are eligible"
+            : !eligibleByBranch
+              ? "Branch not eligible"
+              : "CGPA below requirement",
   };
 };
 
 const buildStudentDashboard = async (studentId) => {
-  const [academic, jobs, applications, companyLogoMap] = await Promise.all([
+  const [academic, jobs, applications, companyLogoMap, resume] = await Promise.all([
     AcademicDetailsModel.findOne({ studentId }),
     JobPostingModel.find().sort({ driveDate: 1 }),
     ApplicationModel.find({ studentId }).sort({ createdAt: -1 }),
     buildCompanyLogoMap(),
+    ResumeModel.findOne({ studentId }).sort({ createdAt: -1 }),
   ]);
 
   const appliedCompanies = applications.map((app) => ({
@@ -262,12 +317,15 @@ const buildStudentDashboard = async (studentId) => {
       )
     : 0;
 
+  const appliedJobIds = new Set(applications.map((app) => String(app.jobId)));
+  const sortedJobs = sortStudentJobs(jobs, academic, appliedJobIds);
+
   return {
-    upcomingDrives: jobs.map((job) =>
+    upcomingDrives: sortedJobs.map((job) =>
       toStudentDrive(
         job,
         companyLogoMap.get(normalizeCompanyKey(job.companyName)) || "",
-        applications.some((app) => String(app.jobId) === String(job._id)),
+        appliedJobIds.has(String(job._id)),
       ),
     ),
     appliedCompanies,
@@ -276,6 +334,7 @@ const buildStudentDashboard = async (studentId) => {
     eligibilityPercentage: Math.round((matchingJobs / totalJobs) * 100),
     profileCompletion,
     notifications,
+    resume: resume ? toResumePayload(resume) : null,
   };
 };
 
@@ -442,12 +501,40 @@ const generateAiInsightText = async (context) => {
 studentApp.post(
   "/add-academicDetails",
   verifyToken("STUDENT"),
+  resumeUpload.single("resume"),
   async (req, res) => {
     try {
       const studentId = req.user.id;
+      let resumeUrl = req.body.resume || "";
+
+      if (req.file) {
+        const uploadResult = await uploadToCloudinary(req.file.buffer, {
+          folder: "student_resumes",
+          resourceType: "raw",
+        });
+        resumeUrl = uploadResult.secure_url;
+
+        // Process PDF and save resume details
+        const parsed = await parseResume(req.file.buffer, req.file.originalname, groqClient);
+        
+        await ResumeModel.findOneAndUpdate(
+          { studentId },
+          {
+            studentId,
+            resumeUrl,
+            cloudinaryPublicId: uploadResult.public_id,
+            fileName: req.file.originalname,
+            atsScore: parsed.atsScore,
+            extractedSkills: parsed.extractedSkills,
+          },
+          { new: true, upsert: true }
+        );
+      }
+
       const payload = {
         ...req.body,
         studentId,
+        resume: resumeUrl,
         cgpa: Number(req.body.cgpa),
         graduationYear: Number(req.body.graduationYear),
         noBacklogs:
@@ -527,9 +614,36 @@ studentApp.get(
 studentApp.put(
   "/update-academicDetails",
   verifyToken("STUDENT"),
+  resumeUpload.single("resume"),
   async (req, res) => {
     try {
       const studentId = req.user.id;
+      let resumeUrl = req.body.resume;
+
+      if (req.file) {
+        const uploadResult = await uploadToCloudinary(req.file.buffer, {
+          folder: "student_resumes",
+          resourceType: "raw",
+        });
+        resumeUrl = uploadResult.secure_url;
+
+        // Process PDF and save resume details
+        const parsed = await parseResume(req.file.buffer, req.file.originalname, groqClient);
+        
+        await ResumeModel.findOneAndUpdate(
+          { studentId },
+          {
+            studentId,
+            resumeUrl,
+            cloudinaryPublicId: uploadResult.public_id,
+            fileName: req.file.originalname,
+            atsScore: parsed.atsScore,
+            extractedSkills: parsed.extractedSkills,
+          },
+          { new: true, upsert: true }
+        );
+      }
+
       const payload = {
         ...req.body,
         studentId,
@@ -542,6 +656,10 @@ studentApp.put(
             ? undefined
             : Number(req.body.graduationYear),
       };
+
+      if (resumeUrl !== undefined) {
+        payload.resume = resumeUrl;
+      }
 
       const academicDetails = await AcademicDetailsModel.findOneAndUpdate(
         { studentId },
@@ -586,6 +704,8 @@ studentApp.post(
         resourceType: "raw",
       });
 
+      const parsed = await parseResume(req.file.buffer, req.file.originalname, groqClient);
+
       const resumeDoc = await ResumeModel.findOneAndUpdate(
         { studentId: req.user.id },
         {
@@ -593,6 +713,8 @@ studentApp.post(
           resumeUrl: uploadResult.secure_url,
           cloudinaryPublicId: uploadResult.public_id,
           fileName: req.file.originalname,
+          atsScore: parsed.atsScore,
+          extractedSkills: parsed.extractedSkills,
         },
         {
           new: true,
@@ -678,7 +800,7 @@ studentApp.delete(
 // get-jobs
 studentApp.get("/get-jobs", verifyToken("STUDENT"), async (req, res) => {
   const [jobs, academic, applications, companyLogoMap] = await Promise.all([
-    JobPostingModel.find({ status: "OPEN" }).sort({
+    JobPostingModel.find().sort({
       driveDate: 1,
     }),
     AcademicDetailsModel.findOne({ studentId: req.user.id }),
@@ -686,13 +808,16 @@ studentApp.get("/get-jobs", verifyToken("STUDENT"), async (req, res) => {
     buildCompanyLogoMap(),
   ]);
 
+  const appliedJobIds = new Set(applications.map((app) => String(app.jobId)));
+  const sortedJobs = sortStudentJobs(jobs, academic, appliedJobIds);
+
   res.json({
     message: "JOBS:",
-    payload: jobs.map((job) =>
+    payload: sortedJobs.map((job) =>
       toStudentJob({
         job,
         academic,
-        appliedJobIds: new Set(applications.map((app) => String(app.jobId))),
+        appliedJobIds,
         companyLogo: companyLogoMap.get(normalizeCompanyKey(job.companyName)) || "",
       }),
     ),
@@ -716,6 +841,12 @@ studentApp.post(
       if (!job) {
         return res.status(404).json({
           message: "Job not found",
+        });
+      }
+
+      if (isDriveExpired(job)) {
+        return res.status(400).json({
+          message: "This job drive has expired",
         });
       }
 

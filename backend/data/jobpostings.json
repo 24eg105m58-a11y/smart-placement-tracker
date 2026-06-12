@@ -1,0 +1,544 @@
+[{
+  "_id": {
+    "$oid": "6a1d0649205e29df32a90dab"
+  },
+  "job_id": "JOB-1780287049486",
+  "recruiterId": {
+    "$oid": "6a1d04ac205e29df32a90da9"
+  },
+  "companyName": "GOOGLE",
+  "jobRole": " Software Engineer (L3 - Entry Level)",
+  "description": "Role Summary: You will design, develop, test, and deploy scalable software systems that power core services like Google Search, Maps, or Android.Key Responsibilities: Write clean, efficient code in languages like C++, Java, Python, or Go; implement complex algorithms; and optimize data structures for high-performance distributed systems.Requirements: A Bachelor’s or Master's degree in Computer Science or a similar technical path, with strong problem-solving skills and knowledge of basic computer science fundamentals.",
+  "package": " ₹25 Lakhs – ₹35 Lakhs+",
+  "location": "on campus",
+  "eligibleBranches": [
+    "CSE",
+    "IT",
+    "ECE",
+    "EEE"
+  ],
+  "minimumCGPA": 7,
+  "driveDate": {
+    "$date": "2026-06-11T00:00:00.000Z"
+  },
+  "lastDateToApply": {
+    "$date": "2026-06-10T00:00:00.000Z"
+  },
+  "status": "OPEN",
+  "createdAt": {
+    "$date": "2026-06-01T04:10:49.490Z"
+  },
+  "updatedAt": {
+    "$date": "2026-06-01T04:10:49.490Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6a1d069a205e29df32a90dac"
+  },
+  "job_id": "JOB-1780287130586",
+  "recruiterId": {
+    "$oid": "6a1d04ac205e29df32a90da9"
+  },
+  "companyName": "GOOGLE",
+  "jobRole": "Silicon Engineer (Hardware / Chip Design)",
+  "description": "Role Summary: You will join the dedicated custom chip design team tasked with developing advanced System-on-Chips (SoCs) for Google's AI (TPUs), imaging, and cloud infrastructure.Key Responsibilities: Participate in ASIC front-end design or design verification; analyze hardware behavior; use Verilog/SystemVerilog; and optimize silicon for high performance and low power consumption.Requirements: B.E./B.Tech/M.Tech in ECE, EEE, or Electrical engineering with clear knowledge of computer hardware architecture.",
+  "package": "₹25 Lakhs – ₹47 Lakhs",
+  "location": "on campus",
+  "eligibleBranches": [
+    "ECE",
+    "EEE",
+    "MECH"
+  ],
+  "minimumCGPA": 7.5,
+  "driveDate": {
+    "$date": "2026-06-16T00:00:00.000Z"
+  },
+  "lastDateToApply": {
+    "$date": "2026-06-15T00:00:00.000Z"
+  },
+  "status": "OPEN",
+  "createdAt": {
+    "$date": "2026-06-01T04:12:10.588Z"
+  },
+  "updatedAt": {
+    "$date": "2026-06-01T04:12:10.588Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6a1d06e4205e29df32a90dad"
+  },
+  "job_id": "JOB-1780287204429",
+  "recruiterId": {
+    "$oid": "6a1d04ac205e29df32a90da9"
+  },
+  "companyName": "GOOGLE",
+  "jobRole": "Data Analyst / Product Analyst",
+  "description": "Role Summary: You will sift through massive datasets to uncover trends, optimize user behaviors, and help product teams make data-driven decisions.Key Responsibilities: Build automated dashboards, use SQL and Python for data mining, and translate complex metrics into simple, actionable visual reports for business stakeholders.Requirements: Proficiency in data manipulation, stats, and query building; open to any major provided you possess strong analytical aptitude",
+  "package": "₹15 Lakhs – ₹25 Lakhs",
+  "location": "on campus",
+  "eligibleBranches": [
+    "CSM",
+    "CSD",
+    "CSE",
+    "ECE"
+  ],
+  "minimumCGPA": 8,
+  "driveDate": {
+    "$date": "2026-06-21T00:00:00.000Z"
+  },
+  "lastDateToApply": {
+    "$date": "2026-06-20T00:00:00.000Z"
+  },
+  "status": "OPEN",
+  "createdAt": {
+    "$date": "2026-06-01T04:13:24.429Z"
+  },
+  "updatedAt": {
+    "$date": "2026-06-01T04:13:24.429Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6a1d0747205e29df32a90dae"
+  },
+  "job_id": "JOB-1780287303067",
+  "recruiterId": {
+    "$oid": "6a1d04ac205e29df32a90da9"
+  },
+  "companyName": "GOOGLE",
+  "jobRole": "Associate Product Manager (APM)",
+  "description": "Role Summary: This rotation program allows new graduates to guide products through their entire lifecycle, blending engineering tasks with consumer-facing business logic.Key Responsibilities: Define feature roadmaps, coordinate directly between engineering and marketing teams, and monitor market indicators to refine UI/UX frameworks.Requirements: Excellent communication, a blend of business acumen and technical aptitude, and proof of leadership through previous projects or internships.",
+  "package": "₹28 Lakhs – ₹40 Lakhs",
+  "location": "on campus",
+  "eligibleBranches": [
+    "CSE",
+    "CSM",
+    "CSD",
+    "ECE",
+    "IT"
+  ],
+  "minimumCGPA": 7.96,
+  "driveDate": {
+    "$date": "2026-07-01T00:00:00.000Z"
+  },
+  "lastDateToApply": {
+    "$date": "2026-06-30T00:00:00.000Z"
+  },
+  "status": "OPEN",
+  "createdAt": {
+    "$date": "2026-06-01T04:15:03.068Z"
+  },
+  "updatedAt": {
+    "$date": "2026-06-01T04:15:03.068Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6a1d078b205e29df32a90daf"
+  },
+  "job_id": "JOB-1780287371078",
+  "recruiterId": {
+    "$oid": "6a1d04ac205e29df32a90da9"
+  },
+  "companyName": "GOOGLE",
+  "jobRole": "Cloud Technical Resident / Cloud Engineer",
+  "description": "Role Summary: You will support enterprise businesses in adopting Google Cloud Platform (GCP) technologies safely and efficiently.Key Responsibilities: Trouble-shoot cloud architecture errors, debug code snippets, build solution prototypes, and consult on system administration or networking best practices.Requirements: Strong foundational knowledge of networking, operating systems, database management, and scripting languages",
+  "package": "₹18 Lakhs – ₹26 Lakhs",
+  "location": "on campus",
+  "eligibleBranches": [
+    "IT",
+    "CSE",
+    "ECE",
+    "CSD",
+    "CSM"
+  ],
+  "minimumCGPA": 6.98,
+  "driveDate": {
+    "$date": "2026-07-06T00:00:00.000Z"
+  },
+  "lastDateToApply": {
+    "$date": "2026-07-05T00:00:00.000Z"
+  },
+  "status": "OPEN",
+  "createdAt": {
+    "$date": "2026-06-01T04:16:11.079Z"
+  },
+  "updatedAt": {
+    "$date": "2026-06-01T04:16:11.079Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6a1d092a205e29df32a90db2"
+  },
+  "job_id": "JOB-1780287786140",
+  "recruiterId": {
+    "$oid": "6a1d0855205e29df32a90db0"
+  },
+  "companyName": "APPLE",
+  "jobRole": "Software Development Engineer (SDE)",
+  "description": "Role Summary: You will write scalable, high-performance code to build backend systems, developer frameworks, and features for cloud ecosystems like iCloud and Apple Services.Key Responsibilities: Design scalable system architectures; optimize APIs; write code using Java, Python, C++, or Go; and maintain secure infrastructure handling millions of concurrent operations.Requirements: A Bachelor's or Master's degree in a technical field, strong data structures and algorithms (DSA) fundamentals, and a deep understanding of object-oriented programming.",
+  "package": "₹24 Lakhs – ₹36 Lakhs",
+  "location": "on campus",
+  "eligibleBranches": [
+    "CSE",
+    "IT",
+    "ECE",
+    "CSD",
+    "CSM"
+  ],
+  "minimumCGPA": 7.5,
+  "driveDate": {
+    "$date": "2026-06-07T00:00:00.000Z"
+  },
+  "lastDateToApply": {
+    "$date": "2026-06-06T00:00:00.000Z"
+  },
+  "status": "OPEN",
+  "createdAt": {
+    "$date": "2026-06-01T04:23:06.141Z"
+  },
+  "updatedAt": {
+    "$date": "2026-06-01T04:23:06.141Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6a1d0966205e29df32a90db3"
+  },
+  "job_id": "JOB-1780287846675",
+  "recruiterId": {
+    "$oid": "6a1d0855205e29df32a90db0"
+  },
+  "companyName": "APPLE",
+  "jobRole": " Hardware Verification Engineer",
+  "description": "Role Summary: You will work on pre-silicon verification, ensuring that the custom chip architectures power Apple's devices meet rigorous performance and functionality standards.Key Responsibilities: Create testbenches; write automated verification environments using SystemVerilog and UVM; and locate, debug, and document logical errors in complex ASIC or SoC designs.Requirements: B.E./B.Tech/M.Tech in ECE, EEE, or Microelectronics, with strong familiarity in digital design principles and hardware description languages.",
+  "package": "₹26 Lakhs – ₹45 Lakhs",
+  "location": "on campus",
+  "eligibleBranches": [
+    "EEE",
+    "ECE"
+  ],
+  "minimumCGPA": 8,
+  "driveDate": {
+    "$date": "2026-06-12T00:00:00.000Z"
+  },
+  "lastDateToApply": {
+    "$date": "2026-06-11T00:00:00.000Z"
+  },
+  "status": "OPEN",
+  "createdAt": {
+    "$date": "2026-06-01T04:24:06.675Z"
+  },
+  "updatedAt": {
+    "$date": "2026-06-01T04:24:06.675Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6a1d29de205e29df32a90db4"
+  },
+  "job_id": "JOB-1780296158792",
+  "recruiterId": {
+    "$oid": "6a1d0855205e29df32a90db0"
+  },
+  "companyName": "APPLE",
+  "jobRole": "AI / Machine Learning Engineer",
+  "description": "Role Summary: You will design, train, and deploy advanced ML models that enhance intelligent user experiences across products like Siri, camera tech, and proactive features.\nKey Responsibilities: Implement machine learning algorithms, process large datasets, optimize models to run efficiently on Apple devices (CoreML), and write code in Python, C++, or Swift.\nRequirements: Degree in CS, Data Science, or related quantitative disciplines, with practical knowledge of frameworks like PyTorch or TensorFlow.",
+  "package": "₹28 Lakhs – ₹40 Lakhs",
+  "location": "on campus",
+  "eligibleBranches": [
+    "CSE",
+    "CSD",
+    "IT",
+    "CSC",
+    "CSM",
+    "EEE"
+  ],
+  "minimumCGPA": 8,
+  "driveDate": {
+    "$date": "2026-06-16T00:00:00.000Z"
+  },
+  "lastDateToApply": {
+    "$date": "2026-06-15T00:00:00.000Z"
+  },
+  "status": "OPEN",
+  "createdAt": {
+    "$date": "2026-06-01T06:42:38.795Z"
+  },
+  "updatedAt": {
+    "$date": "2026-06-01T06:42:38.795Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6a1d2a3d205e29df32a90db5"
+  },
+  "job_id": "JOB-1780296253508",
+  "recruiterId": {
+    "$oid": "6a1d0855205e29df32a90db0"
+  },
+  "companyName": "APPLE",
+  "jobRole": "Operations & Supply Chain Analyst",
+  "description": "Role Summary: You will join Apple's global supply chain engine to manage procurement, logistics, product quality, or manufacturing scale-up for retail and hardware streams.\nKey Responsibilities: Analyze vendor capacities; build demand forecasting models using SQL and Excel; audit factory efficiency; and collaborate across global teams to deliver products on schedule.\nRequirements: Degree in Engineering (Mechanical/Industrial preferred) or Business/Supply Chain, with top-tier analytical thinking and spreadsheet modeling capabilities.",
+  "package": "₹14 Lakhs – ₹22 Lakhs",
+  "location": "on campus",
+  "eligibleBranches": [
+    "MECH",
+    "ECE",
+    "EEE"
+  ],
+  "minimumCGPA": 6.96,
+  "driveDate": {
+    "$date": "2026-06-22T00:00:00.000Z"
+  },
+  "lastDateToApply": {
+    "$date": "2026-06-21T00:00:00.000Z"
+  },
+  "status": "OPEN",
+  "createdAt": {
+    "$date": "2026-06-01T06:44:13.509Z"
+  },
+  "updatedAt": {
+    "$date": "2026-06-01T06:44:13.509Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6a1d2a7e205e29df32a90db6"
+  },
+  "job_id": "JOB-1780296318792",
+  "recruiterId": {
+    "$oid": "6a1d0855205e29df32a90db0"
+  },
+  "companyName": "APPLE",
+  "jobRole": "iOS Application Engineer",
+  "description": "Role Summary: You will write clean code to build and refine core application features that interface directly with the Apple device ecosystem.\nKey Responsibilities: Develop fluid, responsive user interfaces; integrate native frameworks and device sensors; write robust code in Swift and Objective-C; and profile applications for smooth performance.\nRequirements: Bachelor's degree in a technical stream, a portfolio of personal mobile apps or open-source contributions, and familiarity with Apple development platforms (Xcode).",
+  "package": "₹22 Lakhs – ₹32 Lakhs",
+  "location": "on campus",
+  "eligibleBranches": [
+    "IT",
+    "CSD",
+    "CSE",
+    "CSM",
+    "CSC",
+    "ECE"
+  ],
+  "minimumCGPA": 7.5,
+  "driveDate": {
+    "$date": "2026-07-01T00:00:00.000Z"
+  },
+  "lastDateToApply": {
+    "$date": "2026-06-30T00:00:00.000Z"
+  },
+  "status": "OPEN",
+  "createdAt": {
+    "$date": "2026-06-01T06:45:18.793Z"
+  },
+  "updatedAt": {
+    "$date": "2026-06-01T06:45:18.793Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6a1d2bc8205e29df32a90db9"
+  },
+  "job_id": "JOB-1780296648591",
+  "recruiterId": {
+    "$oid": "6a1d2b00205e29df32a90db7"
+  },
+  "companyName": "MICROSOFT",
+  "jobRole": " Software Engineer (L59 / SDE I)",
+  "description": "Role Summary: You will write scalable code to develop and maintain core Microsoft products, operating systems, and platforms like Azure, Windows, Office 365, and Xbox.Key Responsibilities: Build software components using C++, C#, Java, or Python; implement complex algorithms; design secure REST APIs; and debug cloud infrastructure workflows.Requirements: A Bachelor’s or Master’s engineering degree in a technical stream, strong Data Structures and Algorithms (DSA) proficiency, and solid object-oriented programming skills.",
+  "package": "₹28 Lakhs – ₹42 Lakhs",
+  "location": "on campus",
+  "eligibleBranches": [
+    "CSE",
+    "CSD",
+    "CSC",
+    "CSM",
+    "IT"
+  ],
+  "minimumCGPA": 6.99,
+  "driveDate": {
+    "$date": "2026-06-09T00:00:00.000Z"
+  },
+  "lastDateToApply": {
+    "$date": "2026-06-08T00:00:00.000Z"
+  },
+  "status": "OPEN",
+  "createdAt": {
+    "$date": "2026-06-01T06:50:48.592Z"
+  },
+  "updatedAt": {
+    "$date": "2026-06-01T06:50:48.592Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6a1d2c4d205e29df32a90dba"
+  },
+  "job_id": "JOB-1780296781859",
+  "recruiterId": {
+    "$oid": "6a1d2b00205e29df32a90db7"
+  },
+  "companyName": "MICROSOFT",
+  "jobRole": "Data & Applied Scientist",
+  "description": "Role Summary: You will sit at the intersection of coding and research to build sophisticated machine learning algorithms that drive features in Microsoft Copilot, Bing, and Azure AI.\nKey Responsibilities: Train generative AI and deep learning models; process massive unstructured data pipelines; conduct structural mathematical modeling; and execute A/B testing frameworks.\nRequirements: B.Tech/M.Tech/MS in Computer Science, Data Science, Math, or Stats. Proficiency with Python, R, PyTorch, or Azure ML tools is preferred.",
+  "package": "₹25 Lakhs – ₹38 Lakhs",
+  "location": "on campus",
+  "eligibleBranches": [
+    "CSD",
+    "CSC",
+    "CSM",
+    "CSE"
+  ],
+  "minimumCGPA": 8,
+  "driveDate": {
+    "$date": "2026-06-14T00:00:00.000Z"
+  },
+  "lastDateToApply": {
+    "$date": "2026-06-13T00:00:00.000Z"
+  },
+  "status": "OPEN",
+  "createdAt": {
+    "$date": "2026-06-01T06:53:01.860Z"
+  },
+  "updatedAt": {
+    "$date": "2026-06-01T06:53:01.860Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6a1d2c8b205e29df32a90dbb"
+  },
+  "job_id": "JOB-1780296843622",
+  "recruiterId": {
+    "$oid": "6a1d2b00205e29df32a90db7"
+  },
+  "companyName": "MICROSOFT",
+  "jobRole": " Cloud Solution Architect / Engineer",
+  "description": "Role Summary: You will work directly with enterprise businesses deploying applications onto Microsoft Azure, troubleshooting deployment roadmaps, and providing technical support. \n\nMicrosoft Careers\n +1\nKey Responsibilities: Diagnose complex networking, security, or database bottlenecks on Azure; deploy hybrid cloud migrations; and write automation scripts to streamline customer infrastructure. \nRequirements: Strong foundational knowledge of OS (Windows/Linux), computer networks, SQL databases, and general cloud computing frameworks.",
+  "package": "₹16 Lakhs – ₹25 Lakhs",
+  "location": "on campus",
+  "eligibleBranches": [
+    "CSD",
+    "CSC",
+    "CSE",
+    "CSM",
+    "EEE",
+    "IT"
+  ],
+  "minimumCGPA": 7.5,
+  "driveDate": {
+    "$date": "2026-06-19T00:00:00.000Z"
+  },
+  "lastDateToApply": {
+    "$date": "2026-06-18T00:00:00.000Z"
+  },
+  "status": "OPEN",
+  "createdAt": {
+    "$date": "2026-06-01T06:54:03.623Z"
+  },
+  "updatedAt": {
+    "$date": "2026-06-01T06:54:03.623Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6a1d2cdb205e29df32a90dbc"
+  },
+  "job_id": "JOB-1780296923859",
+  "recruiterId": {
+    "$oid": "6a1d2b00205e29df32a90db7"
+  },
+  "companyName": "MICROSOFT",
+  "jobRole": "Product Manager (PM I)",
+  "description": "Role Summary: You will act as the bridge between engineering, design, and business teams to define the vision, features, and user journeys for Microsoft tools.\nKey Responsibilities: Conduct market intelligence audits, write detailed Product Requirement Documents (PRDs), track feature usage telemetry, and prioritize engineering roadmaps.\nRequirements: Strong leadership qualities, crisp cross-functional communication, and a clear analytical mindset to evaluate product trade-offs.",
+  "package": "₹24 Lakhs – ₹35 Lakhs",
+  "location": "on campus",
+  "eligibleBranches": [
+    "CSE",
+    "CSM",
+    "CSC",
+    "CSD",
+    "ECE",
+    "IT",
+    "EEE",
+    "MECH",
+    "CIVIL",
+    "CHEM",
+    "AERO",
+    "AUTO",
+    "MINING",
+    "AGRI",
+    "METALLURGY",
+    "TEXTILE",
+    "PETRO",
+    "BIOTECH"
+  ],
+  "minimumCGPA": 7.46,
+  "driveDate": {
+    "$date": "2026-06-24T00:00:00.000Z"
+  },
+  "lastDateToApply": {
+    "$date": "2026-06-23T00:00:00.000Z"
+  },
+  "status": "OPEN",
+  "createdAt": {
+    "$date": "2026-06-01T06:55:23.860Z"
+  },
+  "updatedAt": {
+    "$date": "2026-06-01T06:55:23.860Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6a1d2d1f205e29df32a90dbd"
+  },
+  "job_id": "JOB-1780296991221",
+  "recruiterId": {
+    "$oid": "6a1d2b00205e29df32a90db7"
+  },
+  "companyName": "MICROSOFT",
+  "jobRole": "Data Center Technician",
+  "description": "Role Summary: You will support the foundation of Microsoft's cloud infrastructure by handling the deployment, diagnosis, and structural maintenance of physical servers.\nKey Responsibilities: Replace failing blades, components, and network switches; run diagnostic checks on physical servers; manage infrastructure fiber routing; and handle inventory asset tracking.\nRequirements: Engineering degree or polytechnic diploma in EEE, ECE, or IT, along with basic troubleshooting skills for computer hardware and server infrastructure.",
+  "package": "₹10 Lakhs – ₹18 Lakhs",
+  "location": "on campus",
+  "eligibleBranches": [
+    "EEE",
+    "ECE",
+    "IT"
+  ],
+  "minimumCGPA": 6.5,
+  "driveDate": {
+    "$date": "2026-06-27T00:00:00.000Z"
+  },
+  "lastDateToApply": {
+    "$date": "2026-06-26T00:00:00.000Z"
+  },
+  "status": "OPEN",
+  "createdAt": {
+    "$date": "2026-06-01T06:56:31.222Z"
+  },
+  "updatedAt": {
+    "$date": "2026-06-01T06:56:31.222Z"
+  },
+  "__v": 0
+}]

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import toast from "react-hot-toast";
 import api from "../../api/client";
 import PageHeader from "../ui/PageHeader";
@@ -25,9 +25,24 @@ const Jobs = () => {
     }
   };
 
+  const [searchParams] = useSearchParams();
+  const queryJobId = searchParams.get("jobId");
+
   useEffect(() => {
     loadJobs();
   }, []);
+
+  useEffect(() => {
+    if (queryJobId && jobs.length > 0) {
+      setExpandedJobId(queryJobId);
+      setTimeout(() => {
+        const element = document.getElementById(`job-card-${queryJobId}`);
+        if (element) {
+          element.scrollIntoView({ behavior: "smooth", block: "center" });
+        }
+      }, 150);
+    }
+  }, [queryJobId, jobs]);
 
   const getUrgency = (job) => {
     const dates = [job.lastDateToApply, job.date]
@@ -100,6 +115,7 @@ const Jobs = () => {
             return (
               <div
                 key={job.id}
+                id={`job-card-${job.id}`}
                 className={`rounded-2xl shadow-sm border p-5 sm:p-6 transition-all duration-300 ${
                   urgency
                     ? "bg-amber-50/70 border-amber-200 shadow-amber-100"
@@ -193,14 +209,16 @@ const Jobs = () => {
                   <button
                     type="button"
                     onClick={() => applyToJob(job)}
-                    disabled={!canApply || applyingJobId === job.id}
+                    disabled={!canApply || applyingJobId === job.id || job.expired}
                     className="px-4 py-2 rounded-xl bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                   >
                     {job.alreadyApplied
                       ? "Applied"
                       : applyingJobId === job.id
                         ? "Applying..."
-                        : "Apply Now"}
+                        : job.expired
+                          ? "Expired"
+                          : "Apply Now"}
                   </button>
                 </div>
 

@@ -244,13 +244,13 @@ const RecruiterInterviews = () => {
       )}
 
       {open && (
-        <div className="fixed inset-0 z-[60] bg-black/45 backdrop-blur-sm flex items-center justify-center px-4 py-6">
-          <div className="w-full max-w-6xl max-h-[88vh] overflow-hidden rounded-[2rem] bg-white shadow-2xl border border-gray-100 flex flex-col">
+        <div className="fixed inset-0 z-[60] bg-black/50 backdrop-blur-sm flex items-center justify-center px-4 py-6 overflow-y-auto">
+          <div className="w-full max-w-2xl rounded-3xl bg-white shadow-2xl border border-gray-100 flex flex-col my-auto max-h-[92vh]">
             <div className="flex items-start justify-between gap-4 border-b border-gray-100 px-6 py-5">
               <div>
-                <h3 className="text-xl font-semibold text-gray-900">Schedule Interview</h3>
-                <p className="text-sm text-gray-500">
-                  Pick an applicant and use the drive date from the job as a starting point.
+                <h3 className="text-xl font-bold text-gray-900">Schedule Interview</h3>
+                <p className="text-sm text-gray-500 mt-1">
+                  Pick an applicant and configure the interview details.
                 </p>
               </div>
               <button
@@ -260,231 +260,148 @@ const RecruiterInterviews = () => {
                   setForm(emptySchedule);
                   setSelectedApplicationId("");
                 }}
-                className="px-3 py-2 rounded-lg bg-gray-100 text-gray-700 hover:bg-gray-200 text-sm"
+                className="rounded-full bg-gray-100 px-3 py-2 text-sm font-medium text-gray-600 hover:bg-gray-200"
               >
                 Close
               </button>
             </div>
 
-            <div className="grid flex-1 min-h-0 grid-cols-1 lg:grid-cols-[0.82fr_1.18fr]">
-              <aside className="border-b lg:border-b-0 lg:border-r border-gray-100 bg-slate-50/80 p-5 overflow-y-auto">
-                <div className="rounded-2xl bg-white border border-gray-100 p-4 shadow-sm">
-                  <p className="text-xs uppercase tracking-[0.22em] text-stone-600 font-bold">Selected applicant</p>
-                  <p className="mt-2 text-base font-semibold text-gray-900 truncate">
-                    {selectedApplication?.name || "No applicant selected"}
+            <form onSubmit={handleSubmit} className="overflow-y-auto p-6 space-y-6">
+              {/* Applicant Info Banner if selected */}
+              {selectedApplication && (
+                <div className="rounded-2xl bg-sky-50 border border-sky-100 p-4">
+                  <p className="text-xs uppercase tracking-[0.22em] text-sky-600 font-bold">Applicant Details</p>
+                  <p className="mt-1 text-base font-semibold text-gray-900 truncate">
+                    {selectedApplication.name}
                   </p>
-                  <p className="text-sm text-gray-500 truncate">
-                    {selectedApplication?.drive || "Choose from the list to prefill the calendar"}
+                  <p className="text-sm text-gray-600 truncate">
+                    {selectedApplication.drive} · Drive Date: {displayDate(selectedApplication.driveDate)}
                   </p>
+                </div>
+              )}
 
-                  <div className="mt-4 grid gap-3 text-sm">
-                    <div className="rounded-xl bg-slate-50 p-3">
-                      <p className="text-xs uppercase tracking-wide text-gray-400">Drive Date</p>
-                      <p className="mt-1 font-medium text-gray-900">
-                        {selectedApplication?.driveDate || "Will default from the job data"}
-                      </p>
-                    </div>
-                    <div className="rounded-xl bg-slate-50 p-3">
-                      <p className="text-xs uppercase tracking-wide text-gray-400">Status</p>
-                      <p className="mt-1 font-medium text-gray-900">
-                        {selectedApplication?.status || "Pending"}
-                      </p>
-                    </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <label className="sm:col-span-2 block">
+                  <span className="block mb-1.5 text-sm font-semibold text-gray-700">Select Applicant</span>
+                  <select
+                    name="applicationId"
+                    value={form.applicationId}
+                    onChange={handleChange}
+                    className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+                    required
+                  >
+                    <option value="">Select applicant</option>
+                    {scheduleOptions.map((app) => (
+                      <option key={app.id} value={app.id}>
+                        {app.name} - {app.drive}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+
+                <label className="block">
+                  <span className="block mb-1.5 text-sm font-semibold text-gray-700">Round</span>
+                  <input
+                    name="currentRound"
+                    value={form.currentRound}
+                    onChange={handleChange}
+                    className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="Technical Interview"
+                    required
+                  />
+                </label>
+
+                <label className="block">
+                  <span className="block mb-1.5 text-sm font-semibold text-gray-700">Mode</span>
+                  <select
+                    name="interviewMode"
+                    value={form.interviewMode}
+                    onChange={handleChange}
+                    className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+                  >
+                    <option value="Offline">Offline</option>
+                    <option value="Online">Online</option>
+                    <option value="Hybrid">Hybrid</option>
+                  </select>
+                </label>
+
+                <label className="block">
+                  <span className="block mb-1.5 text-sm font-semibold text-gray-700">Date</span>
+                  <input
+                    type="date"
+                    name="interviewDate"
+                    value={form.interviewDate}
+                    onChange={handleChange}
+                    className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-blue-500"
+                    required
+                  />
+                </label>
+
+                <label className="block">
+                  <span className="block mb-1.5 text-sm font-semibold text-gray-700">Time</span>
+                  <input
+                    type="time"
+                    name="interviewTime"
+                    value={form.interviewTime}
+                    onChange={handleChange}
+                    className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-blue-500"
+                    required
+                  />
+                </label>
+              </div>
+
+              {/* Final Decision Section */}
+              <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+                <div className="flex items-center justify-between gap-3 border-b border-slate-200/60 pb-3 mb-4">
+                  <div>
+                    <p className="text-sm font-bold text-slate-800">Final Decision</p>
+                    <p className="text-xs text-slate-500">
+                      Instantly select or reject the candidate.
+                    </p>
                   </div>
                 </div>
 
-                <div className="mt-4 rounded-2xl border border-gray-100 bg-white shadow-sm">
-                  <div className="border-b border-gray-100 px-4 py-3">
-                    <p className="text-sm font-semibold text-gray-900">Applicants</p>
-                    <p className="text-xs text-gray-500">Select one to prefill the schedule form</p>
-                  </div>
-                  <div className="max-h-[40vh] overflow-y-auto p-2">
-                    {scheduleOptions.length === 0 ? (
-                      <div className="p-4 text-sm text-gray-400 text-center">No applicants available</div>
-                    ) : (
-                      scheduleOptions.map((app) => {
-                        const active = app.id === form.applicationId;
-                        return (
-                          <button
-                            type="button"
-                            key={app.id}
-                            onClick={() =>
-                              handleChange({
-                                target: {
-                                  name: "applicationId",
-                                  value: app.id,
-                                },
-                              })
-                            }
-                            className={`w-full text-left rounded-xl border px-4 py-3 mb-2 transition-all ${
-                              active
-                                ? "border-stone-300 bg-stone-100 text-stone-900"
-                                : "border-gray-100 bg-white hover:bg-gray-50"
-                            }`}
-                          >
-                            <div className="flex items-start justify-between gap-3">
-                              <div className="min-w-0">
-                                <p className="font-medium truncate">{app.name}</p>
-                                <p className="text-xs text-gray-500 truncate">{app.drive}</p>
-                              </div>
-                              <span className="text-[11px] font-semibold px-2 py-1 rounded-full bg-gray-100 text-gray-600">
-                                {displayDate(app.driveDate)}
-                              </span>
-                            </div>
-                          </button>
-                        );
-                      })
-                    )}
-                  </div>
-                </div>
-              </aside>
-
-              <form onSubmit={handleSubmit} className="min-h-0 overflow-y-auto p-5 sm:p-6">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                  <label className="sm:col-span-2">
-                    <span className="block mb-1.5 text-sm font-semibold text-gray-700">Applicant</span>
-                    <select
-                      name="applicationId"
-                      value={form.applicationId}
-                      onChange={handleChange}
-                      className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-stone-500 bg-white"
-                      required
-                    >
-                      <option value="">Select applicant</option>
-                      {scheduleOptions.map((app) => (
-                        <option key={app.id} value={app.id}>
-                          {app.name} - {app.drive}
-                        </option>
-                      ))}
-                    </select>
-                  </label>
-
-                  <label>
-                    <span className="block mb-1.5 text-sm font-semibold text-gray-700">Round</span>
-                    <input
-                      name="currentRound"
-                      value={form.currentRound}
-                      onChange={handleChange}
-                      className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-stone-500"
-                      placeholder="Technical Interview"
-                      required
-                    />
-                  </label>
-
-                  <label>
-                    <span className="block mb-1.5 text-sm font-semibold text-gray-700">Mode</span>
-                    <select
-                      name="interviewMode"
-                      value={form.interviewMode}
-                      onChange={handleChange}
-                      className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-stone-500 bg-white"
-                    >
-                      <option value="Offline">Offline</option>
-                      <option value="Online">Online</option>
-                      <option value="Hybrid">Hybrid</option>
-                    </select>
-                  </label>
-
-                  <label>
-                    <span className="block mb-1.5 text-sm font-semibold text-gray-700">Date</span>
-                    <input
-                      type="date"
-                      name="interviewDate"
-                      value={form.interviewDate}
-                      onChange={handleChange}
-                      className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-stone-500"
-                      required
-                    />
-                  </label>
-
-                  <label>
-                    <span className="block mb-1.5 text-sm font-semibold text-gray-700">Time</span>
-                    <input
-                      type="time"
-                      name="interviewTime"
-                      value={form.interviewTime}
-                      onChange={handleChange}
-                      className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-stone-500"
-                      required
-                    />
-                  </label>
-                </div>
-
-                <div className="mt-6 rounded-2xl border border-gray-100 bg-slate-50 p-4">
-                  <p className="text-sm font-semibold text-gray-900">Calendar preview</p>
-                  <div className="mt-3 grid grid-cols-1 sm:grid-cols-3 gap-3 text-sm">
-                    <div className="rounded-xl bg-white p-3 border border-gray-100">
-                      <p className="text-xs uppercase tracking-wide text-gray-400">Prefilled Date</p>
-                      <p className="mt-1 font-medium text-gray-900">{form.interviewDate || "-"}</p>
-                    </div>
-                    <div className="rounded-xl bg-white p-3 border border-gray-100">
-                      <p className="text-xs uppercase tracking-wide text-gray-400">Prefilled Time</p>
-                      <p className="mt-1 font-medium text-gray-900">{form.interviewTime || "-"}</p>
-                    </div>
-                    <div className="rounded-xl bg-white p-3 border border-gray-100">
-                      <p className="text-xs uppercase tracking-wide text-gray-400">Source</p>
-                      <p className="mt-1 font-medium text-gray-900">
-                        {selectedApplication?.driveDate ? "Previous job schedule" : "Manual entry"}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="mt-6 rounded-2xl border border-stone-200 bg-stone-50 p-4">
-                  <div className="flex items-center justify-between gap-3">
-                    <div>
-                      <p className="text-sm font-semibold text-stone-900">Final decision</p>
-                      <p className="text-xs text-stone-500">
-                        Mark the interview outcome and send the result to the student.
-                      </p>
-                    </div>
-                    <span className="text-[11px] font-semibold rounded-full bg-white px-2.5 py-1 text-stone-600 border border-stone-200">
-                      Notification ready
-                    </span>
-                  </div>
-
-                  <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <button
-                      type="button"
-                      onClick={() => handleDecision("SELECTED")}
-                      disabled={saving || !form.applicationId}
-                      className="rounded-xl bg-stone-900 px-4 py-3 text-sm font-semibold text-white transition-colors hover:bg-stone-800 disabled:opacity-60"
-                    >
-                      Recruit / Select
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => handleDecision("REJECTED")}
-                      disabled={saving || !form.applicationId}
-                      className="rounded-xl border border-stone-300 bg-white px-4 py-3 text-sm font-semibold text-stone-700 transition-colors hover:bg-stone-100 disabled:opacity-60"
-                    >
-                      Reject Candidate
-                    </button>
-                  </div>
-                </div>
-
-                <div className="mt-6 flex justify-end gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <button
                     type="button"
-                    onClick={() => {
-                      setOpen(false);
-                      setForm(emptySchedule);
-                      setSelectedApplicationId("");
-                    }}
-                    className="px-6 py-2.5 rounded-xl border border-gray-200 text-gray-600 hover:bg-gray-50 font-medium text-sm transition-colors"
+                    onClick={() => handleDecision("SELECTED")}
+                    disabled={saving || !form.applicationId}
+                    className="rounded-xl bg-green-600 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-green-700 disabled:opacity-60"
                   >
-                    Cancel
+                    Recruit / Select
                   </button>
                   <button
-                    type="submit"
-                    disabled={saving}
-                    className="px-6 py-2.5 rounded-xl bg-stone-900 text-white hover:bg-stone-800 font-medium text-sm transition-colors disabled:opacity-60"
+                    type="button"
+                    onClick={() => handleDecision("REJECTED")}
+                    disabled={saving || !form.applicationId}
+                    className="rounded-xl border border-red-200 bg-white px-4 py-2.5 text-sm font-semibold text-red-600 transition-colors hover:bg-red-50 disabled:opacity-60"
                   >
-                    {saving ? "Saving..." : "Save Schedule"}
+                    Reject Candidate
                   </button>
                 </div>
-              </form>
-            </div>
+              </div>
+
+              <div className="flex justify-end gap-3 pt-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setOpen(false);
+                    setForm(emptySchedule);
+                    setSelectedApplicationId("");
+                  }}
+                  className="px-5 py-2.5 rounded-xl border border-gray-200 text-gray-600 hover:bg-gray-50 font-medium text-sm transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={saving}
+                  className="px-5 py-2.5 rounded-xl bg-blue-600 text-white hover:bg-blue-700 font-medium text-sm transition-colors disabled:opacity-60"
+                >
+                  {saving ? "Saving..." : "Save Schedule"}
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}

@@ -208,6 +208,12 @@ const AIInsights = () => {
                             Apply until {drive.lastDateToApply || "-"} ·{" "}
                             {drive.reason}
                           </p>
+                          <Link
+                            to={`/student/student-dashboard/jobs?jobId=${drive.id}`}
+                            className="mt-2 inline-flex items-center text-xs font-semibold text-sky-600 hover:text-sky-700 hover:underline"
+                          >
+                            View Job →
+                          </Link>
                         </div>
                       </div>
                       <div className="flex flex-col items-end gap-2 shrink-0">

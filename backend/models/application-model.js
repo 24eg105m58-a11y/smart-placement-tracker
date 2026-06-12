@@ -86,6 +86,10 @@ const ApplicationSchema = new Schema(
       type: String,
       default: "",
     },
+    recommendedByAdmin: {
+      type: Boolean,
+      default: false,
+    },
   },
   {
     timestamps: true,

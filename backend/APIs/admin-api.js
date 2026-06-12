@@ -348,3 +348,58 @@ adminApp.get("/reports", verifyToken("ADMIN"), async (req, res, next) => {
     next(err);
   }
 });
+
+adminApp.post("/recommend", verifyToken("ADMIN"), async (req, res, next) => {
+  try {
+    const { studentId, jobId } = req.body;
+    const [student, academic, job] = await Promise.all([
+      UserModel.findById(studentId),
+      AcademicDetailsModel.findOne({ studentId }),
+      JobPostingModel.findById(jobId),
+    ]);
+
+    if (!student || !job) {
+      return res.status(404).json({
+        success: false,
+        message: "Student or Job not found",
+      });
+    }
+
+    if (!academic) {
+      return res.status(400).json({
+        success: false,
+        message: "Student has not completed academic details",
+      });
+    }
+
+    let application = await ApplicationModel.findOne({ studentId, jobId });
+    if (application) {
+      application.recommendedByAdmin = true;
+      await application.save();
+    } else {
+      application = new ApplicationModel({
+        studentId,
+        jobId,
+        companyName: job.companyName,
+        jobRole: job.jobRole,
+        studentName: `${student.firstname || ""} ${student.lastname || ""}`.trim(),
+        package: job.package,
+        CGPA: academic.cgpa,
+        eligibleBranches: academic.branch,
+        driveDate: job.driveDate,
+        applicationStatus: "APPLIED",
+        currentRound: "Admin Recommended",
+        recommendedByAdmin: true,
+      });
+      await application.save();
+    }
+
+    res.json({
+      success: true,
+      message: "Student recommended to recruiter successfully",
+      payload: application,
+    });
+  } catch (err) {
+    next(err);
+  }
+});

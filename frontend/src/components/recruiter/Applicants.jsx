@@ -5,7 +5,20 @@ import DataTable from "../ui/DataTable";
 import api from "../../api/client";
 
 const columns = [
-  { key: "name", label: "Name" },
+  {
+    key: "name",
+    label: "Name",
+    render: (val, row) => (
+      <div className="flex items-center gap-2">
+        <span className="font-semibold text-slate-800">{val}</span>
+        {row.recommendedByAdmin && (
+          <span className="inline-flex items-center gap-0.5 rounded-full bg-amber-100 px-2 py-0.5 text-[10px] font-bold text-amber-700 shrink-0">
+            ⭐ Recommended
+          </span>
+        )}
+      </div>
+    ),
+  },
   { key: "drive", label: "Drive" },
   { key: "cgpa", label: "CGPA" },
   { key: "branch", label: "Branch" },
@@ -20,7 +33,20 @@ const Applicants = () => {
   const loadApplicants = async () => {
     try {
       const res = await api.get("/company-api/get-applications");
-      setData(res.data.payload || []);
+      const mapped = (res.data.payload || []).map((app) => ({
+        ...app,
+        status:
+          app.status === "SELECTED"
+            ? "Accepted"
+            : app.status === "REJECTED"
+              ? "Rejected"
+              : app.status === "HOLD"
+                ? "Hold"
+                : app.status === "APPLIED"
+                  ? "Applied"
+                  : app.status,
+      }));
+      setData(mapped);
     } catch (error) {
       console.log(error);
       setData([]);
@@ -122,9 +148,16 @@ const Applicants = () => {
             <div className="flex flex-col sm:flex-row gap-3 justify-end border-t border-slate-100 px-4 sm:px-6 py-5 bg-slate-50">
               <button
                 type="button"
+                onClick={() => setSelectedApplicant(null)}
+                className="rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-600 hover:bg-slate-50 mr-auto transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
                 onClick={() => holdApplicant(selectedApplicant)}
                 disabled={savingId === selectedApplicant.id}
-                className="rounded-xl border border-amber-200 bg-white px-4 py-2.5 text-sm font-semibold text-amber-700 hover:bg-amber-50 disabled:opacity-60"
+                className="rounded-xl border border-amber-200 bg-white px-4 py-2.5 text-sm font-semibold text-amber-700 hover:bg-amber-50 disabled:opacity-60 transition-colors"
               >
                 Hold
               </button>
@@ -132,7 +165,7 @@ const Applicants = () => {
                 type="button"
                 onClick={() => rejectApplicant(selectedApplicant)}
                 disabled={savingId === selectedApplicant.id}
-                className="rounded-xl border border-rose-200 bg-white px-4 py-2.5 text-sm font-semibold text-rose-600 hover:bg-rose-50 disabled:opacity-60"
+                className="rounded-xl border border-rose-200 bg-white px-4 py-2.5 text-sm font-semibold text-rose-600 hover:bg-rose-50 disabled:opacity-60 transition-colors"
               >
                 Reject
               </button>
@@ -140,7 +173,7 @@ const Applicants = () => {
                 type="button"
                 onClick={() => acceptApplicant(selectedApplicant)}
                 disabled={savingId === selectedApplicant.id}
-                className="rounded-xl bg-sky-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-sky-700 disabled:opacity-60"
+                className="rounded-xl bg-sky-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-sky-700 disabled:opacity-60 transition-colors"
               >
                 Accept
               </button>

@@ -82,6 +82,7 @@ const toApplicantRow = (app) => ({
   driveDate: formatDate(app.driveDate),
   email: app.studentId?.email || "",
   rollNumber: app.studentRollNumber || "",
+  recommendedByAdmin: app.recommendedByAdmin || false,
 });
 
 const toInterviewRow = (app) => ({
@@ -358,12 +359,7 @@ companyApp.patch("/jobs/:jobId", verifyToken("RECRUITER"), async (req, res, next
       });
     }
 
-    if (isJobLocked(job)) {
-      return res.status(403).json({
-        success: false,
-        message: "This job can no longer be edited or postponed",
-      });
-    }
+    // Removed isJobLocked check to allow recruiters to edit expired/postponed jobs
 
     const updated = {
       jobRole: req.body.role || req.body.jobRole || job.jobRole,
@@ -410,12 +406,7 @@ companyApp.delete("/jobs/:jobId", verifyToken("RECRUITER"), async (req, res, nex
       });
     }
 
-    if (isJobLocked(job)) {
-      return res.status(403).json({
-        success: false,
-        message: "This job can no longer be deleted",
-      });
-    }
+    // Removed isJobLocked check to allow recruiters to delete expired jobs
 
     await ApplicationModel.deleteMany({ jobId: job._id });
     await JobPostingModel.findByIdAndDelete(job._id);
