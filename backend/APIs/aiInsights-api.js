@@ -49,37 +49,6 @@ const buildAiSummary = async ({ student, academicDetails, resume, recommendation
   }
 
   try {
-    const response = await groqClient.responses.create({
-      model: groqModel,
-      input:
-        "You are a helpful campus placement coach. Give short, practical placement guidance in simple language.\n\n" +
-        JSON.stringify(
-          {
-            student,
-            academicDetails,
-            resume,
-            recommendations: recommendations.slice(0, 3).map((job) => ({
-              company: job.companyName || job.company,
-              role: job.jobRole || job.driveName,
-              package: job.package,
-              lastDateToApply: formatDate(job.lastDateToApply || job.lastDate),
-            })),
-          },
-          null,
-          2,
-        ) +
-        "\n\nWrite a short summary and 3 bullet tips about which drives the student should focus on next.",
-    });
-
-    const outputText = response.output_text?.trim();
-
-    if (outputText) {
-      return {
-        summary: outputText,
-        tips: ruleBasedTips,
-      };
-    }
-
     const completion = await groqClient.chat.completions.create({
       model: groqModel,
       temperature: 0.4,
