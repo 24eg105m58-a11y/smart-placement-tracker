@@ -29,6 +29,7 @@ const Applicants = () => {
   const [data, setData] = useState([]);
   const [selectedApplicant, setSelectedApplicant] = useState(null);
   const [savingId, setSavingId] = useState(null);
+  const [previewSrc, setPreviewSrc] = useState("");
 
   const openResume = (resumeUrl) => {
     if (!resumeUrl) return;
@@ -61,6 +62,37 @@ const Applicants = () => {
   useEffect(() => {
     loadApplicants();
   }, []);
+
+  useEffect(() => {
+    let objectUrl = "";
+
+    const buildPreview = async () => {
+      if (!selectedApplicant?.resumeUrl || selectedApplicant.resumeText) {
+        setPreviewSrc("");
+        return;
+      }
+
+      try {
+        const response = await fetch(selectedApplicant.resumeUrl);
+        if (!response.ok) throw new Error("Unable to load resume preview");
+
+        const blob = await response.blob();
+        objectUrl = URL.createObjectURL(blob);
+        setPreviewSrc(objectUrl);
+      } catch (error) {
+        console.error(error);
+        setPreviewSrc("");
+      }
+    };
+
+    buildPreview();
+
+    return () => {
+      if (objectUrl) {
+        URL.revokeObjectURL(objectUrl);
+      }
+    };
+  }, [selectedApplicant?.resumeText, selectedApplicant?.resumeUrl]);
 
   const updateStatus = async (row, applicationStatus) => {
     setSavingId(row.id);
@@ -178,10 +210,10 @@ const Applicants = () => {
                     <pre className="whitespace-pre-wrap break-words text-sm leading-6 text-slate-700 font-sans">
                       {selectedApplicant.resumeText}
                     </pre>
-                  ) : selectedApplicant.resumeUrl ? (
+                  ) : previewSrc ? (
                     <iframe
                       title="Resume preview"
-                      src={selectedApplicant.resumeUrl}
+                      src={previewSrc}
                       className="h-[420px] w-full rounded-xl bg-white"
                     />
                   ) : null}

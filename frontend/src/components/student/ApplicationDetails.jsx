@@ -6,6 +6,7 @@ const ApplicationDetails = () => {
   const { applicationId } = useParams();
 
   const [application, setApplication] = useState(null);
+  const [previewSrc, setPreviewSrc] = useState("");
 
   useEffect(() => {
     api
@@ -15,6 +16,37 @@ const ApplicationDetails = () => {
       })
       .catch(console.error);
   }, [applicationId]);
+
+  useEffect(() => {
+    let objectUrl = "";
+
+    const buildPreview = async () => {
+      if (!application?.resumeUrl || application.resumeText) {
+        setPreviewSrc("");
+        return;
+      }
+
+      try {
+        const response = await fetch(application.resumeUrl);
+        if (!response.ok) throw new Error("Unable to load resume preview");
+
+        const blob = await response.blob();
+        objectUrl = URL.createObjectURL(blob);
+        setPreviewSrc(objectUrl);
+      } catch (error) {
+        console.error(error);
+        setPreviewSrc("");
+      }
+    };
+
+    buildPreview();
+
+    return () => {
+      if (objectUrl) {
+        URL.revokeObjectURL(objectUrl);
+      }
+    };
+  }, [application?.resumeText, application?.resumeUrl]);
 
   if (!application) {
     return <div className="p-6">Loading...</div>;
@@ -76,10 +108,10 @@ const ApplicationDetails = () => {
               <pre className="whitespace-pre-wrap break-words text-sm leading-6 text-slate-700 font-sans">
                 {application.resumeText}
               </pre>
-            ) : application.resumeUrl ? (
+            ) : previewSrc ? (
               <iframe
                 title="Resume preview"
-                src={application.resumeUrl}
+                src={previewSrc}
                 className="h-[460px] w-full rounded-xl bg-white"
               />
             ) : null}
