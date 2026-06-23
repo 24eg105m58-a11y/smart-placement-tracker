@@ -148,7 +148,7 @@ const AIInsights = () => {
               <p className="text-xs font-bold uppercase tracking-[0.26em] text-blue-600">
                 Placement coach
               </p>
-              <h2 className="mt-3 text-2xl font-black text-slate-950">
+              <h2 className="mt-3 text-2xl font-black text-slate-950 whitespace-pre-line">
                 {data?.insightSummary ||
                   "Keep your profile updated and focus on drives that match your branch and CGPA."}
               </h2>

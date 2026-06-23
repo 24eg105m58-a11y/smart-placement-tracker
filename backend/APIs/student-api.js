@@ -346,6 +346,7 @@ const buildStudentAiContext = async (studentId) => {
     ApplicationModel.find({ studentId }).sort({ createdAt: -1 }),
     buildCompanyLogoMap(),
     UserModel.findById(studentId).select("firstname lastname"),
+    ResumeModel.findOne({ studentId }).sort({ createdAt: -1 }),
   ]);
 
   const appliedJobIds = new Set(applications.map((app) => String(app.jobId)));
@@ -410,6 +411,7 @@ const buildStudentAiContext = async (studentId) => {
       resumeUploaded: Boolean(academic?.resume),
       linkedIn: academic?.linkedIn || "",
       github: academic?.github || "",
+      resumeSkills: resume?.extractedSkills || [],
     },
     stats: {
       eligibilityPercentage: jobs.length
@@ -433,6 +435,7 @@ const buildStudentAiContext = async (studentId) => {
     recommendations,
     jobs,
     applications,
+    resume,
   };
 };
 
@@ -457,12 +460,13 @@ const generateAiInsightText = async (context) => {
   try {
     const response = await groqClient.chat.completions.create({
       model: groqModel,
-      temperature: 0.4,
+      temperature: 0.2,
+      max_tokens: 180,
       messages: [
         {
           role: "system",
           content:
-            "You are a helpful campus placement coach. Give short, practical placement guidance in simple language.",
+            "You are a concise campus placement coach. Be neat, practical, and short. Focus on job fit, why a drive matches the student's skills, and what skills to learn next. Do not mention the student's name. Do not write long paragraphs.",
         },
         {
           role: "user",
@@ -471,6 +475,7 @@ const generateAiInsightText = async (context) => {
               student: context.student,
               stats: context.stats,
               recommendations: context.recommendations.slice(0, 3),
+              resumeSkills: context.student.resumeSkills || [],
             },
             null,
             2,
@@ -479,7 +484,7 @@ const generateAiInsightText = async (context) => {
         {
           role: "user",
           content:
-            "Write a short summary and 3 bullet tips about which drives the student should focus on next.",
+            "Write exactly 4 short lines only:\n1. Summary: one sentence on which drive types fit the student best and why.\n2. Best drives: name up to 3 suitable drives or drive types from the data.\n3. Skills to learn: list 2-3 important skills the student should build next.\n4. Next step: one short action the student should take now.\nKeep it brief, neat, and practical. Avoid long explanations and marketing language.",
         },
       ],
     });
