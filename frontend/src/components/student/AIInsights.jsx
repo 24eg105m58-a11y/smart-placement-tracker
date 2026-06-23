@@ -14,6 +14,20 @@ const getInitials = (name = "") =>
     .join("")
     .toUpperCase();
 
+const normalizeInsights = (payload = {}) => ({
+  insightSummary:
+    payload.insightSummary ||
+    payload.summary ||
+    "",
+  tips: payload.tips || [],
+  recommendations:
+    payload.recommendations ||
+    payload.recommendedJobs ||
+    [],
+  student: payload.student || {},
+  stats: payload.stats || {},
+});
+
 const AIInsights = () => {
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState(null);
@@ -31,8 +45,23 @@ const AIInsights = () => {
   const loadInsights = async () => {
     setLoading(true);
     try {
-      const res = await api.get("/student-api/ai-insights");
-      setData(res.data.payload || null);
+      const profileRes = await api.get("/user-api/profile");
+      const studentId =
+        profileRes.data.payload?._id || profileRes.data.payload?.id || null;
+
+      let response;
+
+      try {
+        response = await api.get("/student-api/ai-insights");
+      } catch (primaryError) {
+        if (!studentId) {
+          throw primaryError;
+        }
+
+        response = await api.get(`/api/ai-insights/${studentId}`);
+      }
+
+      setData(normalizeInsights(response.data.payload || {}));
     } catch (error) {
       console.log(error);
       toast.error(

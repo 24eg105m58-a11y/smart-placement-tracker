@@ -26,6 +26,7 @@ const groqApiKey =
   process.env.XAI_CONSOLE_API_KEY ||
   process.env.XAI_API_KEY;
 const groqClient = groqApiKey ? new Groq({ apiKey: groqApiKey }) : null;
+const groqModel = process.env.GROQ_MODEL || "llama-3.1-8b-instant";
 
 const isDriveExpired = (job) => {
   if (job.status === "CLOSED" || job.status === "Completed") return true;
@@ -454,8 +455,34 @@ const generateAiInsightText = async (context) => {
   }
 
   try {
-    const response = await groqClient.chat.completions.create({
-      model: "llama-3.1-8b-instant",
+    const response = await groqClient.responses.create({
+      model: groqModel,
+      input:
+        "You are a helpful campus placement coach. Give short, practical placement guidance in simple language.\n\n" +
+        "Student context:\n" +
+        JSON.stringify(
+          {
+            student: context.student,
+            stats: context.stats,
+            recommendations: context.recommendations.slice(0, 3),
+          },
+          null,
+          2,
+        ) +
+        "\n\nWrite a short summary and 3 bullet tips about which drives the student should focus on next.",
+    });
+
+    const outputText = response.output_text?.trim();
+
+    if (outputText) {
+      return {
+        summary: outputText,
+        tips: ruleBased,
+      };
+    }
+
+    const fallbackChat = await groqClient.chat.completions.create({
+      model: groqModel,
       temperature: 0.4,
       messages: [
         {
@@ -484,7 +511,8 @@ const generateAiInsightText = async (context) => {
     });
 
     return {
-      summary: response.choices?.[0]?.message?.content?.trim() || ruleBased[0],
+      summary:
+        fallbackChat.choices?.[0]?.message?.content?.trim() || ruleBased[0],
       tips: ruleBased,
     };
   } catch (err) {
