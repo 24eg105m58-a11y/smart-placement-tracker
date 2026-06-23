@@ -30,6 +30,11 @@ const Applicants = () => {
   const [selectedApplicant, setSelectedApplicant] = useState(null);
   const [savingId, setSavingId] = useState(null);
 
+  const openResume = (resumeUrl) => {
+    if (!resumeUrl) return;
+    window.open(resumeUrl, "_blank", "noopener,noreferrer");
+  };
+
   const loadApplicants = async () => {
     try {
       const res = await api.get("/company-api/get-applications");
@@ -144,6 +149,45 @@ const Applicants = () => {
                 </div>
               ))}
             </div>
+
+            {(selectedApplicant.resumeText || selectedApplicant.resumeUrl) && (
+              <div className="border-t border-slate-100 px-4 sm:px-6 py-5">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                  <div>
+                    <p className="text-xs uppercase tracking-[0.22em] text-sky-600 font-semibold">
+                      Resume Preview
+                    </p>
+                    <p className="text-sm text-slate-500 mt-1">
+                      Read the resume directly inside the application.
+                    </p>
+                  </div>
+
+                  {selectedApplicant.resumeUrl && (
+                    <button
+                      type="button"
+                      onClick={() => openResume(selectedApplicant.resumeUrl)}
+                      className="rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-600 hover:bg-slate-50 transition-colors"
+                    >
+                      Open Resume
+                    </button>
+                  )}
+                </div>
+
+                <div className="mt-4 rounded-2xl border border-slate-100 bg-slate-50 p-4 max-h-[420px] overflow-y-auto">
+                  {selectedApplicant.resumeText ? (
+                    <pre className="whitespace-pre-wrap break-words text-sm leading-6 text-slate-700 font-sans">
+                      {selectedApplicant.resumeText}
+                    </pre>
+                  ) : selectedApplicant.resumeUrl ? (
+                    <iframe
+                      title="Resume preview"
+                      src={selectedApplicant.resumeUrl}
+                      className="h-[420px] w-full rounded-xl bg-white"
+                    />
+                  ) : null}
+                </div>
+              </div>
+            )}
 
             <div className="flex flex-col sm:flex-row gap-3 justify-end border-t border-slate-100 px-4 sm:px-6 py-5 bg-slate-50">
               <button

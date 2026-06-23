@@ -123,7 +123,7 @@ const Resume = () => {
             </label>
             <input
               type="file"
-              accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+              accept=".pdf,.docx,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
               onChange={(e) => setFile(e.target.files?.[0] || null)}
               className="w-full border border-gray-200 rounded-xl p-3 text-sm file:mr-4 file:px-4 file:py-2 file:border-0 file:bg-blue-600 file:text-white file:rounded-lg"
             />
@@ -135,6 +135,35 @@ const Resume = () => {
             >
               {saving ? "Uploading..." : "Upload Resume"}
             </button>
+
+            {resume?.resumeText && (
+              <div className="mt-6 rounded-2xl border border-slate-100 bg-slate-50 p-4">
+                <div className="flex items-center justify-between gap-3 mb-3">
+                  <div>
+                    <p className="text-xs uppercase tracking-[0.2em] text-sky-600 font-semibold">
+                      Resume Preview
+                    </p>
+                    <p className="text-sm text-slate-500">
+                      Parsed text from your uploaded resume.
+                    </p>
+                  </div>
+                  {resume.resumeUrl && (
+                    <button
+                      type="button"
+                      onClick={() =>
+                        window.open(resume.resumeUrl, "_blank", "noopener,noreferrer")
+                      }
+                      className="rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50"
+                    >
+                      Open
+                    </button>
+                  )}
+                </div>
+                <pre className="max-h-[360px] overflow-y-auto whitespace-pre-wrap break-words rounded-xl bg-white p-4 text-sm leading-6 text-slate-700 border border-slate-100">
+                  {resume.resumeText}
+                </pre>
+              </div>
+            )}
           </form>
         </>
       )}

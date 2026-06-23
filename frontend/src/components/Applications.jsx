@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import api from "../api/client";
 import PageHeader from "./ui/PageHeader";
 import DataTable from "./ui/DataTable";
@@ -12,6 +13,7 @@ const columns = [
 const Applications = () => {
   const [applications, setApplications] = useState([]);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
     getApplications();
@@ -54,6 +56,10 @@ const Applications = () => {
         data={applications}
         searchPlaceholder="Search applications..."
         onDelete={withdraw}
+        onView={(row) =>
+          navigate(`/student/student-dashboard/application/${row.id}`)
+        }
+        viewLabel="Open"
         actions
       />
     </div>

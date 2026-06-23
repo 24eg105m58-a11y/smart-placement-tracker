@@ -137,6 +137,34 @@ const toStudentApplication = (app) => ({
   status: app.applicationStatus,
 });
 
+const toApplicationDetailPayload = (application, resume = null, academic = null) => ({
+  id: application._id,
+  applicationId: application._id,
+  jobId: application.jobId,
+  companyName: application.companyName,
+  jobRole: application.jobRole,
+  status: application.applicationStatus,
+  currentRound: application.currentRound,
+  package: application.package,
+  appliedOn: formatDate(application.createdAt),
+  driveDate: formatDate(application.driveDate),
+  interviewDate: formatDate(application.interviewDate),
+  interviewTime: application.interviewTime || "",
+  interviewMode: application.interviewMode || "",
+  studentName: application.studentName || "",
+  cgpa: application.CGPA,
+  branch: application.eligibleBranches,
+  rollNumber: academic?.rollNumber || "",
+  email: "",
+  resumeUrl: resume?.resumeUrl || academic?.resume || "",
+  resumeFileName: resume?.fileName || "Resume",
+  resumeText: resume?.resumeText || "",
+  sourceFileType: resume?.sourceFileType || "",
+  extractedSkills: resume?.extractedSkills || [],
+  atsScore: resume?.atsScore || 0,
+  profileData: resume?.profileData || {},
+});
+
 const toNotification = (app) => {
   const status = app.applicationStatus || "APPLIED";
 
@@ -196,7 +224,31 @@ const toResumePayload = (resume) => ({
   uploadedOn: formatDate(resume.createdAt),
   atsScore: resume.atsScore || 0,
   extractedSkills: resume.extractedSkills || [],
+  resumeText: resume.resumeText || "",
+  sourceFileType: resume.sourceFileType || "",
+  profileData: resume.profileData || {},
 });
+
+const getResumeSourceType = (fileName = "") =>
+  fileName.split(".").pop().toLowerCase() || "pdf";
+
+const mergeResumeProfile = (payload, parsed = {}) => {
+  const profile = parsed.profileData || {};
+  const merged = { ...payload };
+
+  if (profile.rollNumber) merged.rollNumber = profile.rollNumber;
+  if (profile.branch) merged.branch = profile.branch;
+  if (profile.cgpa !== null && profile.cgpa !== undefined && !Number.isNaN(Number(profile.cgpa))) {
+    merged.cgpa = Number(profile.cgpa);
+  }
+  if (profile.graduationYear !== null && profile.graduationYear !== undefined) {
+    merged.graduationYear = Number(profile.graduationYear);
+  }
+  if (profile.linkedIn) merged.linkedIn = profile.linkedIn;
+  if (profile.github) merged.github = profile.github;
+
+  return merged;
+};
 
 const isAnyBranchJob = (branches) =>
   branches.length === 0 || branches.includes("ANY");
@@ -532,9 +584,14 @@ studentApp.post(
             fileName: req.file.originalname,
             atsScore: parsed.atsScore,
             extractedSkills: parsed.extractedSkills,
+            resumeText: parsed.resumeText || "",
+            sourceFileType: getResumeSourceType(req.file.originalname),
+            profileData: parsed.profileData || {},
           },
           { new: true, upsert: true }
         );
+
+        req.body = mergeResumeProfile(req.body, parsed);
       }
 
       const payload = {
@@ -645,9 +702,14 @@ studentApp.put(
             fileName: req.file.originalname,
             atsScore: parsed.atsScore,
             extractedSkills: parsed.extractedSkills,
+            resumeText: parsed.resumeText || "",
+            sourceFileType: getResumeSourceType(req.file.originalname),
+            profileData: parsed.profileData || {},
           },
           { new: true, upsert: true }
         );
+
+        req.body = mergeResumeProfile(req.body, parsed);
       }
 
       const payload = {
@@ -721,6 +783,9 @@ studentApp.post(
           fileName: req.file.originalname,
           atsScore: parsed.atsScore,
           extractedSkills: parsed.extractedSkills,
+          resumeText: parsed.resumeText || "",
+          sourceFileType: getResumeSourceType(req.file.originalname),
+          profileData: parsed.profileData || {},
         },
         {
           new: true,
@@ -731,8 +796,11 @@ studentApp.post(
 
       await AcademicDetailsModel.findOneAndUpdate(
         { studentId: req.user.id },
-        { resume: uploadResult.secure_url },
-        { new: true },
+        mergeResumeProfile(
+          { resume: uploadResult.secure_url },
+          parsed,
+        ),
+        { new: true, runValidators: true },
       );
 
       if (existingResume?.cloudinaryPublicId && existingResume.cloudinaryPublicId !== uploadResult.public_id) {
@@ -940,6 +1008,46 @@ studentApp.get(
     res.json({
       payload: applications.map(toStudentApplication),
     });
+  },
+);
+
+studentApp.get(
+  "/applications/:applicationId",
+  verifyToken("STUDENT"),
+  async (req, res) => {
+    try {
+      const application = await ApplicationModel.findOne({
+        _id: req.params.applicationId,
+        studentId: req.user.id,
+      }).populate("studentId", "firstname lastname email");
+
+      if (!application) {
+        return res.status(404).json({
+          success: false,
+          message: "Application not found",
+        });
+      }
+
+      const [resume, academic] = await Promise.all([
+        ResumeModel.findOne({ studentId: req.user.id }).sort({
+          createdAt: -1,
+        }),
+        AcademicDetailsModel.findOne({ studentId: req.user.id }),
+      ]);
+
+      res.json({
+        success: true,
+        payload: {
+          ...toApplicationDetailPayload(application, resume, academic),
+          studentEmail: application.studentId?.email || "",
+        },
+      });
+    } catch (err) {
+      res.status(500).json({
+        success: false,
+        message: err.message,
+      });
+    }
   },
 );
 

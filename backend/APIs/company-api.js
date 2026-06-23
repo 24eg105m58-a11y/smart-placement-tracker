@@ -3,6 +3,7 @@ import { CompanyDetailsModel } from "../models/companyDetails-model.js";
 import { verifyToken } from "../middlewares/VerifyToken.js";
 import { JobPostingModel } from "../models/jobPostings-model.js";
 import { ApplicationModel } from "../models/application-model.js";
+import { ResumeModel } from "../models/resume-model.js";
 import { upload } from "../config/multer.js";
 import { uploadToCloudinary } from "../config/cloudinaryUpload.js";
 import cloudinary from "../config/cloudinary.js";
@@ -67,7 +68,7 @@ const toCompanyRow = (company) => ({
   logo: company.companyLogo || "",
 });
 
-const toApplicantRow = (app) => ({
+const toApplicantRow = (app, resume = null) => ({
   id: app._id,
   studentId: app.studentId?._id || app.studentId,
   name:
@@ -83,7 +84,36 @@ const toApplicantRow = (app) => ({
   email: app.studentId?.email || "",
   rollNumber: app.studentRollNumber || "",
   recommendedByAdmin: app.recommendedByAdmin || false,
+  resumeUrl: resume?.resumeUrl || "",
+  resumeFileName: resume?.fileName || "Resume",
+  resumeText: resume?.resumeText || "",
+  sourceFileType: resume?.sourceFileType || "",
+  extractedSkills: resume?.extractedSkills || [],
+  atsScore: resume?.atsScore || 0,
+  profileData: resume?.profileData || {},
 });
+
+const buildResumeMap = async (applications = []) => {
+  const studentIds = [
+    ...new Set(
+      applications
+        .map((app) => String(app.studentId?._id || app.studentId || ""))
+        .filter(Boolean),
+    ),
+  ];
+
+  if (studentIds.length === 0) {
+    return new Map();
+  }
+
+  const resumes = await ResumeModel.find({
+    studentId: { $in: studentIds },
+  }).sort({ createdAt: -1 });
+
+  return new Map(
+    resumes.map((resume) => [String(resume.studentId), resume]),
+  );
+};
 
 const toInterviewRow = (app) => ({
   id: app._id,
@@ -439,10 +469,13 @@ companyApp.get("/jobs/:jobId/applicants", verifyToken("RECRUITER"), async (req, 
     })
       .populate("studentId", "firstname lastname email")
       .sort({ createdAt: -1 });
+    const resumeMap = await buildResumeMap(applications);
 
     res.json({
       success: true,
-      payload: applications.map(toApplicantRow),
+      payload: applications.map((app) =>
+        toApplicantRow(app, resumeMap.get(String(app.studentId?._id || app.studentId))),
+      ),
     });
   } catch (err) {
     next(err);
@@ -571,11 +604,16 @@ companyApp.get(
 
     const jobApplication = await ApplicationModel.find({
       companyName: company.companyName,
-    }).sort({ createdAt: -1 });
+    })
+      .populate("studentId", "firstname lastname email")
+      .sort({ createdAt: -1 });
+    const resumeMap = await buildResumeMap(jobApplication);
 
     res.json({
       message: "job applications: ",
-      payload: jobApplication.map(toApplicantRow),
+      payload: jobApplication.map((app) =>
+        toApplicantRow(app, resumeMap.get(String(app.studentId?._id || app.studentId))),
+      ),
     });
   },
 );

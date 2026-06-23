@@ -30,6 +30,26 @@ const resumeSchema = new Schema({
 
   extractedSkills: [String],
 
+  resumeText: {
+    type: String,
+    default: "",
+  },
+
+  sourceFileType: {
+    type: String,
+    default: "pdf",
+  },
+
+  profileData: {
+    branch: { type: String, default: "" },
+    cgpa: { type: Number, default: null },
+    graduationYear: { type: Number, default: null },
+    linkedIn: { type: String, default: "" },
+    github: { type: String, default: "" },
+    rollNumber: { type: String, default: "" },
+    email: { type: String, default: "" },
+  },
+
 }, {
   timestamps: true,
 });
